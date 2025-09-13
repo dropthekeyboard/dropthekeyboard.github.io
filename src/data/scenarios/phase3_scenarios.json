@@ -1,0 +1,454 @@
+[
+  {
+    "id": "personalized-restaurant-reservation",
+    "title": "Personalized Restaurant Reservation (A2A)",
+    "phase": "A2A",
+    "description": "Customer Agent and Restaurant Agent communicate directly to negotiate personalized dining experience",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "Book a romantic dinner for 2 tomorrow evening. My partner is vegetarian and we prefer quiet seating.",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Analyzing preferences: romantic setting, vegetarian options, quiet ambiance...",
+        "timing": { "delay": 0.5, "duration": 2 },
+        "animation": { "type": "thinking", "easing": "ease-in-out" }
+      },
+      {
+        "id": "3",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Initiating secure agent-to-agent communication with Marco's Bistro...",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Marco's Agent] Hello! I understand you're looking for a romantic dinner with vegetarian options. Let me check our availability and special accommodations.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "5",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[User Agent] Yes, for tomorrow evening. The couple values privacy and the female guest has vegetarian preferences. Any special arrangements possible?",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Marco's Agent] Perfect! I can offer table 12 by the garden window at 7:30 PM. Our chef can prepare a special vegetarian tasting menu. Would they like wine pairing recommendations?",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "7",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[User Agent] That sounds wonderful. Yes to wine pairing, preferably organic options. Can you ensure the lighting is dimmed for ambiance?",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Marco's Agent] Absolutely! Table 12 reserved with dimmed lighting, 5-course vegetarian tasting with organic wine pairings. I'll also add complimentary dessert. Total: $180 for two.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "9",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Negotiation complete. Processing payment and confirmation...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "10",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "✨ Perfect romantic dinner secured! Marco's Bistro tomorrow 7:30 PM - garden window table, 5-course vegetarian tasting with organic wines, dimmed lighting, complimentary dessert. $180 total.",
+        "timing": { "delay": 1, "duration": 5 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "complex-travel-coordination",
+    "title": "Multi-Service Travel Coordination (A2A)",
+    "phase": "A2A",
+    "description": "Multiple agents coordinate flight, hotel, and car rental for optimized travel experience",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "Plan a business trip to Chicago next week - need flight, hotel near downtown, rental car, and dinner reservation for client meeting",
+        "timing": { "delay": 1, "duration": 3 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Coordinating with multiple service agents: Airlines, Hotels, Car Rentals, Restaurants...",
+        "timing": { "delay": 1, "duration": 3 },
+        "animation": { "type": "thinking", "easing": "ease-in-out" }
+      },
+      {
+        "id": "3",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Delta Agent] I have flights Mon 8 AM arrival ORD, return Wed 6 PM. Business class available $650.",
+        "timing": { "delay": 2, "duration": 3 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Travel Coordinator] Confirmed Delta flights. Now coordinating ground transportation timing...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "5",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Hilton Agent] Palmer House downtown available Mon-Wed. I can sync arrival with flight schedule - room ready by 10 AM. $320/night, exec floor access.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Enterprise Agent] BMW 3 Series ready at ORD by 9:30 AM, returns Wed by 4 PM for flight connection. GPS pre-loaded with hotel and meeting locations.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "7",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Agents are cross-referencing schedules and optimizing logistics...",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Alinea Agent] Tuesday 7 PM table for 2 secured. I coordinated with hotel - they'll arrange car service both ways, no parking concerns.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "9",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Travel Coordinator] All agents confirmed - flight delays covered, hotel extended checkout available, restaurant contacted about dietary preferences from your profile.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "10",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "🧳 Complete Chicago trip organized! Mon 8AM flight→rental car ready→hotel 10AM→client dinner Alinea Tue 7PM (car service included)→Wed 6PM return. Total: $1,650. All confirmations sent.",
+        "timing": { "delay": 1, "duration": 6 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "healthcare-specialist-referral",
+    "title": "Specialist Referral Coordination (A2A)",
+    "phase": "A2A",
+    "description": "Medical agents coordinate specialist referral with insurance, scheduling, and care coordination",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "My knee has been hurting for weeks. Dr. Smith suggested I see an orthopedic specialist. Can you handle the referral and scheduling?",
+        "timing": { "delay": 1, "duration": 3 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Accessing your medical records and insurance network...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "3",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Insurance Agent] Coverage confirmed for orthopedic consultation. Dr. Sarah Chen and Dr. Michael Torres are in-network specialists with excellent ratings.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Health Coordinator] I need referral authorization and want to coordinate with primary care records. Dr. Smith's notes mention possible meniscus issue.",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "5",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Dr. Smith's Agent] Referral authorized for orthopedic eval. I'm sharing X-rays from last visit and symptom timeline. Recommending Dr. Chen - she specializes in sports medicine.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Dr. Chen's Agent] Received referral and medical history. I can see patient Friday 2 PM or next Tuesday 10 AM. Will have MRI ready if X-rays show concerns.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "7",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Cross-referencing your calendar and coordinating pre-appointment requirements...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Health Coordinator] Friday 2 PM works with your schedule. I'll coordinate MRI pre-authorization with insurance in case it's needed, and arrange imaging center nearby.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "9",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Insurance Agent] MRI pre-auth approved contingent on clinical need. Chicago Imaging Center is 2 blocks from Dr. Chen's office - can schedule same day if required.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "10",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "🏥 Specialist referral complete! Dr. Chen (orthopedic) Friday at 2 PM. Your records are shared, MRI pre-approved if needed, imaging center on standby. $40 copay. Reminder set.",
+        "timing": { "delay": 1, "duration": 5 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "smart-home-service-coordination",
+    "title": "Smart Home Service Network (A2A)",
+    "phase": "A2A",
+    "description": "Home service agents coordinate maintenance, repairs, and upgrades intelligently",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "My HVAC system is making weird noises and the smart thermostat shows efficiency warnings. Can you get this sorted?",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Analyzing smart home diagnostics and coordinating with service network...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "3",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Nest Agent] Thermostat data shows 23% efficiency drop over 2 weeks. Temperature variance patterns suggest ductwork or compressor issues. Forwarding diagnostics.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[ABC HVAC Agent] Diagnostic data received. Based on thermostat patterns and system age (8 years), likely needs duct cleaning and compressor maintenance. Can service tomorrow AM.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "5",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Home Coordinator] I'm also seeing your annual duct cleaning was due last month. Should we coordinate with carpet cleaning since furniture will be moved?",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Stanley Steemer Agent] Yes! If HVAC work is tomorrow, I can follow same day for carpet cleaning. Dust from duct work will be contained, then carpets cleaned after.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "7",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Agents are coordinating schedules and service sequencing for maximum efficiency...",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Energy Audit Agent] I notice coordination happening - perfect time for efficiency assessment. Can include programmable thermostat upgrade and identify other improvements.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "9",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Home Coordinator] Great synergy! Tomorrow: HVAC service 9-11 AM, carpet cleaning 12-3 PM, energy audit 3:30-4:30 PM. Smart thermostat upgrade included if beneficial.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "10",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "🏠 Complete home service coordination! Tomorrow: HVAC repair + duct cleaning 9-11 AM → carpet cleaning 12-3 PM → energy audit 3:30-4:30 PM. Total: $485. Efficiency restored!",
+        "timing": { "delay": 1, "duration": 5 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "financial-investment-advisory",
+    "title": "Investment Portfolio Optimization (A2A)",
+    "phase": "A2A",
+    "description": "Financial agents coordinate investment strategy, tax optimization, and portfolio rebalancing",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "I got a $50K bonus and want to invest it wisely. I'm 32, moderate risk tolerance, already have emergency fund. What's the best strategy?",
+        "timing": { "delay": 1, "duration": 3 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Analyzing your financial profile and coordinating with investment specialists...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "3",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Tax Agent] First priority: max out 401k ($6,500 remaining this year) and backdoor Roth IRA ($6,000). This reduces current tax burden and builds tax-free growth.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Vanguard Agent] After tax-advantaged accounts, I recommend 70/30 stocks/bonds allocation. VTI (total market) and VXUS (international) for equity, BND for bonds. Low expense ratios.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "5",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Investment Coordinator] I'm seeing your current portfolio is 85% domestic stocks. This $50K is perfect for diversification - adding international exposure and bond stability.",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Estate Planning Agent] At your age and asset level, also consider I Bonds ($10K limit) for inflation protection, and term life insurance increase given wealth growth.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "7",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Cross-analyzing tax implications, timeline optimization, and risk adjustment...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "right",
+        "content": "[Investment Coordinator] Optimal allocation: $6.5K→401k, $6K→Roth IRA, $10K→I Bonds, $27.5K→taxable account (60% VTI, 25% VXUS, 15% BND). Implements immediately.",
+        "timing": { "delay": 1, "duration": 4 }
+      },
+      {
+        "id": "9",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "[Fidelity Agent] All accounts ready for transfers. Automatic rebalancing set up quarterly. Dollar-cost averaging the $27.5K over 3 months to reduce timing risk.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "10",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "💰 Investment strategy optimized! $50K allocated: $12.5K tax-advantaged accounts (immediate tax savings), $10K I Bonds, $27.5K diversified portfolio. Projected 20-year growth: $180K-250K.",
+        "timing": { "delay": 1, "duration": 5 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  }
+]

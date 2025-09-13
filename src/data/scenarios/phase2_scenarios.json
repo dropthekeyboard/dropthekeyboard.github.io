@@ -1,0 +1,365 @@
+[
+  {
+    "id": "restaurant-reservation-lite-agent",
+    "title": "Restaurant Reservation (Lite Agent)",
+    "phase": "LiteAgent",
+    "description": "AI agent uses business app integration to make restaurant reservations more efficiently",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "Book a table for 4 at Giuseppe's tonight at 8 PM",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Accessing restaurant booking platform...",
+        "timing": { "delay": 0.5, "duration": 2 },
+        "animation": { "type": "thinking", "easing": "ease-in-out" }
+      },
+      {
+        "id": "3",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Found Giuseppe's profile in OpenTable system",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "4",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Checking real-time availability for party of 4...",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "5",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "OpenTable API: Available slots at 7:30 PM and 8:30 PM",
+        "timing": { "delay": 2, "duration": 3 }
+      },
+      {
+        "id": "6",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Booking 8:30 PM slot (closest to requested time)",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "7",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Reservation confirmed: Table for 4 at Giuseppe's, tonight 8:30 PM. Confirmation #RT-4589",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "✅ Reserved! Giuseppe's tonight at 8:30 PM for 4 people. Confirmation: RT-4589. I booked 8:30 PM as it was the closest available time to your requested 8 PM.",
+        "timing": { "delay": 1, "duration": 4 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "appointment-scheduling-lite",
+    "title": "Medical Appointment (Lite Agent)",
+    "phase": "LiteAgent",
+    "description": "AI agent integrates with clinic management system for faster appointment booking",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "Schedule my annual checkup with Dr. Martinez for next week",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Connecting to MedConnect patient portal...",
+        "timing": { "delay": 0.5, "duration": 2 }
+      },
+      {
+        "id": "3",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Authenticating with patient ID: MW-7891",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "MedConnect API: Dr. Martinez available slots next week: Mon 2PM, Wed 10AM, Fri 3PM",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "5",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Checking your calendar preferences...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "6",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Booking Wednesday 10 AM slot (matches your preferred morning appointments)",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "7",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Appointment confirmed: Dr. Martinez, Wednesday Oct 25th, 10:00 AM. Pre-visit forms sent to email.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "✅ Appointment scheduled! Dr. Martinez - Wednesday, Oct 25th at 10 AM. Check your email for pre-visit forms. Reminder set for 24 hours before.",
+        "timing": { "delay": 1, "duration": 4 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "travel-booking-lite",
+    "title": "Flight Booking (Lite Agent)",
+    "phase": "LiteAgent",
+    "description": "AI agent uses travel booking APIs to search and book flights automatically",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "Book a flight from NYC to LA, departing December 15th, returning December 22nd",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Searching flight options via Expedia API...",
+        "timing": { "delay": 0.5, "duration": 3 }
+      },
+      {
+        "id": "3",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Expedia API: Found 23 flight combinations NYC-LAX, Dec 15-22. Best options: Delta $384, American $412, JetBlue $445",
+        "timing": { "delay": 3, "duration": 5 }
+      },
+      {
+        "id": "4",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Analyzing options based on your preferences (price priority, no red-eyes)...",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "5",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Selected: Delta flights - Depart 8:45 AM, Return 2:15 PM",
+        "timing": { "delay": 2, "duration": 3 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Booking initiated... Payment processed via stored card ending in 4567. Confirmation: DL-890234",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "7",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "✈️ Flight booked! NYC to LAX: Dec 15 at 8:45 AM, return Dec 22 at 2:15 PM. Total: $384. Boarding passes sent to your mobile wallet.",
+        "timing": { "delay": 1, "duration": 4 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "shopping-order-lite",
+    "title": "Grocery Order (Lite Agent)",
+    "phase": "LiteAgent",
+    "description": "AI agent places grocery order through integrated shopping platform",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "Order groceries for this week's meal plan - chicken, vegetables, pasta, and the usual staples",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Accessing your meal plan and shopping history...",
+        "timing": { "delay": 0.5, "duration": 2 }
+      },
+      {
+        "id": "3",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Connecting to Instacart API for local availability...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Instacart: Whole Foods available for 2-hour delivery. Building cart based on meal plan...",
+        "timing": { "delay": 2, "duration": 3 }
+      },
+      {
+        "id": "5",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Adding: 2lb organic chicken breast, mixed vegetables, whole grain pasta, milk, eggs, bread, apples...",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "6",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Cart total: $89.43 (15 items). Delivery fee: $3.99. Estimated delivery: 2:30 PM today",
+        "timing": { "delay": 2, "duration": 3 }
+      },
+      {
+        "id": "7",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Order confirmed with regular payment method",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "🛒 Grocery order placed! $93.42 total, 15 items from Whole Foods. Delivery expected by 2:30 PM. Shopper will text updates.",
+        "timing": { "delay": 1, "duration": 4 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  },
+  {
+    "id": "car-service-lite",
+    "title": "Car Service Appointment (Lite Agent)",
+    "phase": "LiteAgent",
+    "description": "AI agent books car maintenance using dealership's service system",
+    "steps": [
+      {
+        "id": "1",
+        "type": "message",
+        "actor": "user",
+        "section": "left",
+        "content": "My car is due for its 30,000 mile service. Book it with Honda dealership for next week",
+        "timing": { "delay": 1, "duration": 2 },
+        "animation": { "type": "typing", "easing": "linear" }
+      },
+      {
+        "id": "2",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Looking up vehicle service history...",
+        "timing": { "delay": 0.5, "duration": 2 }
+      },
+      {
+        "id": "3",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Connecting to Honda Service Connect portal...",
+        "timing": { "delay": 1, "duration": 2 }
+      },
+      {
+        "id": "4",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Honda Service: Vehicle 2019 Accord (VIN: 1HG***789) due for 30K service. Available slots: Tue 9 AM, Wed 1 PM, Thu 8 AM",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "5",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "30K service includes: oil change, tire rotation, brake inspection, fluid checks",
+        "timing": { "delay": 1, "duration": 3 }
+      },
+      {
+        "id": "6",
+        "type": "system_action",
+        "actor": "ai_agent",
+        "section": "center",
+        "content": "Booking Tuesday 9 AM slot (estimated 2-3 hours)",
+        "timing": { "delay": 2, "duration": 2 }
+      },
+      {
+        "id": "7",
+        "type": "message",
+        "actor": "service_provider",
+        "section": "right",
+        "content": "Service appointment confirmed: Tuesday 9 AM, 30,000-mile maintenance. Estimated cost: $280-320. Bring keys and registration.",
+        "timing": { "delay": 2, "duration": 4 }
+      },
+      {
+        "id": "8",
+        "type": "message",
+        "actor": "ai_agent",
+        "section": "left",
+        "content": "🔧 Service booked! Honda 30K maintenance - Tuesday at 9 AM. Est. 2-3 hours, $280-320. I'll remind you to bring keys and registration.",
+        "timing": { "delay": 1, "duration": 4 },
+        "animation": { "type": "appear", "easing": "bounce" }
+      }
+    ]
+  }
+]

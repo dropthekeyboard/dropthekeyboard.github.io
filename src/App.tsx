@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { DemoView } from "./components/DemoView";
+import { ControlHeader } from "./components/ControlHeader";
+import { useTheme } from "./hooks/useTheme";
+import { useScenarioStore } from "./stores/scenarioStore";
+import phase1Scenarios from "./data/scenarios/phase1_scenarios.json";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { theme, toggleTheme } = useTheme();
+  const { loadScenario, currentScenario } = useScenarioStore();
+
+  // Load a demo scenario on startup
+  useEffect(() => {
+    if (!currentScenario && phase1Scenarios.length > 0) {
+      loadScenario(phase1Scenarios[0] as any);
+    }
+  }, [currentScenario, loadScenario]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className={`app ${theme}`}>
+      <ControlHeader onThemeToggle={toggleTheme} />
+      <DemoView />
+    </div>
+  );
 }
 
-export default App
+export default App;
