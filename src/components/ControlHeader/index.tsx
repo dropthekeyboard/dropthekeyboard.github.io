@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { RecordingControls } from "./RecordingControls";
-import { ThemeToggle } from "./ThemeToggle";
-import { ScenarioSelector } from "./ScenarioSelector.tsx";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Bot, Monitor, Settings } from "lucide-react";
+import { useState } from "react";
 import { PlayControls } from "./PlayControls";
-import { Settings, Monitor, Smartphone, Bot } from "lucide-react";
+import { RecordingControls } from "./RecordingControls";
+import { ScenarioSelector } from "./ScenarioSelector.tsx";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
