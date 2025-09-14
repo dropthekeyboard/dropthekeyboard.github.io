@@ -4,14 +4,14 @@ import { StatusBar } from "@/components/shared/StatusBar";
 
 interface PhoneFrameProps {
   children: React.ReactNode;
-  className?: string;
   variant?: "user" | "service";
+  className?: string;
 }
 
 export function PhoneFrame({
   children,
-  className,
   variant = "user",
+  className,
 }: PhoneFrameProps) {
   return (
     <div
@@ -27,15 +27,20 @@ export function PhoneFrame({
         className="relative w-full max-w-[280px] h-full max-h-[600px]"
       >
         {/* iPhone-style outer bezel */}
-        <div className="relative w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2.5rem] shadow-2xl shadow-gray-900/50 p-2">
+        <div className={cn(
+          "relative w-full h-full rounded-[2.5rem] shadow-2xl shadow-gray-900/50 p-2",
+          variant === "user" 
+            ? "bg-gradient-to-br from-gray-800 to-gray-900" 
+            : "bg-gradient-to-br from-green-800 to-green-900"
+        )}>
           {/* Dynamic Island / Notch */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-24 h-6 bg-black rounded-full z-20"></div>
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-black rounded-full z-20"></div>
 
           {/* Screen */}
           <div className="w-full h-full bg-white dark:bg-gray-950 rounded-[2rem] overflow-hidden flex flex-col relative">
             {/* Status Bar */}
             <div className="relative z-10">
-              <StatusBar variant={variant} />
+              <StatusBar/>
             </div>
 
             {/* Screen Content */}

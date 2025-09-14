@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 import { useRecorder } from "@/hooks/useRecorder";
-import { useScenarioStore } from "@/stores/scenarioStore";
 import {
   Circle,
   Square,
@@ -67,8 +66,6 @@ export function RecordingControls() {
 
       await startRecording();
 
-      // Update store state
-      useScenarioStore.setState({ isRecording: true });
     } catch (error) {
       console.error("Failed to start recording:", error);
       setRecordingState((prev) => ({
@@ -97,8 +94,6 @@ export function RecordingControls() {
         hasRecording: true,
       }));
 
-      // Update store state
-      useScenarioStore.setState({ isRecording: false });
     } catch (error) {
       console.error("Failed to stop recording:", error);
       setRecordingState((prev) => ({

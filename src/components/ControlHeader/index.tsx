@@ -3,11 +3,10 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ScenarioEditor } from "./ScenarioEditor";
 import { RecordingControls } from "./RecordingControls";
 import { ThemeToggle } from "./ThemeToggle";
-import { PlayControls } from "./PlayControls.tsx";
 import { ScenarioSelector } from "./ScenarioSelector.tsx";
+import { PlayControls } from "./PlayControls";
 import { Settings, Monitor, Smartphone, Bot } from "lucide-react";
 
 interface ControlHeaderProps {
@@ -124,7 +123,6 @@ export function ControlHeader({
                     <Settings className="w-4 h-4 mr-2" />
                     Scenario Editor
                   </h3>
-                  <ScenarioEditor />
                 </Card>
 
                 <Card className="p-4">

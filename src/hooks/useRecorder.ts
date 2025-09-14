@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 
 interface RecorderOptions {
   videoBitsPerSecond?: number;
@@ -16,7 +16,7 @@ interface RecorderState {
 
 export function useRecorder(
   targetElementId: string,
-  options: RecorderOptions = {},
+  options: RecorderOptions = {}
 ) {
   const [state, setState] = useState<RecorderState>({
     isRecording: false,
@@ -32,15 +32,7 @@ export function useRecorder(
   const startTimeRef = useRef<number>(0);
   const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const defaultOptions: RecorderOptions = {
-    videoBitsPerSecond: 2500000, // 2.5 Mbps for 1080p
-    audioBitsPerSecond: 128000, // 128 kbps
-    mimeType: getSupportedMimeType(),
-    ...options,
-  };
-
-  // Get the best supported MIME type
-  function getSupportedMimeType(): string {
+  const getSupportedMimeType = useCallback((): string => {
     const types = [
       "video/mp4; codecs=h264",
       "video/mp4; codecs=avc1.42E01E",
@@ -57,7 +49,19 @@ export function useRecorder(
     }
 
     return "video/webm"; // Fallback
-  }
+  }, []);
+
+  const defaultOptions: RecorderOptions = useMemo(
+    () => ({
+      videoBitsPerSecond: 2500000, // 2.5 Mbps for 1080p
+      audioBitsPerSecond: 128000, // 128 kbps
+      mimeType: getSupportedMimeType(),
+      ...options,
+    }),
+    [options, getSupportedMimeType]
+  );
+
+  // Get the best supported MIME type
 
   // Get display media with specific constraints for 16:9 recording
   const getDisplayMedia = useCallback(async () => {
@@ -65,7 +69,7 @@ export function useRecorder(
       const targetElement = document.getElementById(targetElementId);
       if (!targetElement) {
         throw new Error(
-          `Target element with id "${targetElementId}" not found`,
+          `Target element with id "${targetElementId}" not found`
         );
       }
 
@@ -105,6 +109,56 @@ export function useRecorder(
       });
     }
   }, [targetElementId]);
+
+  // Cleanup function
+  const cleanup = useCallback(() => {
+    if (durationIntervalRef.current) {
+      clearInterval(durationIntervalRef.current);
+      durationIntervalRef.current = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    mediaRecorderRef.current = null;
+    chunksRef.current = [];
+  }, []);
+
+  // Stop recording
+  const stopRecording = useCallback(async (): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const mediaRecorder = mediaRecorderRef.current;
+      if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        reject(new Error("No active recording to stop"));
+        return;
+      }
+
+      const handleStop = () => {
+        try {
+          const blob = new Blob(chunksRef.current, {
+            type: defaultOptions.mimeType || "video/webm",
+          });
+
+          cleanup();
+          resolve(blob);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      if (
+        mediaRecorder.state === "recording" ||
+        mediaRecorder.state === "paused"
+      ) {
+        mediaRecorder.addEventListener("stop", handleStop, { once: true });
+        mediaRecorder.stop();
+      } else {
+        handleStop();
+      }
+    });
+  }, [defaultOptions.mimeType, cleanup]);
 
   // Start recording
   const startRecording = useCallback(async () => {
@@ -215,41 +269,7 @@ export function useRecorder(
       }));
       cleanup();
     }
-  }, [defaultOptions, getDisplayMedia, state.duration]);
-
-  // Stop recording
-  const stopRecording = useCallback(async (): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const mediaRecorder = mediaRecorderRef.current;
-      if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        reject(new Error("No active recording to stop"));
-        return;
-      }
-
-      const handleStop = () => {
-        try {
-          const blob = new Blob(chunksRef.current, {
-            type: defaultOptions.mimeType || "video/webm",
-          });
-
-          cleanup();
-          resolve(blob);
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      if (
-        mediaRecorder.state === "recording" ||
-        mediaRecorder.state === "paused"
-      ) {
-        mediaRecorder.addEventListener("stop", handleStop, { once: true });
-        mediaRecorder.stop();
-      } else {
-        handleStop();
-      }
-    });
-  }, [defaultOptions.mimeType]);
+  }, [defaultOptions, getDisplayMedia, state.duration, cleanup, stopRecording]);
 
   // Pause recording
   const pauseRecording = useCallback(() => {
@@ -276,7 +296,10 @@ export function useRecorder(
       a.href = url;
       a.download =
         filename ||
-        `a2a-demo-${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.mp4`;
+        `a2a-demo-${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace(/:/g, "-")}.mp4`;
 
       document.body.appendChild(a);
       a.click();
@@ -291,22 +314,6 @@ export function useRecorder(
         error: "Failed to download recording",
       }));
     }
-  }, []);
-
-  // Cleanup function
-  const cleanup = useCallback(() => {
-    if (durationIntervalRef.current) {
-      clearInterval(durationIntervalRef.current);
-      durationIntervalRef.current = null;
-    }
-
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
-
-    mediaRecorderRef.current = null;
-    chunksRef.current = [];
   }, []);
 
   // Get recording info

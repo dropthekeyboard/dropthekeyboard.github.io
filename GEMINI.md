@@ -9,7 +9,7 @@ This is a web application built with React, TypeScript, and Vite. It uses Tailwi
 To start the development server, run:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 ### Build
@@ -17,7 +17,7 @@ npm run dev
 To build the application for production, run:
 
 ```bash
-npm run build
+bun run build
 ```
 
 ### Lint
@@ -25,7 +25,7 @@ npm run build
 To lint the codebase, run:
 
 ```bash
-npm run lint
+bun run lint
 ```
 
 ### Preview
@@ -33,7 +33,7 @@ npm run lint
 To serve the production build locally, run:
 
 ```bash
-npm run preview
+bun run preview
 ```
 
 ## Development Conventions
@@ -48,4 +48,4 @@ The project uses Tailwind CSS for styling. Utility classes should be used whenev
 
 ### Linting
 
-The project uses ESLint to enforce code quality. Before committing any changes, make sure to run `npm run lint` to check for any linting errors.
+The project uses ESLint to enforce code quality. Before committing any changes, make sure to run `bun run lint` to check for any linting errors.

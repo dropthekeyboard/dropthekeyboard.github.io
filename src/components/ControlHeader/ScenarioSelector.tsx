@@ -10,85 +10,52 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useScenarioStore } from "@/stores/scenarioStore";
-import { useScenarioPlayer } from "@/hooks/useScenarioPlayer";
 import {
   ChevronDown,
   Play,
   Clock,
-  Users,
   Phone,
   MessageSquare,
   Bot,
   Building,
 } from "lucide-react";
-
-// Import scenario data
-import phase1Scenarios from "@/data/scenarios/phase1_scenarios.json";
-import phase2Scenarios from "@/data/scenarios/phase2_scenarios.json";
-import phase3Scenarios from "@/data/scenarios/phase3_scenarios.json";
-
-const allScenarios = [
-  ...phase1Scenarios,
-  ...phase2Scenarios,
-  ...phase3Scenarios,
-];
-
-const phaseColors = {
-  A2H: "bg-blue-500/10 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-800",
-  LiteAgent:
-    "bg-orange-500/10 text-orange-700 border-orange-200 dark:bg-orange-500/20 dark:text-orange-300 dark:border-orange-800",
-  A2A: "bg-green-500/10 text-green-700 border-green-200 dark:bg-green-500/20 dark:text-green-300 dark:border-green-800",
-};
-
-const phaseIcons = {
-  A2H: <Phone className="w-3 h-3" />,
-  LiteAgent: <Bot className="w-3 h-3" />,
-  A2A: <Users className="w-3 h-3" />,
-};
+import { useScenarioControl } from "@/hooks/useScenarioControl";
+import type { Scenario } from "@/contexts/scenario";
 
 export function ScenarioSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { currentScenario } = useScenarioStore();
-  const { loadAndPlay, isPlaying } = useScenarioPlayer();
+  const { scenarios, scenario: currentScenario, setCurrent } = useScenarioControl();
 
-  const handleScenarioSelect = (scenario: any) => {
-    loadAndPlay(scenario);
+  const handleScenarioSelect = (_scenario: Scenario, index: number) => {
+    setCurrent(index);
     setIsOpen(false);
   };
 
-  const getStepCounts = (scenario: any) => {
+  const getStepCounts = (scenario: Scenario) => {
     const counts = {
       messages: 0,
       calls: 0,
       actions: 0,
     };
 
-    scenario.steps.forEach((step: any) => {
+    scenario.steps.forEach((step) => {
       switch (step.type) {
-        case "message":
-        case "sms":
+        case 'send-message':
           counts.messages++;
           break;
-        case "call":
+        case 'make-call':
+        case 'accept-call':
+        case 'finish-call':
           counts.calls++;
           break;
-        case "system_action":
+        case 'api-call':
+        case 'api-response':
           counts.actions++;
           break;
       }
     });
 
     return counts;
-  };
-
-  const getDuration = (scenario: any) => {
-    const totalDuration = scenario.steps.reduce(
-      (acc: number, step: any) =>
-        acc + step.timing.delay + step.timing.duration,
-      0,
-    );
-    return Math.round(totalDuration);
   };
 
   return (
@@ -102,20 +69,12 @@ export function ScenarioSelector() {
             "border border-border hover:border-primary/50",
             "transition-all duration-200",
           )}
-          disabled={isPlaying}
         >
           <div className="flex items-center space-x-2 flex-1 min-w-0">
             {currentScenario ? (
               <>
-                <div
-                  className={cn(
-                    "px-2 py-0.5 rounded text-xs font-medium border",
-                    phaseColors[
-                      currentScenario.phase as keyof typeof phaseColors
-                    ],
-                  )}
-                >
-                  {currentScenario.phase}
+                <div className="px-2 py-0.5 rounded text-xs font-medium border bg-primary/10 text-primary border-primary/20">
+                  A2A
                 </div>
                 <span className="truncate text-sm">
                   {currentScenario.title}
@@ -141,9 +100,8 @@ export function ScenarioSelector() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto pr-2">
           <AnimatePresence>
-            {allScenarios.map((scenario, index) => {
+            {scenarios.map((scenario, index) => {
               const counts = getStepCounts(scenario);
-              const duration = getDuration(scenario);
 
               return (
                 <motion.div
@@ -163,7 +121,7 @@ export function ScenarioSelector() {
                       currentScenario?.id === scenario.id &&
                         "ring-2 ring-primary border-primary",
                     )}
-                    onClick={() => handleScenarioSelect(scenario)}
+                    onClick={() => handleScenarioSelect(scenario, index)}
                   >
                     {/* Background gradient */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -171,20 +129,9 @@ export function ScenarioSelector() {
                     <div className="relative z-10">
                       {/* Header */}
                       <div className="flex items-start justify-between mb-3">
-                        <div
-                          className={cn(
-                            "px-2 py-1 rounded text-xs font-medium border flex items-center space-x-1",
-                            phaseColors[
-                              scenario.phase as keyof typeof phaseColors
-                            ],
-                          )}
-                        >
-                          {
-                            phaseIcons[
-                              scenario.phase as keyof typeof phaseIcons
-                            ]
-                          }
-                          <span>{scenario.phase}</span>
+                        <div className="px-2 py-1 rounded text-xs font-medium border flex items-center space-x-1 bg-primary/10 text-primary border-primary/20">
+                          <Bot className="w-3 h-3" />
+                          <span>A2A</span>
                         </div>
 
                         <motion.div
@@ -209,11 +156,11 @@ export function ScenarioSelector() {
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="flex items-center space-x-1 text-muted-foreground">
                           <Clock className="w-3 h-3" />
-                          <span>{duration}s</span>
+                          <span>{scenario.steps.length} steps</span>
                         </div>
                         <div className="flex items-center space-x-1 text-muted-foreground">
                           <Building className="w-3 h-3" />
-                          <span>{scenario.steps.length} steps</span>
+                          <span>{scenario.agents.length} agents</span>
                         </div>
                       </div>
 
@@ -247,7 +194,7 @@ export function ScenarioSelector() {
                           className="h-6 px-2 opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleScenarioSelect(scenario);
+                            handleScenarioSelect(scenario, index);
                           }}
                         >
                           <Play className="w-3 h-3 mr-1" />
@@ -263,18 +210,10 @@ export function ScenarioSelector() {
         </div>
 
         {/* Quick stats */}
-        <div className="flex items-center justify-center space-x-6 pt-4 border-t border-border text-xs text-muted-foreground">
-          <div className="flex items-center space-x-1">
-            <div className="w-2 h-2 bg-blue-500 rounded-full" />
-            <span>{phase1Scenarios.length} A2H Scenarios</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <div className="w-2 h-2 bg-orange-500 rounded-full" />
-            <span>{phase2Scenarios.length} Lite Agent</span>
-          </div>
+        <div className="flex items-center justify-center pt-4 border-t border-border text-xs text-muted-foreground">
           <div className="flex items-center space-x-1">
             <div className="w-2 h-2 bg-green-500 rounded-full" />
-            <span>{phase3Scenarios.length} A2A Scenarios</span>
+            <span>{scenarios.length} A2A Scenarios Available</span>
           </div>
         </div>
       </DialogContent>
