@@ -118,3 +118,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom scrollbar for AgentSection - 최대한 투명하게 */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  opacity: 0.3;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  opacity: 0.6;
+}
+
+/* Dark mode scrollbar adjustments */
+.dark .custom-scrollbar {
+  scrollbar-color: transparent transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+  opacity: 0.4;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  opacity: 0.7;
+}

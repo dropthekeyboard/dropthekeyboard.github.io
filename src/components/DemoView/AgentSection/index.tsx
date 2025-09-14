@@ -4,7 +4,6 @@ import { useScenario } from "@/hooks/useScenario";
 import { cn } from "@/lib/utils";
 import { createId } from "@paralleldrive/cuid2";
 import { AnimatePresence, motion } from "framer-motion";
-import { Brain, Settings } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
 interface LogicCard {
@@ -14,7 +13,7 @@ interface LogicCard {
 }
 
 export function AgentSection() {
-  const { state, active: { agent }, progress, currentScenario } = useScenario();
+  const { state, active: { agent } } = useScenario();
 
   // Agent logic cards state
   const logicCards = useMemo(() => state.steps.map(s => ({
@@ -25,7 +24,7 @@ export function AgentSection() {
   // Auto-scroll ref
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  console.log("agentic ::", {logicCards})
+  console.log("agentic ::", {agent})
 
   // Processing state based on scenario progress
   const isProcessing = useMemo(() => {
@@ -49,7 +48,6 @@ export function AgentSection() {
     }
   }, [logicCards.length]);
 
-  console.info("agent section : ", {state});
 
   return (
     <motion.div
@@ -58,30 +56,21 @@ export function AgentSection() {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={cn(
         "center-section",
-        "relative flex flex-col h-full",
+        "relative flex flex-col h-[60vh] w-[30vw] mx-auto",
       )}
     >
-      {/* Agent Status Header */}
-      <div className="flex items-center justify-center space-x-4 mb-4">
-        {/* Brain icon - bouncing animation */}
+      {/* Agent Status Header - Simplified and more elegant */}
+      <div className="flex items-center justify-center mb-6">
+        {/* Enhanced AgentRobot with integrated elements */}
         <motion.div
-          animate={isProcessing ? { y: [0, -5, 0] } : {}}
-          transition={{ duration: 1, repeat: isProcessing ? Infinity : 0, ease: "easeInOut" }}
+          animate={isProcessing ? { scale: [1, 1.02, 1] } : {}}
+          transition={{
+            duration: 2,
+            repeat: isProcessing ? Infinity : 0,
+            ease: "easeInOut",
+          }}
         >
-          <Brain className="w-8 h-8 text-primary" />
-        </motion.div>
-
-        {/* AgentRobot in center */}
-        <div className="relative">
-          <AgentRobot size={60} isThinking={isProcessing} />
-        </div>
-
-        {/* Gearbox icon - rotating animation */}
-        <motion.div
-          animate={isProcessing ? { rotate: 360 } : {}}
-          transition={{ duration: 2, repeat: isProcessing ? Infinity : 0, ease: "linear" }}
-        >
-          <Settings className="w-8 h-8 text-primary" />
+          <AgentRobot size={70} isThinking={isProcessing} />
         </motion.div>
       </div>
 
@@ -92,26 +81,38 @@ export function AgentSection() {
         transition={{ delay: 0.2 }}
         className="absolute -top-6 left-1/2 transform -translate-x-1/2"
       >
-        <div className="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-xs font-medium">
-          AI Agent
+        <div className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+          {agent?.name}
         </div>
       </motion.div>
 
       {/* Agent Logic Cards List */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-3 px-2 max-h-[300px]"
+        className={cn(
+          "flex-1 overflow-y-auto px-3 py-2 min-h-[200px] w-[30vw] custom-scrollbar will-change-scroll",
+          "bg-card/30 backdrop-blur-md rounded-lg",
+          "shadow-lg shadow-black/10 dark:shadow-black/30",
+          "relative before:absolute before:top-0 before:left-0 before:right-0 before:h-8",
+          "before:bg-gradient-to-b before:from-card/60 before:via-card/30 before:to-transparent before:pointer-events-none before:z-10"
+        )}
       >
-        <AnimatePresence>
-          {logicCards.map((card) => (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="bg-card border border-border rounded-lg p-3 shadow-sm"
-            >
+        <div className="space-y-3">
+          <AnimatePresence mode="popLayout">
+            {logicCards.map((card) => (
+              <motion.div
+                key={card.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeOut",
+                  layout: { duration: 0.15 }
+                }}
+                className="bg-card rounded-lg p-3 shadow-sm will-change-transform"
+              >
               <div className="flex items-center justify-between mb-2">
                 <div className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-medium">
                   {card.step.type}
@@ -163,19 +164,8 @@ export function AgentSection() {
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
-
-      {/* Progress indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-      >
-        <div className="px-2 py-1 bg-muted/50 border border-border rounded text-xs text-muted-foreground">
-          Step {progress} / {currentScenario.steps.length}
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

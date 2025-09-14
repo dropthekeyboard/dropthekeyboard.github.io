@@ -71,21 +71,24 @@ export function MessageScreen({
           </motion.div>
         )}
 
-        {messages.map((msg, index) => (
-          <motion.div
-            key={msg.content}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <MessageBubble
-              message={msg.content}
-              isOwnMessage={msg.to === ownerName}
-              timestamp={msg.timestamp}
-              isRead={msg.to === "user"}
-            />
-          </motion.div>
-        ))}
+        {/* Sort messages by timestamp to ensure chronological order */}
+        {[...messages]
+          .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
+          .map((msg, index) => (
+            <motion.div
+              key={`${msg.timestamp}-${msg.content}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <MessageBubble
+                message={msg.content}
+                isOwnMessage={msg.to === ownerName}
+                timestamp={msg.timestamp}
+                isRead={msg.to === "user"}
+              />
+            </motion.div>
+          ))}
 
         {/* Typing indicator */}
         {isTyping && (

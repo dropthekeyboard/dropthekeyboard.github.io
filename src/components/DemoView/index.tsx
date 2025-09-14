@@ -13,17 +13,17 @@ export function DemoView({ className }: DemoViewProps) {
       id="demoview"
       className={cn(
         "demo-view",
-        "grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 h-full",
+        "flex gap-4 p-4 h-full",
         className
       )}
     >
-      <div className="flex flex-col">
+      <div className="flex-[0_0_30%] flex flex-col">
         <CustomerSection />
       </div>
-      <div className="flex flex-col">
+      <div className="flex-[0_0_30%] flex flex-col">
         <AgentSection />
       </div>
-      <div className="flex flex-col">
+      <div className="flex-[0_0_30%] flex flex-col">
         <ServerSection />
       </div>
     </div>

@@ -424,7 +424,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
      * New state variables for scenario management
      */
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState(-1);
     const currentScenarioRef = useRef<Scenario | null>(null);
 
     /**
@@ -466,19 +466,29 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
     const [lastServer, setLastServer] = useState<HumanState | null>(null);
 
     useEffect(() => {
-        setLastServer(prev => {
-            if (!scenario || !prev) {
-                return prev;
+        if (!scenario) {
+            setLastServer(null);
+            return;
+        }
+
+        const { steps } = scenario;
+        const lastStep = steps[steps.length - 1];
+
+        if (lastStep) {
+            const whom = getActionFrom(lastStep);
+            const serverWhom = scenario.servers.find(s => s.name === whom);
+            if (serverWhom) {
+                setLastServer(serverWhom);
+                return;
             }
-            const { steps } = scenario;
-            const lastStep = steps[steps.length - 1];
-            if (lastStep && scenario) {
-                const whom = getActionFrom(lastStep);
-                const serverWhom = scenario.servers.find(s => s.name === whom);
-                return serverWhom || null;
-            }
-            return prev;
-        })
+        }
+
+        // If no last step or no matching server, use first server as default
+        if (scenario.servers.length > 0) {
+            setLastServer(scenario.servers[0]);
+        } else {
+            setLastServer(null);
+        }
     }, [scenario, getActionFrom])
 
 
@@ -495,7 +505,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             if (index >= 0 && index < scenarios.length) {
                 setCurrentIndex(index);
                 // Do not auto-execute the first step on scenario change
-                setProgress(0);
+                setProgress(-1);
             }
         },
         [scenarios.length]
@@ -545,7 +555,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             if (!prev) return prev;
 
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            return updateEntityState(updatedScenario, call.to, "ring");
+            return updateEntityState(updateEntityState(updatedScenario, call.to, "ring"), call.from, "ring");
         });
     }, []);
 
@@ -566,7 +576,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
 
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
             let finalScenario = updateEntityState(updatedScenario, call.from, "call");
-            finalScenario = updateEntityState(finalScenario, call.to, "call");
+            finalScenario = updateEntityState(updateEntityState(finalScenario, call.to, "call"), call.from, "call");
             return finalScenario;
         });
     }, []);
@@ -586,9 +596,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             if (!prev) return prev;
 
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            let finalScenario = updateEntityState(updatedScenario, call.from, "message");
-            finalScenario = updateEntityState(finalScenario, call.to, "message");
-            return finalScenario;
+            return updateEntityState(updateEntityState(updatedScenario, call.from, "message"), call.to, "message");
         });
     }, []);
 
@@ -701,7 +709,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
                 steps: []
             };
             setScenario(freshScenario);
-            setProgress(0); // avoid auto-exec on load
+            setProgress(-1); // avoid auto-exec on load
         }
     }, [currentScenario]);
 
@@ -737,7 +745,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
 
             setScenario(freshScenario);
             // Move to before-first-step to prevent auto-exec
-            setProgress(0);
+            setProgress(-1);
         } else {
             // Complete reset - clear all scenario info
             setScenario(prev => {
@@ -753,7 +761,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
                 };
                 return updateScenario;
             });
-            setProgress(0);
+            setProgress(-1);
         }
 
     }, []);

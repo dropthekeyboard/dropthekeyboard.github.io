@@ -31,73 +31,62 @@ export function ControlHeader({
         className,
       )}
     >
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left section - Logo & Title */}
-          <div className="flex items-center space-x-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center space-x-2"
-            >
-              <div className="relative">
-                <Bot className="w-8 h-8 text-primary" />
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
-                />
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-foreground">
-                  A2A Demo Studio
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  Agent-to-Agent Communication Demo
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Phase indicator */}
-            <div className="hidden md:flex items-center space-x-2">
-              <Separator orientation="vertical" className="h-8" />
-              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                <Smartphone className="w-4 h-4" />
-                <span>→</span>
-                <Bot className="w-4 h-4 text-primary" />
-                <span>→</span>
-                <Monitor className="w-4 h-4" />
-              </div>
+      <div className="container mx-auto">
+        <div className="flex flex-row justify-between">
+          {/* Top row - Logo & Title with Settings & Theme */}
+            <div className="flex items-center space-x-3">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center space-x-2"
+              >
+                <div className="relative">
+                  <Bot className="w-6 h-6 text-primary" />
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
+                  />
+                </div>
+                <div className="hidden sm:block">
+                  <h1 className="text-lg font-bold text-foreground">
+                    A2A Demo Studio
+                  </h1>
+                  <p className="text-xs text-muted-foreground">
+                    Agent-to-Agent Communication Demo
+                  </p>
+                </div>
+              </motion.div>
             </div>
-          </div>
 
-          {/* Center section - Main controls */}
-          <div className="flex items-center space-x-2">
-            <Card className="flex items-center p-1 bg-card/50">
+
+          {/* Middle row - Phase indicator and Main controls */}
+          <div className="flex items-center justify-between">
+            {/* Center section - Main controls */}
+            <Card className="flex flex-row items-center p-1 bg-card/50">
               <ScenarioSelector />
-              <Separator orientation="vertical" className="mx-2 h-8" />
+              <Separator orientation="vertical" className="mx-1 h-6" />
               <PlayControls />
-              <Separator orientation="vertical" className="mx-2 h-8" />
+              <Separator orientation="vertical" className="mx-1 h-6" />
               <RecordingControls />
             </Card>
           </div>
 
-          {/* Right section - Settings & Theme */}
           <div className="flex items-center space-x-2">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsExpanded(!isExpanded)}
-              className={cn(
-                "p-2 rounded-md bg-muted/50 hover:bg-muted transition-colors",
-                "border border-border hover:border-primary/50",
-              )}
-            >
-              <Settings className="w-4 h-4" />
-            </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={cn(
+                  "p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors",
+                  "border border-border hover:border-primary/50",
+                )}
+              >
+                <Settings className="w-4 h-4" />
+              </motion.button>
 
-            <ThemeToggle onToggle={onThemeToggle} />
-          </div>
+              <ThemeToggle onToggle={onThemeToggle} />
+            </div>
         </div>
 
         {/* Expandable advanced controls */}
@@ -112,25 +101,25 @@ export function ControlHeader({
         >
           {isExpanded && (
             <motion.div
-              initial={{ y: -20 }}
+              initial={{ y: -10 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.1 }}
-              className="pt-4 border-t border-border mt-4"
+              className="pt-3 border-t border-border"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="p-4">
-                  <h3 className="font-semibold text-sm mb-3 flex items-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Card className="p-3">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center">
                     <Settings className="w-4 h-4 mr-2" />
                     Scenario Editor
                   </h3>
                 </Card>
 
-                <Card className="p-4">
-                  <h3 className="font-semibold text-sm mb-3 flex items-center">
+                <Card className="p-3">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center">
                     <Monitor className="w-4 h-4 mr-2" />
                     Recording Settings
                   </h3>
-                  <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="space-y-1 text-sm text-muted-foreground">
                     <div className="flex justify-between">
                       <span>Quality:</span>
                       <span className="text-foreground">1080p 30fps</span>
@@ -148,7 +137,7 @@ export function ControlHeader({
               </div>
 
               {/* Performance indicators */}
-              <div className="mt-4 flex items-center justify-center space-x-6 text-xs text-muted-foreground">
+              <div className="mt-3 flex items-center justify-center space-x-4 text-xs text-muted-foreground">
                 <div className="flex items-center space-x-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                   <span>System Ready</span>

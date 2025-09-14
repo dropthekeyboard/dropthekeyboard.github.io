@@ -136,16 +136,7 @@ body {
     border: 1px solid hsl(var(--border));
 }
 
-.center-section {
-    background: linear-gradient(
-        135deg,
-        hsl(var(--primary) / 0.1) 0%,
-        hsl(var(--primary) / 0.05) 50%,
-        transparent 100%
-    );
-    backdrop-filter: blur(5px);
-    border: 2px dashed hsl(var(--primary) / 0.3);
-}
+/* .center-section - 배경색 제거됨 (투명하게) */
 
 /* Message list styling */
 .message-list {
