@@ -17,6 +17,9 @@ interface TerminalSectionProps {
   label: string;
   labelColor: string;
   sectionClass: string;
+  // 새로운 props: 직접 steps를 전달받을 수 있도록
+  steps?: AgenticStep[];
+  entityName?: string;
 }
 
 export function TerminalSection({
@@ -24,25 +27,33 @@ export function TerminalSection({
   label,
   labelColor,
   sectionClass,
+  steps: externalSteps,
+  entityName,
 }: TerminalSectionProps) {
-  const { state } = useScenario();
+  const { state: scenarioState } = useScenario();
+
+  // 외부에서 steps를 제공하면 그것을 사용, 아니면 scenario에서 가져옴
+  const state = useMemo(() =>
+    externalSteps ? { steps: externalSteps } : scenarioState,
+    [externalSteps, scenarioState]
+  );
 
   // Terminal logic cards state - filter steps related to this AI agent
   const logicCards = useMemo(
     () =>
       state.steps
         .filter(
-          (s) => s.action.from === entity?.name || s.action.to === entity?.name
+          (s: AgenticStep) => s.action.from === (entityName || entity?.name) || s.action.to === (entityName || entity?.name)
         )
         .map(
-          (s) =>
+          (s: AgenticStep) =>
             ({
               id: createId(),
               step: s,
               timestamp: new Date(s.action.timestamp),
             }) satisfies LogicCard
         ),
-    [state, entity]
+    [state, entity, entityName]
   );
 
   // Auto-scroll ref
@@ -179,7 +190,13 @@ export function TerminalSection({
                             ? "text-blue-300 border-blue-500/30"
                             : "text-green-300 border-green-500/30"
                         )}>
-                          "{card.step.action.content}"
+                          {card.step.action.type === 'dtmf' ? (
+                            <span className="text-orange-400 font-bold">
+                              🔢 DTMF: {card.step.action.content}
+                            </span>
+                          ) : (
+                            <span>{card.step.action.content}</span>
+                          )}
                         </div>
                       </div>
                     )}

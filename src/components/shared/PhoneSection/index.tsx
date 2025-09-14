@@ -18,7 +18,6 @@ interface PhoneSectionProps {
   contactName: string;
   contactNumber: string;
   contactStatus: string;
-  sectionClass: string;
   showAdditionalStatus?: boolean;
 }
 
@@ -30,7 +29,6 @@ export function PhoneSection({
   contactName,
   contactNumber,
   contactStatus,
-  sectionClass,
   showAdditionalStatus = false,
 }: PhoneSectionProps) {
   // Collect all messages from entity's messageBox
@@ -52,7 +50,7 @@ export function PhoneSection({
       initial={{ opacity: 0, x: animationX }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={cn(sectionClass, 'relative overflow-hidden')}
+      className={cn('relative overflow-hidden')}
     >
       <PhoneFrame>
         {entity?.state === 'call' ? (

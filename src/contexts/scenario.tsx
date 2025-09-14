@@ -14,7 +14,7 @@ import { isRelevantAction } from '@/lib/utils';
 /**
  * Message types supported in communication
  */
-type MessageType = 'voice' | 'text';
+type MessageType = 'voice' | 'text' | 'dtmf';
 
 /**
  * Phone states for human entities

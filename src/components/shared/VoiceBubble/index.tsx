@@ -11,23 +11,23 @@ interface VoiceBubbleProps {
 
 function VoiceWaveform({ isPlaying }: { isPlaying?: boolean }) {
   return (
-    <div className="flex items-center space-x-0.5">
-      {[...Array(4)].map((_, i) => (
+    <div className="flex items-end space-x-1 h-6 px-2 py-1 bg-black/20 rounded-full">
+      {[...Array(5)].map((_, i) => (
         <motion.div
           key={i}
-          className="w-0.5 bg-current rounded-full"
+          className="w-1 bg-gradient-to-t from-blue-400 to-cyan-300 rounded-full"
           animate={
             isPlaying
               ? {
-                  height: [3, 8, 3, 12, 3],
-                  opacity: [0.7, 1, 0.7, 1, 0.7],
+                  height: [4, 12, 4, 16, 4],
+                  opacity: [0.5, 1, 0.5, 1, 0.5],
                 }
-              : { height: 3, opacity: 0.7 }
+              : { height: 4, opacity: 0.5 }
           }
           transition={{
-            duration: 0.8,
+            duration: 1.2,
             repeat: isPlaying ? Infinity : 0,
-            delay: i * 0.1,
+            delay: i * 0.15,
             ease: 'easeInOut',
           }}
         />
@@ -42,7 +42,7 @@ export function VoiceBubble({
   timestamp,
   className,
 }: VoiceBubbleProps) {
-  const isPlaying = false; // For now, always show as not playing
+  const isPlaying = true; // Voice messages are typically playable by default
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -63,21 +63,26 @@ export function VoiceBubble({
     >
       <div
         className={cn(
-          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-sm',
-          'bg-white/20 text-white border border-white/30',
-          'max-w-[280px]',
+          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-sm border',
+          'bg-gradient-to-br from-blue-500/30 to-purple-500/30 text-white border-white/40',
+          'max-w-[320px] min-w-[200px]',
           isOwnMessage ? 'rounded-bl-md' : 'rounded-br-md'
         )}
       >
         {/* Voice visualization header */}
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            {isPlaying ? (
-              <Volume2 className="w-4 h-4 text-white/80" />
-            ) : (
-              <VolumeX className="w-4 h-4 text-white/60" />
-            )}
-            <VoiceWaveform isPlaying={isPlaying} />
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-1">
+              {isPlaying ? (
+                <Volume2 className="w-4 h-4 text-green-300 animate-pulse" />
+              ) : (
+                <VolumeX className="w-4 h-4 text-white/70" />
+              )}
+              <VoiceWaveform isPlaying={isPlaying} />
+            </div>
+            <span className="text-xs text-white/70 font-medium">
+              Voice Message
+            </span>
           </div>
           {timestamp && (
             <span className="text-xs text-white/70">
