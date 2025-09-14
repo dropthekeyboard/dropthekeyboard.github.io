@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, RotateCcw } from "lucide-react";
-import { Player } from "./player";
-import { useScenarioControl } from "@/hooks/useScenarioControl";
+import { useScenario } from "@/hooks/useScenario";
+import { useScenarioProgress } from "@/hooks/useScenarioProgress";
 
 interface PlayControlsProps {
     /**
@@ -17,16 +16,21 @@ interface PlayControlsProps {
  * Includes a toggle button and conditionally renders the Player component.
  */
 export function PlayControls({ interval = 1500 }: PlayControlsProps) {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const { reset } = useScenarioControl();
-
-    const togglePlay = () => {
-        setIsPlaying(!isPlaying);
-    };
+    const { reset, currentScenario } = useScenario();
+    const { isPlaying, togglePlay, stopAutoPlay, startAutoPlay } = useScenarioProgress();
 
     const handleReset = () => {
-        setIsPlaying(false); // Stop playing when resetting
-        reset();
+        stopAutoPlay(); // Stop auto play when resetting
+        // Clear all executed steps and message boxes
+        reset(currentScenario);
+    };
+
+    const handleTogglePlay = () => {
+        if (isPlaying) {
+            togglePlay();
+        } else {
+            startAutoPlay(interval);
+        }
     };
 
     return (
@@ -34,7 +38,7 @@ export function PlayControls({ interval = 1500 }: PlayControlsProps) {
             <Button
                 variant="outline"
                 size="sm"
-                onClick={togglePlay}
+                onClick={handleTogglePlay}
                 className="flex items-center gap-2"
             >
                 {isPlaying ? (
@@ -58,7 +62,6 @@ export function PlayControls({ interval = 1500 }: PlayControlsProps) {
                 <RotateCcw className="h-4 w-4" />
                 Reset
             </Button>
-            {isPlaying && <Player interval={interval} />}
         </div>
     );
 }

@@ -1,12 +1,11 @@
 import { AgentRobot } from "@/components/shared/AgentRobot";
-import { useScenario } from "@/hooks/useScenario";
-import { useScenarioControl } from "@/hooks/useScenarioControl";
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Settings } from "lucide-react";
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import type { AgenticStep } from "@/contexts/scenario";
+import { useScenario } from "@/hooks/useScenario";
+import { cn } from "@/lib/utils";
 import { createId } from "@paralleldrive/cuid2";
+import { AnimatePresence, motion } from "framer-motion";
+import { Brain, Settings } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
 
 interface LogicCard {
   id: string;
@@ -15,14 +14,18 @@ interface LogicCard {
 }
 
 export function AgentSection() {
-  const { state, active: { agent } } = useScenario();
-  const { progress, scenario } = useScenarioControl();
+  const { state, active: { agent }, progress, currentScenario } = useScenario();
 
   // Agent logic cards state
-  const [logicCards, setLogicCards] = useState<LogicCard[]>([]);
-
+  const logicCards = useMemo(() => state.steps.map(s => ({
+    id: createId(),
+    step: s,
+    timestamp: new Date(s.action.timestamp)
+  }) satisfies LogicCard), [state]);
   // Auto-scroll ref
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  console.log("agentic ::", {logicCards})
 
   // Processing state based on scenario progress
   const isProcessing = useMemo(() => {
@@ -37,22 +40,7 @@ export function AgentSection() {
   }, [state, agent]);
 
   // Add logic card when new step is processed
-  const addLogicCard = useCallback((step: AgenticStep) => {
-    const newCard: LogicCard = {
-      id: createId(),
-      step,
-      timestamp: new Date(),
-    };
-    setLogicCards(prev => [...prev, newCard]);
-  }, []);
 
-  // Update logic cards when scenario steps change
-  useEffect(() => {
-    if (logicCards && state.steps.length > logicCards.length) {
-      const newSteps = state.steps.slice(logicCards.length);
-      newSteps.forEach((step: AgenticStep) => addLogicCard(step));
-    }
-  }, [state.steps, logicCards, addLogicCard]);
 
   // Auto-scroll when new cards are added
   useEffect(() => {
@@ -185,7 +173,7 @@ export function AgentSection() {
         className="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
       >
         <div className="px-2 py-1 bg-muted/50 border border-border rounded text-xs text-muted-foreground">
-          Step {progress} / {scenario.steps.length}
+          Step {progress} / {currentScenario.steps.length}
         </div>
       </motion.div>
     </motion.div>

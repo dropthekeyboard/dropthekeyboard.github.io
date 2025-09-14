@@ -1,4 +1,6 @@
-import { createContext, useCallback, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useMemo, useState, useEffect, useRef, type ReactNode } from "react";
+import scenariosData from "@/data/scenarios.json";
+import { createId } from "@paralleldrive/cuid2";
 
 /**
  * Message types supported in communication
@@ -94,6 +96,9 @@ interface APIResponseInput {
     apiResponse: APIResponse;
 }
 
+
+
+
 /**
  * Communication actions for scenario control
  */
@@ -154,6 +159,57 @@ export interface CommunicationAction {
      * apiResponse({ apiResponse: { service: "amazon", response: "Red Wine Set 29,000 KRW" } })
      */
     apiResponse: (input: APIResponseInput) => void;
+}
+
+function deliverMessage(scenario: Scenario, message: Message): Scenario {
+    const newScenario = { ...scenario };
+    if (message.to === scenario?.customer.name ||
+        message.from === scenario?.customer.name
+    ) {
+        newScenario.customer = {
+            ...scenario.customer,
+            messageBox: {
+                ...scenario.customer.messageBox,
+                [message.from]: [
+                    ...(scenario.customer.messageBox[message.from] || []),
+                    message
+                ]
+            }
+        };
+    }
+    // Update server if they are the recipient
+    const serverIndex = scenario.servers.findIndex(s => (s.name === message.to) || (s.name === message.from));
+    if (serverIndex !== -1) {
+        newScenario.servers = [...scenario.servers];
+        newScenario.servers[serverIndex] = {
+            ...scenario.servers[serverIndex],
+            messageBox: {
+                ...scenario.servers[serverIndex].messageBox,
+                [message.from]: [
+                    ...(scenario.servers[serverIndex].messageBox[message.from] || []),
+                    message
+                ]
+            }
+        };
+    }
+    return newScenario;
+}
+
+/**
+ * Helper function to update the state of a specific entity (customer or server)
+ */
+function updateEntityState(scenario: Scenario, entityName: string, newState: PhoneState): Scenario {
+    const newScenario = { ...scenario };
+    if (entityName === scenario.customer.name) {
+        newScenario.customer = { ...scenario.customer, state: newState };
+    } else {
+        const serverIndex = scenario.servers.findIndex(s => s.name === entityName);
+        if (serverIndex !== -1) {
+            newScenario.servers = [...scenario.servers];
+            newScenario.servers[serverIndex] = { ...scenario.servers[serverIndex], state: newState };
+        }
+    }
+    return newScenario;
 }
 
 export interface StateControlAction {
@@ -273,11 +329,11 @@ interface AgenticAPIResponseStep {
  * Union type for all possible AI agent steps
  */
 export type AgenticStep = AgenticFinishCallStep
-                   | AgenticAcceptCallStep
-                   | AgenticMakeCallStep
-                   | AgenticSendMessageStep
-                   | AgenticAPICallStep
-                   | AgenticAPIResponseStep
+    | AgenticAcceptCallStep
+    | AgenticMakeCallStep
+    | AgenticSendMessageStep
+    | AgenticAPICallStep
+    | AgenticAPIResponseStep
 
 /**
  * AI agent participant state and behavior
@@ -318,6 +374,18 @@ export interface ScenarioContextType {
     reset: (scenario?: Scenario) => void;
     /** Available actions for scenario control */
     action: CommunicationAction;
+
+    /** List of all available scenarios */
+    scenarios: Scenario[];
+    /** Currently selected scenario */
+    currentScenario: Scenario;
+    /** Current progress through scenario steps */
+    progress: number;
+    /** Set current scenario by index */
+    setCurrent: (index: number) => void;
+    /** Advance to next step */
+    progressNext: () => void;
+    /** Reset progress to 0 */
 }
 
 /**
@@ -341,58 +409,105 @@ interface ScenarioContextProviderProps {
 function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
 
     /**
-     * Helper function to get the 'to' field from any AgenticStep
+     * Helper function to get the 'from' field from any AgenticStep
      */
-    const getActionTo = useCallback((step: AgenticStep): string => {
-        return step.action.to;
+    const getActionFrom = useCallback((step: AgenticStep): string => {
+        return step.action.from;
     }, []);
 
     /**
      * Global sequence of all steps that have occurred in the scenario
      */
-    const [scenario, setScenario] = useState<Scenario|null>(null);
-    
-    const lastAgent = useMemo(() => {
-        if(!scenario) {
-            return;
-        }
-        const { steps } = scenario;
-        const lastStep = steps[steps.length - 1];
-        if(lastStep && scenario) {
-            const whom = getActionTo(lastStep);
-            const agentWhom = scenario.agents.find(a => a.name === whom);
-            return agentWhom;
-        }
-        return null;
-    }, [scenario, getActionTo]);
+    const [scenario, setScenario] = useState<Scenario | null>(null);
 
-    const lastServer = useMemo(() => {
-        if(!scenario) {
-            return;
-        }
-        const { steps } = scenario;
-        const lastStep = steps[steps.length - 1];
-        if(lastStep && scenario) {
-            const whom = getActionTo(lastStep);
-            const serverWhom = scenario.servers.find(s => s.name === whom);
-            return serverWhom;
-        }
-        return null;
-    }, [scenario, getActionTo]);
-    
+    /**
+     * New state variables for scenario management
+     */
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [progress, setProgress] = useState(0);
+    const currentScenarioRef = useRef<Scenario | null>(null);
+
+    /**
+     * List of all available scenarios
+     */
+    const scenarios: Scenario[] = useMemo(() => {
+        return Object.values(scenariosData) as unknown as Scenario[];
+    }, []);
+
+    /**
+     * Current selected scenario
+     */
+    const currentScenario: Scenario = useMemo(
+        () => scenarios[currentIndex] || scenarios[0],
+        [currentIndex, scenarios]
+    );
+
+    const [lastAgent, setLastAgent] = useState<AIAgentState | null>(null);
+
+    useEffect(() => {
+        setLastAgent(prev => {
+            if (!scenario) {
+                return prev;
+            }
+            if (!prev) {
+                return prev;
+            }
+            const { steps } = scenario;
+            const lastStep = steps[steps.length - 1];
+            if (lastStep && scenario) {
+                const whom = getActionFrom(lastStep);
+                const agentWhom = scenario.agents.find(a => a.name === whom);
+                return agentWhom || null;
+            }
+            return prev;
+        })
+    }, [scenario, getActionFrom]);
+
+    const [lastServer, setLastServer] = useState<HumanState | null>(null);
+
+    useEffect(() => {
+        setLastServer(prev => {
+            if (!scenario || !prev) {
+                return prev;
+            }
+            const { steps } = scenario;
+            const lastStep = steps[steps.length - 1];
+            if (lastStep && scenario) {
+                const whom = getActionFrom(lastStep);
+                const serverWhom = scenario.servers.find(s => s.name === whom);
+                return serverWhom || null;
+            }
+            return prev;
+        })
+    }, [scenario, getActionFrom])
+
 
     /**
      * Current scenario metadata
      */
-    const [currentScenarioInfo, setCurrentScenarioInfo] = useState<{
-        id: string;
-        title: string;
-        description: string;
-    }>({
-        id: "",
-        title: "",
-        description: ""
-    });
+    // Removed redundant currentScenarioInfo state
+
+    /**
+     * Set current scenario by index
+     */
+    const setCurrent = useCallback(
+        (index: number) => {
+            if (index >= 0 && index < scenarios.length) {
+                setCurrentIndex(index);
+                // Do not auto-execute the first step on scenario change
+                setProgress(0);
+            }
+        },
+        [scenarios.length]
+    );
+
+    /**
+     * Advance to next step
+     */
+    const progressNext = useCallback(() => {
+        setProgress((prev) => prev + 1);
+    }, []);
+
 
     /**
      * Handle sending a message between participants
@@ -407,40 +522,10 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         // Update scenario state directly
         setScenario(prev => {
             if (!prev) return prev;
-            
+
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            
             // Update customer if they are the recipient
-            if (message.to === 'customer') {
-                updatedScenario.customer = {
-                    ...prev.customer,
-                    messageBox: {
-                        ...prev.customer.messageBox,
-                        [message.from]: [
-                            ...(prev.customer.messageBox[message.from] || []),
-                            message
-                        ]
-                    }
-                };
-            }
-            
-            // Update server if they are the recipient
-            const serverIndex = prev.servers.findIndex(s => s.name === message.to);
-            if (serverIndex !== -1) {
-                updatedScenario.servers = [...prev.servers];
-                updatedScenario.servers[serverIndex] = {
-                    ...prev.servers[serverIndex],
-                    messageBox: {
-                        ...prev.servers[serverIndex].messageBox,
-                        [message.from]: [
-                            ...(prev.servers[serverIndex].messageBox[message.from] || []),
-                            message
-                        ]
-                    }
-                };
-            }
-            
-            return updatedScenario;
+            return deliverMessage(updatedScenario, message);
         });
     }, []);
 
@@ -453,33 +538,14 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             type: 'make-call',
             action: call
         };
-        
-        
+
+
         // Update scenario state directly
         setScenario(prev => {
             if (!prev) return prev;
-            
+
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            
-            // Update customer if they are the recipient
-            if (call.to === 'customer') {
-                updatedScenario.customer = {
-                    ...prev.customer,
-                    state: "ring"
-                };
-            }
-            
-            // Update server if they are the recipient
-            const serverIndex = prev.servers.findIndex(s => s.name === call.to);
-            if (serverIndex !== -1) {
-                updatedScenario.servers = [...prev.servers];
-                updatedScenario.servers[serverIndex] = {
-                    ...prev.servers[serverIndex],
-                    state: "ring"
-                };
-            }
-            
-            return updatedScenario;
+            return updateEntityState(updatedScenario, call.to, "ring");
         });
     }, []);
 
@@ -492,51 +558,16 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             type: 'accept-call',
             action: call
         };
-        
-        
+
+
         // Update scenario state directly
         setScenario(prev => {
             if (!prev) return prev;
 
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            
-            // Update customer state
-            if (call.from === 'customer') {
-                updatedScenario.customer = {
-                    ...prev.customer,
-                    state: "call"
-                };
-            }
-            if (call.to === 'customer') {
-                updatedScenario.customer = {
-                    ...prev.customer,
-                    state: "call"
-                };
-            }
-            
-            // Update servers state
-            const callerServerIndex = prev.servers.findIndex(s => s.name === call.from);
-            const recipientServerIndex = prev.servers.findIndex(s => s.name === call.to);
-            
-            if (callerServerIndex !== -1 || recipientServerIndex !== -1) {
-                updatedScenario.servers = [...prev.servers];
-                
-                if (callerServerIndex !== -1) {
-                    updatedScenario.servers[callerServerIndex] = {
-                        ...prev.servers[callerServerIndex],
-                        state: "call"
-                    };
-                }
-                
-                if (recipientServerIndex !== -1) {
-                    updatedScenario.servers[recipientServerIndex] = {
-                        ...prev.servers[recipientServerIndex],
-                        state: "call"
-                    };
-                }
-            }
-            
-            return updatedScenario;
+            let finalScenario = updateEntityState(updatedScenario, call.from, "call");
+            finalScenario = updateEntityState(finalScenario, call.to, "call");
+            return finalScenario;
         });
     }, []);
 
@@ -549,50 +580,15 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             type: 'finish-call',
             action: call
         };
-        
+
         // Update scenario state directly
         setScenario(prev => {
             if (!prev) return prev;
-            
+
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            
-            // Update customer state
-            if (call.from === 'customer') {
-                updatedScenario.customer = {
-                    ...prev.customer,
-                    state: "message"
-                };
-            }
-            if (call.to === 'customer') {
-                updatedScenario.customer = {
-                    ...prev.customer,
-                    state: "message"
-                };
-            }
-            
-            // Update servers state
-            const callerServerIndex = prev.servers.findIndex(s => s.name === call.from);
-            const recipientServerIndex = prev.servers.findIndex(s => s.name === call.to);
-            
-            if (callerServerIndex !== -1 || recipientServerIndex !== -1) {
-                updatedScenario.servers = [...prev.servers];
-                
-                if (callerServerIndex !== -1) {
-                    updatedScenario.servers[callerServerIndex] = {
-                        ...prev.servers[callerServerIndex],
-                        state: "message"
-                    };
-                }
-                
-                if (recipientServerIndex !== -1) {
-                    updatedScenario.servers[recipientServerIndex] = {
-                        ...prev.servers[recipientServerIndex],
-                        state: "message"
-                    };
-                }
-            }
-            
-            return updatedScenario;
+            let finalScenario = updateEntityState(updatedScenario, call.from, "message");
+            finalScenario = updateEntityState(finalScenario, call.to, "message");
+            return finalScenario;
         });
     }, []);
 
@@ -605,9 +601,9 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             type: 'api-call',
             action: apiCall
         };
-        
+
         setScenario(prev => {
-            if(!prev) {
+            if (!prev) {
                 return prev;
             }
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
@@ -624,28 +620,98 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
             type: 'api-response',
             action: apiResponse
         };
-        
-setScenario(prev => {
-            if(!prev) {
+
+        setScenario(prev => {
+            if (!prev) {
                 return prev;
             }
             const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
             return updatedScenario;
-        })    }, []);
+        })
+    }, []);
+
+    /**
+     * Execute a step based on its type
+     */
+    const handleStep = useCallback(
+        (stepToExecute: AgenticStep) => {
+            const id = createId();
+            console.log("handleStep !!!", { stepToExecute });
+            const timestamp = Date.now();
+            switch (stepToExecute.type) {
+                case "send-message":
+                    handleSendMessage({ message: { ...stepToExecute.action, id, timestamp } });
+                    break;
+                case "make-call":
+                    handleMakeCall({ call: { ...stepToExecute.action, id, timestamp } });
+                    break;
+                case "accept-call":
+                    handleAcceptCall({ call: { ...stepToExecute.action, id, timestamp } });
+                    break;
+                case "finish-call":
+                    handleFinishCall({ call: { ...stepToExecute.action, id, timestamp } });
+                    break;
+                case "api-call":
+                    handleAPICall({ apiCall: { ...stepToExecute.action, id, timestamp } });
+                    break;
+                case "api-response":
+                    handleAPIResponse({
+                        apiResponse: { ...stepToExecute.action, id, timestamp },
+                    });
+                    break;
+                default:
+                    console.warn("Unknown step type:", stepToExecute);
+            }
+        },
+        [handleSendMessage, handleMakeCall, handleAcceptCall, handleFinishCall, handleAPICall, handleAPIResponse]
+    );
+
+    /**
+     * Auto-execute step when progress changes
+     */
+    useEffect(() => {
+        if (
+            currentScenario &&
+            progress >= 0 &&
+            progress < currentScenario.steps.length
+        ) {
+            const stepToExecute = currentScenario.steps[progress];
+            if (stepToExecute) {
+                handleStep(stepToExecute);
+            }
+        }
+    }, [progress, currentScenario, handleStep]);
+
+    /**
+     * Reset scenario and progress when scenario changes
+     */
+    useEffect(() => {
+        if (
+            currentScenario &&
+            currentScenarioRef.current?.id !== currentScenario.id
+        ) {
+            currentScenarioRef.current = currentScenario;
+            console.log("init : ", { currentScenario });
+            // Build a fresh scenario with cleared steps/messages
+            const freshScenario: Scenario = {
+                ...currentScenario,
+                agents: currentScenario.agents.map(agent => ({ ...agent, steps: [] })),
+                customer: { ...currentScenario.customer, messageBox: {}, state: 'message' },
+                servers: currentScenario.servers.map(server => ({ ...server, messageBox: {}, state: 'message' })),
+                steps: []
+            };
+            setScenario(freshScenario);
+            setProgress(0); // avoid auto-exec on load
+        }
+    }, [currentScenario]);
 
     /**
      * Reset the scenario state to initial state or load a new scenario
      * @param newScenario - Optional new scenario to load. If not provided, resets to empty state
      */
     const resetScenario = useCallback((newScenario?: Scenario) => {
+        console.log("reset ", { newScenario });
         if (newScenario) {
-            // Update scenario metadata
-            setCurrentScenarioInfo({
-                id: newScenario.id,
-                title: newScenario.title,
-                description: newScenario.description
-            });
-
             // Set the complete scenario with fresh state
             const freshScenario: Scenario = {
                 ...newScenario,
@@ -668,25 +734,28 @@ setScenario(prev => {
                 })),
                 steps: []
             };
-            
+
             setScenario(freshScenario);
+            // Move to before-first-step to prevent auto-exec
+            setProgress(0);
         } else {
             // Complete reset - clear all scenario info
             setScenario(prev => {
-                if(!prev) {
+                if (!prev) {
                     return prev;
                 }
                 const updateScenario: Scenario = {
-                    ...prev, 
-                    customer: {...prev.customer, messageBox: {}, state: 'message'},
-                    agents: [...prev.agents.map(a => ({...a, steps: []}))],
-                    servers: [...prev.servers.map(s => ({...s, messageBox: {}, state: 'message'}) satisfies HumanState)],
+                    ...prev,
+                    customer: { ...prev.customer, messageBox: {}, state: 'message' },
+                    agents: [...prev.agents.map(a => ({ ...a, steps: [] }))],
+                    servers: [...prev.servers.map(s => ({ ...s, messageBox: {}, state: 'message' }) satisfies HumanState)],
                     steps: []
                 };
                 return updateScenario;
             });
+            setProgress(0);
         }
-        
+
     }, []);
 
     /**
@@ -696,20 +765,7 @@ setScenario(prev => {
         if (!scenario) {
             // Return empty scenario when no scenario is loaded
             return {
-                state: {
-                    id: currentScenarioInfo.id,
-                    title: currentScenarioInfo.title,
-                    description: currentScenarioInfo.description,
-                    agents: [],
-                    customer: {
-                        type: "human",
-                        name: "customer",
-                        state: "message",
-                        messageBox: {}
-                    },
-                    servers: [],
-                    steps: [],
-                },
+                state: currentScenario,
                 active: {
                     agent: lastAgent || undefined,
                     server: lastServer || undefined
@@ -723,6 +779,11 @@ setScenario(prev => {
                     apiCall: handleAPICall,
                     apiResponse: handleAPIResponse,
                 },
+                scenarios,
+                currentScenario,
+                progress,
+                setCurrent,
+                progressNext,
             };
         }
 
@@ -741,8 +802,29 @@ setScenario(prev => {
                 apiCall: handleAPICall,
                 apiResponse: handleAPIResponse,
             },
+            scenarios,
+            currentScenario,
+            progress,
+            setCurrent,
+            progressNext,
         };
-    }, [scenario, currentScenarioInfo, lastAgent, lastServer, handleSendMessage, handleMakeCall, handleAcceptCall, handleFinishCall, handleAPICall, handleAPIResponse, resetScenario]);
+    }, [
+        scenario,
+        lastAgent,
+        lastServer,
+        handleSendMessage,
+        handleMakeCall,
+        handleAcceptCall,
+        handleFinishCall,
+        handleAPICall,
+        handleAPIResponse,
+        resetScenario,
+        scenarios,
+        currentScenario,
+        progress,
+        setCurrent,
+        progressNext,
+    ]);
 
     return (
         <ScenarioContext.Provider value={contextValue}>

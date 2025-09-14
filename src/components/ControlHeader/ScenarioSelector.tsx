@@ -19,12 +19,12 @@ import {
   Bot,
   Building,
 } from "lucide-react";
-import { useScenarioControl } from "@/hooks/useScenarioControl";
+import { useScenario } from "@/hooks/useScenario";
 import type { Scenario } from "@/contexts/scenario";
 
 export function ScenarioSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { scenarios, scenario: currentScenario, setCurrent } = useScenarioControl();
+  const { scenarios, currentScenario, setCurrent } = useScenario();
 
   const handleScenarioSelect = (_scenario: Scenario, index: number) => {
     setCurrent(index);
