@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Switch } from "@/components/ui/switch";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "@/hooks/useTheme";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { Switch } from '@/components/ui/switch';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 
 interface ThemeToggleProps {
   onToggle: () => void;
@@ -11,23 +11,23 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ onToggle, className }: ThemeToggleProps) {
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
 
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        "flex items-center space-x-2 p-2 rounded-md",
-        "bg-muted/30 border border-border hover:border-primary/50",
-        "transition-all duration-200",
-        className,
+        'flex items-center space-x-2 p-2 rounded-md',
+        'bg-muted/30 border border-border hover:border-primary/50',
+        'transition-all duration-200',
+        className
       )}
     >
       <Sun
         className={cn(
-          "w-4 h-4 transition-colors duration-200",
-          isDark ? "text-muted-foreground" : "text-yellow-500",
+          'w-4 h-4 transition-colors duration-200',
+          isDark ? 'text-muted-foreground' : 'text-yellow-500'
         )}
       />
 
@@ -40,8 +40,8 @@ export function ThemeToggle({ onToggle, className }: ThemeToggleProps) {
 
       <Moon
         className={cn(
-          "w-4 h-4 transition-colors duration-200",
-          isDark ? "text-blue-400" : "text-muted-foreground",
+          'w-4 h-4 transition-colors duration-200',
+          isDark ? 'text-blue-400' : 'text-muted-foreground'
         )}
       />
     </motion.div>

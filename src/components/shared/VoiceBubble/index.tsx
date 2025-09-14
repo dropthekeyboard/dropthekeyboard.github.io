@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Volume2, VolumeX } from "lucide-react";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface VoiceBubbleProps {
   message: string;
@@ -28,7 +28,7 @@ function VoiceWaveform({ isPlaying }: { isPlaying?: boolean }) {
             duration: 0.8,
             repeat: isPlaying ? Infinity : 0,
             delay: i * 0.1,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -54,19 +54,19 @@ export function VoiceBubble({
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -10, scale: 0.95 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       className={cn(
-        "flex mb-3 max-w-[85%]",
-        isOwnMessage ? "justify-start" : "justify-end",
+        'flex mb-3 max-w-[85%]',
+        isOwnMessage ? 'justify-start' : 'justify-end',
         className
       )}
     >
       <div
         className={cn(
-          "px-4 py-3 rounded-2xl shadow-lg backdrop-blur-sm",
-          "bg-white/20 text-white border border-white/30",
-          "max-w-[280px]",
-          isOwnMessage ? "rounded-bl-md" : "rounded-br-md"
+          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-sm',
+          'bg-white/20 text-white border border-white/30',
+          'max-w-[280px]',
+          isOwnMessage ? 'rounded-bl-md' : 'rounded-br-md'
         )}
       >
         {/* Voice visualization header */}
@@ -87,13 +87,11 @@ export function VoiceBubble({
         </div>
 
         {/* Message content */}
-        <div className="text-sm leading-relaxed text-white/90">
-          {message}
-        </div>
+        <div className="text-sm leading-relaxed text-white/90">{message}</div>
 
         {/* Speaker indicator */}
         <div className="mt-2 text-xs text-white/60">
-          {isOwnMessage ? "You" : "Contact"}
+          {isOwnMessage ? 'You' : 'Contact'}
         </div>
       </div>
     </motion.div>

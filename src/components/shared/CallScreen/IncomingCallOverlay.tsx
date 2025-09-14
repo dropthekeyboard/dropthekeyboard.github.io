@@ -1,17 +1,17 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Phone, PhoneOff, User } from "lucide-react";
-import type { PhoneState } from "@/contexts/scenario";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Phone, PhoneOff, User } from 'lucide-react';
+import type { PhoneState } from '@/contexts/scenario';
 
 interface IncomingCallOverlayProps {
   state: PhoneState;
 }
 
 export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
-  if (state === "message") {
+  if (state === 'message') {
     return null;
   }
 
-  const isRinging = state === "ring";
+  const isRinging = state === 'ring';
 
   return (
     <AnimatePresence>
@@ -24,21 +24,25 @@ export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
         >
           {/* 배경 블러 효과 */}
           <motion.div
-            initial={{ backdropFilter: "blur(0px)" }}
-            animate={{ backdropFilter: "blur(8px)" }}
+            initial={{ backdropFilter: 'blur(0px)' }}
+            animate={{ backdropFilter: 'blur(8px)' }}
             className="absolute inset-0 bg-black/60"
           />
 
           {/* 진동 효과를 위한 컨테이너 */}
           <motion.div
-            animate={isRinging ? {
-              x: [0, -2, 2, -1, 1, 0],
-              y: [0, 1, -1, 1, -1, 0]
-            } : {}}
+            animate={
+              isRinging
+                ? {
+                    x: [0, -2, 2, -1, 1, 0],
+                    y: [0, 1, -1, 1, -1, 0],
+                  }
+                : {}
+            }
             transition={{
               duration: 0.6,
               repeat: isRinging ? Infinity : 0,
-              repeatType: "loop"
+              repeatType: 'loop',
             }}
             className="relative h-full flex items-center justify-center"
           >
@@ -46,7 +50,7 @@ export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
             <motion.div
               initial={{ scale: 0.8, y: 50 }}
               animate={{ scale: 1, y: 0 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
               className="bg-white dark:bg-gray-900 rounded-3xl p-8 mx-4 max-w-sm w-full shadow-2xl border border-gray-200 dark:border-gray-700"
             >
               {/* 프로필 영역 */}
@@ -71,26 +75,22 @@ export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
                   Incoming Call
                 </motion.h2>
 
-                <motion.p
-                  className="text-gray-600 dark:text-gray-400 text-sm"
-                >
+                <motion.p className="text-gray-600 dark:text-gray-400 text-sm">
                   Service Provider
                 </motion.p>
               </motion.div>
 
               {/* 전화벨 애니메이션 */}
-              <motion.div
-                className="flex justify-center mb-8"
-              >
+              <motion.div className="flex justify-center mb-8">
                 <motion.div
                   animate={{
                     scale: [1, 1.2, 1],
-                    opacity: [0.7, 1, 0.7]
+                    opacity: [0.7, 1, 0.7],
                   }}
                   transition={{
                     duration: 1.5,
                     repeat: Infinity,
-                    ease: "easeInOut"
+                    ease: 'easeInOut',
                   }}
                   className="relative"
                 >
@@ -100,25 +100,25 @@ export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
                   <motion.div
                     animate={{
                       scale: [1, 1.5, 1],
-                      opacity: [0.6, 0, 0.6]
+                      opacity: [0.6, 0, 0.6],
                     }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
-                      ease: "easeOut"
+                      ease: 'easeOut',
                     }}
                     className="absolute inset-0 border-2 border-green-400 rounded-full"
                   />
                   <motion.div
                     animate={{
                       scale: [1, 1.8, 1],
-                      opacity: [0.4, 0, 0.4]
+                      opacity: [0.4, 0, 0.4],
                     }}
                     transition={{
                       duration: 2,
                       delay: 0.5,
                       repeat: Infinity,
-                      ease: "easeOut"
+                      ease: 'easeOut',
                     }}
                     className="absolute inset-0 border border-green-300 rounded-full"
                   />

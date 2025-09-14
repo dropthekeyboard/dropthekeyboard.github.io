@@ -1,8 +1,8 @@
-import "./App.css";
-import { ControlHeader } from "./components/ControlHeader";
-import { DemoView } from "./components/DemoView";
-import { ScenarioContextProvider } from "./contexts/scenario";
-import { useTheme } from "./hooks/useTheme";
+import './App.css';
+import { ControlHeader } from './components/ControlHeader';
+import { DemoView } from './components/DemoView';
+import { ScenarioContextProvider } from './contexts/scenario';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
   const { theme, toggleTheme } = useTheme();

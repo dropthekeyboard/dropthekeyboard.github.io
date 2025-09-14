@@ -1,8 +1,10 @@
-import { PhoneSection } from "@/components/shared/PhoneSection";
-import { useScenario } from "@/hooks/useScenario";
+import { PhoneSection } from '@/components/shared/PhoneSection';
+import { useScenario } from '@/hooks/useScenario';
 
 export function ServerSection() {
-  const { active: { server } } = useScenario();
+  const {
+    active: { server },
+  } = useScenario();
 
   return (
     <PhoneSection

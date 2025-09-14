@@ -1,7 +1,7 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { MessageBubble } from "@/components/shared/MessageBubble";
-import type { Message } from "@/contexts/scenario";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { MessageBubble } from '@/components/shared/MessageBubble';
+import type { Message } from '@/contexts/scenario';
 
 interface MessageScreenProps {
   messages: Message[];
@@ -15,18 +15,13 @@ interface MessageScreenProps {
 export function MessageScreen({
   messages,
   isTyping = false,
-  contactName = "Contact",
+  contactName = 'Contact',
   ownerName,
-  contactStatus = "Online",
+  contactStatus = 'Online',
   className,
 }: MessageScreenProps) {
   return (
-    <div
-      className={cn(
-        "w-full h-full bg-background flex flex-col",
-        className,
-      )}
-    >
+    <div className={cn('w-full h-full bg-background flex flex-col', className)}>
       {/* Message header */}
       <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border/50">
         <div className="flex items-center space-x-3">
@@ -85,7 +80,7 @@ export function MessageScreen({
                 message={msg.content}
                 isOwnMessage={msg.to === ownerName}
                 timestamp={msg.timestamp}
-                isRead={msg.to === "user"}
+                isRead={msg.to === 'user'}
               />
             </motion.div>
           ))}
@@ -97,11 +92,7 @@ export function MessageScreen({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
           >
-            <MessageBubble
-              message=""
-              isOwnMessage={false}
-              isTyping={true}
-            />
+            <MessageBubble message="" isOwnMessage={false} isTyping={true} />
           </motion.div>
         )}
       </div>

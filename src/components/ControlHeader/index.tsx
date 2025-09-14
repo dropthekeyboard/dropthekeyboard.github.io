@@ -1,13 +1,13 @@
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Bot, Monitor, Settings } from "lucide-react";
-import { useState } from "react";
-import { PlayControls } from "./PlayControls";
-import { RecordingControls } from "./RecordingControls";
-import { ScenarioSelector } from "./ScenarioSelector.tsx";
-import { ThemeToggle } from "./ThemeToggle";
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { Bot, Monitor, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { PlayControls } from './PlayControls';
+import { RecordingControls } from './RecordingControls';
+import { ScenarioSelector } from './ScenarioSelector.tsx';
+import { ThemeToggle } from './ThemeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
@@ -24,41 +24,40 @@ export function ControlHeader({
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className={cn(
-        "w-full bg-background/95 backdrop-blur-sm border-b border-border",
-        "sticky top-0 z-50",
-        className,
+        'w-full bg-background/95 backdrop-blur-sm border-b border-border',
+        'sticky top-0 z-50',
+        className
       )}
     >
       <div className="container mx-auto">
         <div className="flex flex-row justify-between">
           {/* Top row - Logo & Title with Settings & Theme */}
-            <div className="flex items-center space-x-3">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center space-x-2"
-              >
-                <div className="relative">
-                  <Bot className="w-6 h-6 text-primary" />
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
-                  />
-                </div>
-                <div className="hidden sm:block">
-                  <h1 className="text-lg font-bold text-foreground">
-                    A2A Demo Studio
-                  </h1>
-                  <p className="text-xs text-muted-foreground">
-                    Agent-to-Agent Communication Demo
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
+          <div className="flex items-center space-x-3">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center space-x-2"
+            >
+              <div className="relative">
+                <Bot className="w-6 h-6 text-primary" />
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
+                />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold text-foreground">
+                  A2A Demo Studio
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  Agent-to-Agent Communication Demo
+                </p>
+              </div>
+            </motion.div>
+          </div>
 
           {/* Middle row - Phase indicator and Main controls */}
           <div className="flex items-center justify-between">
@@ -73,27 +72,27 @@ export function ControlHeader({
           </div>
 
           <div className="flex items-center space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsExpanded(!isExpanded)}
-                className={cn(
-                  "p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors",
-                  "border border-border hover:border-primary/50",
-                )}
-              >
-                <Settings className="w-4 h-4" />
-              </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsExpanded(!isExpanded)}
+              className={cn(
+                'p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors',
+                'border border-border hover:border-primary/50'
+              )}
+            >
+              <Settings className="w-4 h-4" />
+            </motion.button>
 
-              <ThemeToggle onToggle={onThemeToggle} />
-            </div>
+            <ThemeToggle onToggle={onThemeToggle} />
+          </div>
         </div>
 
         {/* Expandable advanced controls */}
         <motion.div
           initial={false}
           animate={{
-            height: isExpanded ? "auto" : 0,
+            height: isExpanded ? 'auto' : 0,
             opacity: isExpanded ? 1 : 0,
           }}
           transition={{ duration: 0.3 }}

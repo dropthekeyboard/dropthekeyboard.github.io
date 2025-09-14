@@ -1,7 +1,7 @@
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { VoiceBubble } from "@/components/shared/VoiceBubble";
-import type { Message } from "@/contexts/scenario";
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { VoiceBubble } from '@/components/shared/VoiceBubble';
+import type { Message } from '@/contexts/scenario';
 
 interface VoiceBubbleOverlayProps {
   voiceMessages: Message[];
@@ -27,9 +27,9 @@ export function VoiceBubbleOverlay({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        "absolute inset-0 bg-black/30 backdrop-blur-sm",
-        "flex flex-col justify-end p-4",
-        "pointer-events-none",
+        'absolute inset-0 bg-black/30 backdrop-blur-sm',
+        'flex flex-col justify-end p-4',
+        'pointer-events-none',
         className
       )}
     >

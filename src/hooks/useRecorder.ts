@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo } from 'react';
 
 interface RecorderOptions {
   videoBitsPerSecond?: number;
@@ -34,12 +34,12 @@ export function useRecorder(
 
   const getSupportedMimeType = useCallback((): string => {
     const types = [
-      "video/mp4; codecs=h264",
-      "video/mp4; codecs=avc1.42E01E",
-      "video/mp4",
-      "video/webm; codecs=vp9",
-      "video/webm; codecs=vp8",
-      "video/webm",
+      'video/mp4; codecs=h264',
+      'video/mp4; codecs=avc1.42E01E',
+      'video/mp4',
+      'video/webm; codecs=vp9',
+      'video/webm; codecs=vp8',
+      'video/webm',
     ];
 
     for (const type of types) {
@@ -48,7 +48,7 @@ export function useRecorder(
       }
     }
 
-    return "video/webm"; // Fallback
+    return 'video/webm'; // Fallback
   }, []);
 
   const defaultOptions: RecorderOptions = useMemo(
@@ -102,7 +102,7 @@ export function useRecorder(
       return stream;
     } catch (error) {
       // Fallback to basic screen capture if specific constraints fail
-      console.warn("Falling back to basic display media:", error);
+      console.warn('Falling back to basic display media:', error);
       return navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: true,
@@ -130,15 +130,15 @@ export function useRecorder(
   const stopRecording = useCallback(async (): Promise<Blob> => {
     return new Promise((resolve, reject) => {
       const mediaRecorder = mediaRecorderRef.current;
-      if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        reject(new Error("No active recording to stop"));
+      if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        reject(new Error('No active recording to stop'));
         return;
       }
 
       const handleStop = () => {
         try {
           const blob = new Blob(chunksRef.current, {
-            type: defaultOptions.mimeType || "video/webm",
+            type: defaultOptions.mimeType || 'video/webm',
           });
 
           cleanup();
@@ -149,10 +149,10 @@ export function useRecorder(
       };
 
       if (
-        mediaRecorder.state === "recording" ||
-        mediaRecorder.state === "paused"
+        mediaRecorder.state === 'recording' ||
+        mediaRecorder.state === 'paused'
       ) {
-        mediaRecorder.addEventListener("stop", handleStop, { once: true });
+        mediaRecorder.addEventListener('stop', handleStop, { once: true });
         mediaRecorder.stop();
       } else {
         handleStop();
@@ -242,18 +242,18 @@ export function useRecorder(
       };
 
       mediaRecorder.onerror = (event) => {
-        console.error("MediaRecorder error:", event);
+        console.error('MediaRecorder error:', event);
         setState((prev) => ({
           ...prev,
-          error: "Recording failed. Please try again.",
+          error: 'Recording failed. Please try again.',
           isRecording: false,
         }));
         cleanup();
       };
 
       // Handle stream ending (user stops screen share)
-      stream.getVideoTracks()[0].addEventListener("ended", () => {
-        if (mediaRecorder.state === "recording") {
+      stream.getVideoTracks()[0].addEventListener('ended', () => {
+        if (mediaRecorder.state === 'recording') {
           stopRecording();
         }
       });
@@ -261,11 +261,11 @@ export function useRecorder(
       // Start recording with 1-second chunks for better memory management
       mediaRecorder.start(1000);
     } catch (error) {
-      console.error("Failed to start recording:", error);
+      console.error('Failed to start recording:', error);
       setState((prev) => ({
         ...prev,
         error:
-          error instanceof Error ? error.message : "Failed to start recording",
+          error instanceof Error ? error.message : 'Failed to start recording',
       }));
       cleanup();
     }
@@ -274,7 +274,7 @@ export function useRecorder(
   // Pause recording
   const pauseRecording = useCallback(() => {
     const mediaRecorder = mediaRecorderRef.current;
-    if (mediaRecorder && mediaRecorder.state === "recording") {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.pause();
     }
   }, []);
@@ -282,7 +282,7 @@ export function useRecorder(
   // Resume recording
   const resumeRecording = useCallback(() => {
     const mediaRecorder = mediaRecorderRef.current;
-    if (mediaRecorder && mediaRecorder.state === "paused") {
+    if (mediaRecorder && mediaRecorder.state === 'paused') {
       mediaRecorder.resume();
     }
   }, []);
@@ -291,7 +291,7 @@ export function useRecorder(
   const downloadRecording = useCallback((blob: Blob, filename?: string) => {
     try {
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
 
       a.href = url;
       a.download =
@@ -299,7 +299,7 @@ export function useRecorder(
         `a2a-demo-${new Date()
           .toISOString()
           .slice(0, 19)
-          .replace(/:/g, "-")}.mp4`;
+          .replace(/:/g, '-')}.mp4`;
 
       document.body.appendChild(a);
       a.click();
@@ -308,10 +308,10 @@ export function useRecorder(
       // Clean up the URL after a short delay
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
-      console.error("Failed to download recording:", error);
+      console.error('Failed to download recording:', error);
       setState((prev) => ({
         ...prev,
-        error: "Failed to download recording",
+        error: 'Failed to download recording',
       }));
     }
   }, []);
@@ -320,18 +320,18 @@ export function useRecorder(
   const getRecordingInfo = useCallback(() => {
     const mediaRecorder = mediaRecorderRef.current;
     return {
-      state: mediaRecorder?.state || "inactive",
+      state: mediaRecorder?.state || 'inactive',
       mimeType: defaultOptions.mimeType,
       videoBitsPerSecond: defaultOptions.videoBitsPerSecond,
       audioBitsPerSecond: defaultOptions.audioBitsPerSecond,
-      isSupported: typeof MediaRecorder !== "undefined",
+      isSupported: typeof MediaRecorder !== 'undefined',
       supportedMimeTypes: [
-        "video/mp4; codecs=h264",
-        "video/mp4; codecs=avc1.42E01E",
-        "video/mp4",
-        "video/webm; codecs=vp9",
-        "video/webm; codecs=vp8",
-        "video/webm",
+        'video/mp4; codecs=h264',
+        'video/mp4; codecs=avc1.42E01E',
+        'video/mp4',
+        'video/webm; codecs=vp9',
+        'video/webm; codecs=vp8',
+        'video/webm',
       ].filter((type) => MediaRecorder.isTypeSupported(type)),
     };
   }, [defaultOptions]);

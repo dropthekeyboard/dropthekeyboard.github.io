@@ -38,22 +38,22 @@
 export interface Message {
   id: string;
   content: string;
-  sender: "user" | "agent";
-  subType: "text" | "voice"; // 메시지 타입 구분
+  sender: 'user' | 'agent';
+  subType: 'text' | 'voice'; // 메시지 타입 구분
   timestamp: number;
 }
 
 export type ScenarioAction =
   | {
-      type: "message";
+      type: 'message';
       from: string;
       to: string;
       content: string;
       animation?: AnimationConfig;
     }
-  | { type: "call.start"; from: string; to: string }
-  | { type: "call.end"; target: string }
-  | { type: "system.process"; content: string; animation?: AnimationConfig };
+  | { type: 'call.start'; from: string; to: string }
+  | { type: 'call.end'; target: string }
+  | { type: 'system.process'; content: string; animation?: AnimationConfig };
 
 export interface ScenarioStep {
   id: string;
@@ -75,17 +75,17 @@ export interface ScenarioStep {
 // src/stores/phoneStore.ts
 
 export type PhoneAction = {
-  type: "RECEIVE_MESSAGE";
+  type: 'RECEIVE_MESSAGE';
   toId: string;
   content: string;
-  sender: "user" | "agent";
-  subType: "text" | "voice";
+  sender: 'user' | 'agent';
+  subType: 'text' | 'voice';
 };
 // ... other actions
 
 const phoneReducer = (state: PhoneStore, action: PhoneAction) => {
   switch (action.type) {
-    case "RECEIVE_MESSAGE": {
+    case 'RECEIVE_MESSAGE': {
       const toPhone = state.phones.get(action.toId);
       if (toPhone) {
         toPhone.messages.push({
@@ -111,7 +111,7 @@ const phoneReducer = (state: PhoneStore, action: PhoneAction) => {
 
 ```typescript
 // src/hooks/useScenarioPlayer.ts
-import { usePhoneStore } from "@/stores/phoneStore";
+import { usePhoneStore } from '@/stores/phoneStore';
 // ...
 
 export function useScenarioPlayer() {
@@ -128,29 +128,29 @@ export function useScenarioPlayer() {
       const { action } = step;
 
       switch (action.type) {
-        case "message":
+        case 'message':
           dispatch({
-            type: "RECEIVE_MESSAGE",
+            type: 'RECEIVE_MESSAGE',
             toId: action.to,
             content: action.content,
-            sender: "agent", // 예시
+            sender: 'agent', // 예시
             // 통화 중이면 'voice', 아니면 'text'로 자동 할당
-            subType: isCallActive.current ? "voice" : "text",
+            subType: isCallActive.current ? 'voice' : 'text',
           });
           break;
 
-        case "call.start":
+        case 'call.start':
           isCallActive.current = true; // 통화 시작 상태로 변경
           dispatch({
-            type: "START_CALL",
+            type: 'START_CALL',
             fromId: action.from,
             toId: action.to,
           });
           break;
 
-        case "call.end":
+        case 'call.end':
           isCallActive.current = false; // 통화 종료 상태로 변경
-          dispatch({ type: "END_CALL", phoneId: action.target });
+          dispatch({ type: 'END_CALL', phoneId: action.target });
           break;
 
         // ...

@@ -1,251 +1,268 @@
-import { createContext, useCallback, useMemo, useState, useEffect, useRef, type ReactNode } from "react";
-import scenariosData from "@/data/scenarios.json";
-import { createId } from "@paralleldrive/cuid2";
+import {
+  createContext,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  type ReactNode,
+} from 'react';
+import scenariosData from '@/data/scenarios.json';
+import { createId } from '@paralleldrive/cuid2';
 
 /**
  * Message types supported in communication
  */
-type MessageType = "voice" | "text";
+type MessageType = 'voice' | 'text';
 
 /**
  * Phone states for human entities
  */
-export type PhoneState = "message" | "call" | "ring";
+export type PhoneState = 'message' | 'call' | 'ring';
 
 /**
  * Base interface for deliverable communication items
  */
 interface Deliverable {
-    id?: string;
-    /** Sender identifier */
-    from: string;
-    /** Recipient identifier */
-    to: string;
-    timestamp: number;
+  id?: string;
+  /** Sender identifier */
+  from: string;
+  /** Recipient identifier */
+  to: string;
+  timestamp: number;
 }
 
 /**
  * Message data structure
  */
 export interface Message extends Deliverable {
-    /** Message content */
-    content: string;
-    /** Type of message (text or voice) */
-    type: MessageType;
-    /** Optional reason for the message */
-    reason?: string;
+  /** Message content */
+  content: string;
+  /** Type of message (text or voice) */
+  type: MessageType;
+  /** Optional reason for the message */
+  reason?: string;
 }
 
 /**
  * Input structure for sendMessage action
  */
 interface SendMessageInput {
-    /** Message to be sent */
-    message: Message;
+  /** Message to be sent */
+  message: Message;
 }
 
 /**
  * Call data structure
  */
 interface Call extends Deliverable {
-    /** Optional reason for the call */
-    reason?: string;
+  /** Optional reason for the call */
+  reason?: string;
 }
 
 /**
  * Input structure for call-related actions
  */
 interface CallInput {
-    /** Call information */
-    call: Call;
+  /** Call information */
+  call: Call;
 }
 
 /**
  * API call data structure
  */
 interface APICall extends Deliverable {
-    /** External service name (e.g., "amazon", "catchtable") */
-    service: string;
-    /** Request details or query */
-    request: string;
+  /** External service name (e.g., "amazon", "catchtable") */
+  service: string;
+  /** Request details or query */
+  request: string;
 }
 
 /**
  * Input structure for apiCall action
  */
 interface APICallInput {
-    /** API call information */
-    apiCall: APICall;
+  /** API call information */
+  apiCall: APICall;
 }
 
 /**
  * API response data structure
  */
 interface APIResponse extends Deliverable {
-    /** External service name that provided the response */
-    service: string;
-    /** Response data from the service */
-    response: string;
+  /** External service name that provided the response */
+  service: string;
+  /** Response data from the service */
+  response: string;
 }
 
 /**
  * Input structure for apiResponse action
  */
 interface APIResponseInput {
-    /** API response information */
-    apiResponse: APIResponse;
+  /** API response information */
+  apiResponse: APIResponse;
 }
-
-
-
 
 /**
  * Communication actions for scenario control
  */
 export interface CommunicationAction {
-    /**
-     * Send a message (text or voice)
-     * @param input - Message input containing sender, recipient, content, and type
-     * @example
-     * // Regular message
-     * sendMessage({ message: { from: "user", to: "ai_agent", content: "Book a table", type: "text" } })
-     * 
-     * // SMS response
-     * sendMessage({ message: { from: "restaurant", to: "ai_agent", content: "3 8pm", type: "text" } })
-     */
-    sendMessage: (input: SendMessageInput) => void;
+  /**
+   * Send a message (text or voice)
+   * @param input - Message input containing sender, recipient, content, and type
+   * @example
+   * // Regular message
+   * sendMessage({ message: { from: "user", to: "ai_agent", content: "Book a table", type: "text" } })
+   *
+   * // SMS response
+   * sendMessage({ message: { from: "restaurant", to: "ai_agent", content: "3 8pm", type: "text" } })
+   */
+  sendMessage: (input: SendMessageInput) => void;
 
-    /**
-     * Initiate a phone call (attempt to call, regardless of connection status)
-     * @param input - Call input containing caller and recipient
-     * @example
-     * // AI agent calling restaurant
-     * makeCall({ call: { from: "ai_agent", to: "restaurant" } })
-     */
-    makeCall: (input: CallInput) => void;
+  /**
+   * Initiate a phone call (attempt to call, regardless of connection status)
+   * @param input - Call input containing caller and recipient
+   * @example
+   * // AI agent calling restaurant
+   * makeCall({ call: { from: "ai_agent", to: "restaurant" } })
+   */
+  makeCall: (input: CallInput) => void;
 
-    /**
-     * Accept phone call (recipient answers the call)
-     * @param input - Call input with same from/to as makeCall for consistency
-     * @example 
-     * // After makeCall, when recipient answers
-     * acceptCall({ call: { from: "ai_agent", to: "restaurant" } })
-     */
-    acceptCall: (input: CallInput) => void;
+  /**
+   * Accept phone call (recipient answers the call)
+   * @param input - Call input with same from/to as makeCall for consistency
+   * @example
+   * // After makeCall, when recipient answers
+   * acceptCall({ call: { from: "ai_agent", to: "restaurant" } })
+   */
+  acceptCall: (input: CallInput) => void;
 
-    /**
-     * Finish phone call (includes connection failure, rejection, or normal termination)
-     * @param input - Call input with same from/to direction
-     * @example
-     * // Normal call termination
-     * finishCall({ call: { from: "ai_agent", to: "restaurant" } })
-     */
-    finishCall: (input: CallInput) => void;
+  /**
+   * Finish phone call (includes connection failure, rejection, or normal termination)
+   * @param input - Call input with same from/to direction
+   * @example
+   * // Normal call termination
+   * finishCall({ call: { from: "ai_agent", to: "restaurant" } })
+   */
+  finishCall: (input: CallInput) => void;
 
-    /**
-     * Make API call to external service
-     * @param input - API call input containing service name and request details
-     * @example
-     * // Search for wine recommendations on Amazon
-     * apiCall({ apiCall: { service: "amazon", request: "wine recommendations" } })
-     */
-    apiCall: (input: APICallInput) => void;
+  /**
+   * Make API call to external service
+   * @param input - API call input containing service name and request details
+   * @example
+   * // Search for wine recommendations on Amazon
+   * apiCall({ apiCall: { service: "amazon", request: "wine recommendations" } })
+   */
+  apiCall: (input: APICallInput) => void;
 
-    /**
-     * Handle API response from external service
-     * @param input - API response input containing service name and response data
-     * @example
-     * // Amazon search results
-     * apiResponse({ apiResponse: { service: "amazon", response: "Red Wine Set 29,000 KRW" } })
-     */
-    apiResponse: (input: APIResponseInput) => void;
+  /**
+   * Handle API response from external service
+   * @param input - API response input containing service name and response data
+   * @example
+   * // Amazon search results
+   * apiResponse({ apiResponse: { service: "amazon", response: "Red Wine Set 29,000 KRW" } })
+   */
+  apiResponse: (input: APIResponseInput) => void;
 }
 
 function deliverMessage(scenario: Scenario, message: Message): Scenario {
-    const newScenario = { ...scenario };
-    if (message.to === scenario?.customer.name ||
-        message.from === scenario?.customer.name
-    ) {
-        newScenario.customer = {
-            ...scenario.customer,
-            messageBox: {
-                ...scenario.customer.messageBox,
-                [message.from]: [
-                    ...(scenario.customer.messageBox[message.from] || []),
-                    message
-                ]
-            }
-        };
-    }
-    // Update server if they are the recipient
-    const serverIndex = scenario.servers.findIndex(s => (s.name === message.to) || (s.name === message.from));
-    if (serverIndex !== -1) {
-        newScenario.servers = [...scenario.servers];
-        newScenario.servers[serverIndex] = {
-            ...scenario.servers[serverIndex],
-            messageBox: {
-                ...scenario.servers[serverIndex].messageBox,
-                [message.from]: [
-                    ...(scenario.servers[serverIndex].messageBox[message.from] || []),
-                    message
-                ]
-            }
-        };
-    }
-    return newScenario;
+  const newScenario = { ...scenario };
+  if (
+    message.to === scenario?.customer.name ||
+    message.from === scenario?.customer.name
+  ) {
+    newScenario.customer = {
+      ...scenario.customer,
+      messageBox: {
+        ...scenario.customer.messageBox,
+        [message.from]: [
+          ...(scenario.customer.messageBox[message.from] || []),
+          message,
+        ],
+      },
+    };
+  }
+  // Update server if they are the recipient
+  const serverIndex = scenario.servers.findIndex(
+    (s) => s.name === message.to || s.name === message.from
+  );
+  if (serverIndex !== -1) {
+    newScenario.servers = [...scenario.servers];
+    newScenario.servers[serverIndex] = {
+      ...scenario.servers[serverIndex],
+      messageBox: {
+        ...scenario.servers[serverIndex].messageBox,
+        [message.from]: [
+          ...(scenario.servers[serverIndex].messageBox[message.from] || []),
+          message,
+        ],
+      },
+    };
+  }
+  return newScenario;
 }
 
 /**
  * Helper function to update the state of a specific entity (customer or server)
  */
-function updateEntityState(scenario: Scenario, entityName: string, newState: PhoneState): Scenario {
-    const newScenario = { ...scenario };
-    if (entityName === scenario.customer.name) {
-        newScenario.customer = { ...scenario.customer, state: newState };
-    } else {
-        const serverIndex = scenario.servers.findIndex(s => s.name === entityName);
-        if (serverIndex !== -1) {
-            newScenario.servers = [...scenario.servers];
-            newScenario.servers[serverIndex] = { ...scenario.servers[serverIndex], state: newState };
-        }
+function updateEntityState(
+  scenario: Scenario,
+  entityName: string,
+  newState: PhoneState
+): Scenario {
+  const newScenario = { ...scenario };
+  if (entityName === scenario.customer.name) {
+    newScenario.customer = { ...scenario.customer, state: newState };
+  } else {
+    const serverIndex = scenario.servers.findIndex(
+      (s) => s.name === entityName
+    );
+    if (serverIndex !== -1) {
+      newScenario.servers = [...scenario.servers];
+      newScenario.servers[serverIndex] = {
+        ...scenario.servers[serverIndex],
+        state: newState,
+      };
     }
-    return newScenario;
+  }
+  return newScenario;
 }
 
 export interface StateControlAction {
-    reset: () => void;
+  reset: () => void;
 }
 
 /**
  * Common Action Flow Patterns
- * 
+ *
  * @example
  * // 1. Successful phone reservation:
  * makeCall({ from: "ai_agent", to: "restaurant" })
- * → acceptCall({ from: "ai_agent", to: "restaurant" })  
+ * → acceptCall({ from: "ai_agent", to: "restaurant" })
  * → finishCall({ from: "ai_agent", to: "restaurant" })
  * → sendMessage({ from: "ai_agent", to: "user", content: "Reservation confirmed" })
- * 
+ *
  * @example
  * // 2. No answer + SMS fallback:
  * makeCall({ from: "ai_agent", to: "restaurant" })
  * → finishCall({ from: "ai_agent", to: "restaurant" })  // Immediate termination (no answer)
  * → sendMessage({ from: "ai_agent", to: "restaurant", content: "SMS: Available? 1:Yes 2:No" })
  * → sendMessage({ from: "restaurant", to: "ai_agent", content: "1" })
- * 
+ *
  * @example
  * // 3. Conditional emergency call:
  * sendMessage({ from: "elderly", to: "ai_agent", content: "2" })  // Feeling sick
  * → makeCall({ from: "ai_agent", to: "guardian" })  // Call guardian
  * → acceptCall({ from: "ai_agent", to: "guardian" })
  * → finishCall({ from: "ai_agent", to: "guardian" })
- * 
+ *
  * @example
  * // 4. API-based product recommendation:
  * apiCall({ service: "amazon", request: "wine for dinner" })
  * → apiResponse({ service: "amazon", response: "Red Wine Set 29,000 KRW" })
  * → sendMessage({ from: "ai_agent", to: "user", content: "Wine recommendation: Red Wine Set 29,000 KRW" })
- * 
+ *
  * @example
  * // 5. External service integration booking:
  * apiCall({ service: "catchtable", request: "check availability 7PM" })
@@ -260,132 +277,133 @@ export interface StateControlAction {
  * Base entity interface for all participants
  */
 export interface Entity {
-    /** Entity type - human or AI */
-    type: "human" | "ai";
-    /** Unique identifier name */
-    name: string;
+  /** Entity type - human or AI */
+  type: 'human' | 'ai';
+  /** Unique identifier name */
+  name: string;
 }
 
 /**
  * Human participant state and data
  */
 export interface HumanState extends Entity {
-    type: "human";
-    /** Current phone state */
-    state: PhoneState;
-    /** Message history organized by sender */
-    messageBox: Record<string, Message[]>;
+  type: 'human';
+  /** Current phone state */
+  state: PhoneState;
+  /** Message history organized by sender */
+  messageBox: Record<string, Message[]>;
 }
 
 /**
  * Send message step for AI agent
  */
 interface AgenticSendMessageStep {
-    type: 'send-message';
-    action: Message;
+  type: 'send-message';
+  action: Message;
 }
 
 /**
  * Make call step for AI agent
  */
 interface AgenticMakeCallStep {
-    type: 'make-call';
-    action: Call;
+  type: 'make-call';
+  action: Call;
 }
 
 /**
  * Finish call step for AI agent
  */
 interface AgenticFinishCallStep {
-    type: 'finish-call';
-    action: Call;
+  type: 'finish-call';
+  action: Call;
 }
 
 /**
  * Accept call step for AI agent
  */
 interface AgenticAcceptCallStep {
-    type: 'accept-call';
-    action: Call;
+  type: 'accept-call';
+  action: Call;
 }
 
 /**
  * API call step for AI agent
  */
 interface AgenticAPICallStep {
-    type: 'api-call';
-    action: APICall;
+  type: 'api-call';
+  action: APICall;
 }
 
 /**
  * API response step for AI agent
  */
 interface AgenticAPIResponseStep {
-    type: 'api-response';
-    action: APIResponse;
+  type: 'api-response';
+  action: APIResponse;
 }
 
 /**
  * Union type for all possible AI agent steps
  */
-export type AgenticStep = AgenticFinishCallStep
-    | AgenticAcceptCallStep
-    | AgenticMakeCallStep
-    | AgenticSendMessageStep
-    | AgenticAPICallStep
-    | AgenticAPIResponseStep
+export type AgenticStep =
+  | AgenticFinishCallStep
+  | AgenticAcceptCallStep
+  | AgenticMakeCallStep
+  | AgenticSendMessageStep
+  | AgenticAPICallStep
+  | AgenticAPIResponseStep;
 
 /**
  * AI agent participant state and behavior
  */
 export interface AIAgentState extends Entity {
-    type: "ai";
-    /** Sequence of steps/actions performed by this agent */
-    steps: AgenticStep[];
+  type: 'ai';
+  /** Sequence of steps/actions performed by this agent */
+  steps: AgenticStep[];
 }
 
 /**
  * Complete scenario containing all participants and their interactions
  */
 export interface Scenario {
-    id: string;
-    title: string;
-    description: string;
-    /** AI agents in the scenario */
-    agents: AIAgentState[];
+  id: string;
+  title: string;
+  description: string;
+  /** AI agents in the scenario */
+  agents: AIAgentState[];
 
-    customer: HumanState;
+  customer: HumanState;
 
-    servers: HumanState[];
-    /** Global sequence of all steps in chronological order */
-    steps: AgenticStep[];
+  servers: HumanState[];
+  /** Global sequence of all steps in chronological order */
+  steps: AgenticStep[];
 }
 
 /**
  * Context value type provided by ScenarioContextProvider
  */
 export interface ScenarioContextType {
-    /** Current scenario state */
-    state: Scenario;
-    active: {
-        agent?: AIAgentState;
-        server?: HumanState;
-    }
-    reset: (scenario?: Scenario) => void;
-    /** Available actions for scenario control */
-    action: CommunicationAction;
+  /** Current scenario state */
+  state: Scenario;
+  active: {
+    agent?: AIAgentState;
+    server?: HumanState;
+  };
+  reset: (scenario?: Scenario) => void;
+  /** Available actions for scenario control */
+  action: CommunicationAction;
 
-    /** List of all available scenarios */
-    scenarios: Scenario[];
-    /** Currently selected scenario */
-    currentScenario: Scenario;
-    /** Current progress through scenario steps */
-    progress: number;
-    /** Set current scenario by index */
-    setCurrent: (index: number) => void;
-    /** Advance to next step */
-    progressNext: () => void;
-    /** Reset progress to 0 */
+  /** List of all available scenarios */
+  scenarios: Scenario[];
+  /** Currently selected scenario */
+  currentScenario: Scenario;
+  /** Current progress through scenario steps */
+  progress: number;
+  /** Set current scenario by index */
+  setCurrent: (index: number) => void;
+  /** Advance to next step */
+  progressNext: () => void;
+  /** Reset progress to 0 */
 }
 
 /**
@@ -397,8 +415,8 @@ const ScenarioContext = createContext<ScenarioContextType | null>(null);
  * Props for ScenarioContextProvider
  */
 interface ScenarioContextProviderProps {
-    /** Child components that will have access to the context */
-    children: ReactNode;
+  /** Child components that will have access to the context */
+  children: ReactNode;
 }
 
 /**
@@ -407,438 +425,497 @@ interface ScenarioContextProviderProps {
  * @returns JSX element providing scenario context to children
  */
 function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
+  /**
+   * Helper function to get the 'from' field from any AgenticStep
+   */
+  const getActionFrom = useCallback((step: AgenticStep): string => {
+    return step.action.from;
+  }, []);
 
-    /**
-     * Helper function to get the 'from' field from any AgenticStep
-     */
-    const getActionFrom = useCallback((step: AgenticStep): string => {
-        return step.action.from;
-    }, []);
+  /**
+   * Global sequence of all steps that have occurred in the scenario
+   */
+  const [scenario, setScenario] = useState<Scenario | null>(null);
 
-    /**
-     * Global sequence of all steps that have occurred in the scenario
-     */
-    const [scenario, setScenario] = useState<Scenario | null>(null);
+  /**
+   * New state variables for scenario management
+   */
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [progress, setProgress] = useState(-1);
+  const currentScenarioRef = useRef<Scenario | null>(null);
 
-    /**
-     * New state variables for scenario management
-     */
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [progress, setProgress] = useState(-1);
-    const currentScenarioRef = useRef<Scenario | null>(null);
+  /**
+   * List of all available scenarios
+   */
+  const scenarios: Scenario[] = useMemo(() => {
+    return Object.values(scenariosData) as unknown as Scenario[];
+  }, []);
 
-    /**
-     * List of all available scenarios
-     */
-    const scenarios: Scenario[] = useMemo(() => {
-        return Object.values(scenariosData) as unknown as Scenario[];
-    }, []);
+  /**
+   * Current selected scenario
+   */
+  const currentScenario: Scenario = useMemo(
+    () => scenarios[currentIndex] || scenarios[0],
+    [currentIndex, scenarios]
+  );
 
-    /**
-     * Current selected scenario
-     */
-    const currentScenario: Scenario = useMemo(
-        () => scenarios[currentIndex] || scenarios[0],
-        [currentIndex, scenarios]
-    );
+  const [lastAgent, setLastAgent] = useState<AIAgentState | null>(null);
 
-    const [lastAgent, setLastAgent] = useState<AIAgentState | null>(null);
+  useEffect(() => {
+    setLastAgent((prev) => {
+      if (!scenario) {
+        return prev;
+      }
+      if (!prev) {
+        return prev;
+      }
+      const { steps } = scenario;
+      const lastStep = steps[steps.length - 1];
+      if (lastStep && scenario) {
+        const whom = getActionFrom(lastStep);
+        const agentWhom = scenario.agents.find((a) => a.name === whom);
+        return agentWhom || null;
+      }
+      return prev;
+    });
+  }, [scenario, getActionFrom]);
 
-    useEffect(() => {
-        setLastAgent(prev => {
-            if (!scenario) {
-                return prev;
-            }
-            if (!prev) {
-                return prev;
-            }
-            const { steps } = scenario;
-            const lastStep = steps[steps.length - 1];
-            if (lastStep && scenario) {
-                const whom = getActionFrom(lastStep);
-                const agentWhom = scenario.agents.find(a => a.name === whom);
-                return agentWhom || null;
-            }
-            return prev;
-        })
-    }, [scenario, getActionFrom]);
+  const [lastServer, setLastServer] = useState<HumanState | null>(null);
 
-    const [lastServer, setLastServer] = useState<HumanState | null>(null);
+  useEffect(() => {
+    if (!scenario) {
+      setLastServer(null);
+      return;
+    }
 
-    useEffect(() => {
-        if (!scenario) {
-            setLastServer(null);
-            return;
-        }
+    const { steps } = scenario;
+    const lastStep = steps[steps.length - 1];
 
-        const { steps } = scenario;
-        const lastStep = steps[steps.length - 1];
+    if (lastStep) {
+      const whom = getActionFrom(lastStep);
+      const serverWhom = scenario.servers.find((s) => s.name === whom);
+      if (serverWhom) {
+        setLastServer(serverWhom);
+        return;
+      }
+    }
 
-        if (lastStep) {
-            const whom = getActionFrom(lastStep);
-            const serverWhom = scenario.servers.find(s => s.name === whom);
-            if (serverWhom) {
-                setLastServer(serverWhom);
-                return;
-            }
-        }
+    // If no last step or no matching server, use first server as default
+    if (scenario.servers.length > 0) {
+      setLastServer(scenario.servers[0]);
+    } else {
+      setLastServer(null);
+    }
+  }, [scenario, getActionFrom]);
 
-        // If no last step or no matching server, use first server as default
-        if (scenario.servers.length > 0) {
-            setLastServer(scenario.servers[0]);
-        } else {
-            setLastServer(null);
-        }
-    }, [scenario, getActionFrom])
+  /**
+   * Current scenario metadata
+   */
+  // Removed redundant currentScenarioInfo state
 
+  /**
+   * Set current scenario by index
+   */
+  const setCurrent = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < scenarios.length) {
+        setCurrentIndex(index);
+        // Do not auto-execute the first step on scenario change
+        setProgress(-1);
+      }
+    },
+    [scenarios.length]
+  );
 
-    /**
-     * Current scenario metadata
-     */
-    // Removed redundant currentScenarioInfo state
+  /**
+   * Advance to next step
+   */
+  const progressNext = useCallback(() => {
+    setProgress((prev) => prev + 1);
+  }, []);
 
-    /**
-     * Set current scenario by index
-     */
-    const setCurrent = useCallback(
-        (index: number) => {
-            if (index >= 0 && index < scenarios.length) {
-                setCurrentIndex(index);
-                // Do not auto-execute the first step on scenario change
-                setProgress(-1);
-            }
+  /**
+   * Handle sending a message between participants
+   * Updates message boxes for human recipients
+   */
+  const handleSendMessage = useCallback(({ message }: SendMessageInput) => {
+    const step: AgenticSendMessageStep = {
+      type: 'send-message',
+      action: message,
+    };
+
+    // Update scenario state directly
+    setScenario((prev) => {
+      if (!prev) return prev;
+
+      const updatedScenario: Scenario = {
+        ...prev,
+        steps: [...prev.steps, step],
+      };
+      // Update customer if they are the recipient
+      return deliverMessage(updatedScenario, message);
+    });
+  }, []);
+
+  /**
+   * Handle initiating a phone call
+   * Updates recipient's state to "ring" if they are human
+   */
+  const handleMakeCall = useCallback(({ call }: CallInput) => {
+    const step: AgenticMakeCallStep = {
+      type: 'make-call',
+      action: call,
+    };
+
+    // Update scenario state directly
+    setScenario((prev) => {
+      if (!prev) return prev;
+
+      const updatedScenario: Scenario = {
+        ...prev,
+        steps: [...prev.steps, step],
+      };
+      return updateEntityState(
+        updateEntityState(updatedScenario, call.to, 'ring'),
+        call.from,
+        'ring'
+      );
+    });
+  }, []);
+
+  /**
+   * Handle accepting a phone call
+   * Sets both caller and recipient state to "call" if they are human
+   */
+  const handleAcceptCall = useCallback(({ call }: CallInput) => {
+    const step: AgenticAcceptCallStep = {
+      type: 'accept-call',
+      action: call,
+    };
+
+    // Update scenario state directly
+    setScenario((prev) => {
+      if (!prev) return prev;
+
+      const updatedScenario: Scenario = {
+        ...prev,
+        steps: [...prev.steps, step],
+      };
+      let finalScenario = updateEntityState(updatedScenario, call.from, 'call');
+      finalScenario = updateEntityState(
+        updateEntityState(finalScenario, call.to, 'call'),
+        call.from,
+        'call'
+      );
+      return finalScenario;
+    });
+  }, []);
+
+  /**
+   * Handle finishing a phone call
+   * Resets both caller and recipient state to "message" if they are human
+   */
+  const handleFinishCall = useCallback(({ call }: CallInput) => {
+    const step: AgenticFinishCallStep = {
+      type: 'finish-call',
+      action: call,
+    };
+
+    // Update scenario state directly
+    setScenario((prev) => {
+      if (!prev) return prev;
+
+      const updatedScenario: Scenario = {
+        ...prev,
+        steps: [...prev.steps, step],
+      };
+      return updateEntityState(
+        updateEntityState(updatedScenario, call.from, 'message'),
+        call.to,
+        'message'
+      );
+    });
+  }, []);
+
+  /**
+   * Handle API call to external service
+   * Records the API call step in global steps
+   */
+  const handleAPICall = useCallback(({ apiCall }: APICallInput) => {
+    const step: AgenticAPICallStep = {
+      type: 'api-call',
+      action: apiCall,
+    };
+
+    setScenario((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      const updatedScenario: Scenario = {
+        ...prev,
+        steps: [...prev.steps, step],
+      };
+      return updatedScenario;
+    });
+  }, []);
+
+  /**
+   * Handle API response from external service
+   * Records the API response step in global steps
+   */
+  const handleAPIResponse = useCallback(({ apiResponse }: APIResponseInput) => {
+    const step: AgenticAPIResponseStep = {
+      type: 'api-response',
+      action: apiResponse,
+    };
+
+    setScenario((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      const updatedScenario: Scenario = {
+        ...prev,
+        steps: [...prev.steps, step],
+      };
+      return updatedScenario;
+    });
+  }, []);
+
+  /**
+   * Execute a step based on its type
+   */
+  const handleStep = useCallback(
+    (stepToExecute: AgenticStep) => {
+      const id = createId();
+      console.log('handleStep !!!', { stepToExecute });
+      const timestamp = Date.now();
+      switch (stepToExecute.type) {
+        case 'send-message':
+          handleSendMessage({
+            message: { ...stepToExecute.action, id, timestamp },
+          });
+          break;
+        case 'make-call':
+          handleMakeCall({ call: { ...stepToExecute.action, id, timestamp } });
+          break;
+        case 'accept-call':
+          handleAcceptCall({
+            call: { ...stepToExecute.action, id, timestamp },
+          });
+          break;
+        case 'finish-call':
+          handleFinishCall({
+            call: { ...stepToExecute.action, id, timestamp },
+          });
+          break;
+        case 'api-call':
+          handleAPICall({
+            apiCall: { ...stepToExecute.action, id, timestamp },
+          });
+          break;
+        case 'api-response':
+          handleAPIResponse({
+            apiResponse: { ...stepToExecute.action, id, timestamp },
+          });
+          break;
+        default:
+          console.warn('Unknown step type:', stepToExecute);
+      }
+    },
+    [
+      handleSendMessage,
+      handleMakeCall,
+      handleAcceptCall,
+      handleFinishCall,
+      handleAPICall,
+      handleAPIResponse,
+    ]
+  );
+
+  /**
+   * Auto-execute step when progress changes
+   */
+  useEffect(() => {
+    if (
+      currentScenario &&
+      progress >= 0 &&
+      progress < currentScenario.steps.length
+    ) {
+      const stepToExecute = currentScenario.steps[progress];
+      if (stepToExecute) {
+        handleStep(stepToExecute);
+      }
+    }
+  }, [progress, currentScenario, handleStep]);
+
+  /**
+   * Reset scenario and progress when scenario changes
+   */
+  useEffect(() => {
+    if (
+      currentScenario &&
+      currentScenarioRef.current?.id !== currentScenario.id
+    ) {
+      currentScenarioRef.current = currentScenario;
+      console.log('init : ', { currentScenario });
+      // Build a fresh scenario with cleared steps/messages
+      const freshScenario: Scenario = {
+        ...currentScenario,
+        agents: currentScenario.agents.map((agent) => ({
+          ...agent,
+          steps: [],
+        })),
+        customer: {
+          ...currentScenario.customer,
+          messageBox: {},
+          state: 'message',
         },
-        [scenarios.length]
-    );
+        servers: currentScenario.servers.map((server) => ({
+          ...server,
+          messageBox: {},
+          state: 'message',
+        })),
+        steps: [],
+      };
+      setScenario(freshScenario);
+      setProgress(-1); // avoid auto-exec on load
+    }
+  }, [currentScenario]);
 
-    /**
-     * Advance to next step
-     */
-    const progressNext = useCallback(() => {
-        setProgress((prev) => prev + 1);
-    }, []);
-
-
-    /**
-     * Handle sending a message between participants
-     * Updates message boxes for human recipients
-     */
-    const handleSendMessage = useCallback(({ message }: SendMessageInput) => {
-        const step: AgenticSendMessageStep = {
-            type: 'send-message',
-            action: message
-        };
-
-        // Update scenario state directly
-        setScenario(prev => {
-            if (!prev) return prev;
-
-            const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            // Update customer if they are the recipient
-            return deliverMessage(updatedScenario, message);
-        });
-    }, []);
-
-    /**
-     * Handle initiating a phone call
-     * Updates recipient's state to "ring" if they are human
-     */
-    const handleMakeCall = useCallback(({ call }: CallInput) => {
-        const step: AgenticMakeCallStep = {
-            type: 'make-call',
-            action: call
-        };
-
-
-        // Update scenario state directly
-        setScenario(prev => {
-            if (!prev) return prev;
-
-            const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            return updateEntityState(updateEntityState(updatedScenario, call.to, "ring"), call.from, "ring");
-        });
-    }, []);
-
-    /**
-     * Handle accepting a phone call
-     * Sets both caller and recipient state to "call" if they are human
-     */
-    const handleAcceptCall = useCallback(({ call }: CallInput) => {
-        const step: AgenticAcceptCallStep = {
-            type: 'accept-call',
-            action: call
-        };
-
-
-        // Update scenario state directly
-        setScenario(prev => {
-            if (!prev) return prev;
-
-            const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            let finalScenario = updateEntityState(updatedScenario, call.from, "call");
-            finalScenario = updateEntityState(updateEntityState(finalScenario, call.to, "call"), call.from, "call");
-            return finalScenario;
-        });
-    }, []);
-
-    /**
-     * Handle finishing a phone call
-     * Resets both caller and recipient state to "message" if they are human
-     */
-    const handleFinishCall = useCallback(({ call }: CallInput) => {
-        const step: AgenticFinishCallStep = {
-            type: 'finish-call',
-            action: call
-        };
-
-        // Update scenario state directly
-        setScenario(prev => {
-            if (!prev) return prev;
-
-            const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            return updateEntityState(updateEntityState(updatedScenario, call.from, "message"), call.to, "message");
-        });
-    }, []);
-
-    /**
-     * Handle API call to external service
-     * Records the API call step in global steps
-     */
-    const handleAPICall = useCallback(({ apiCall }: APICallInput) => {
-        const step: AgenticAPICallStep = {
-            type: 'api-call',
-            action: apiCall
-        };
-
-        setScenario(prev => {
-            if (!prev) {
-                return prev;
-            }
-            const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            return updatedScenario;
-        })
-    }, []);
-
-    /**
-     * Handle API response from external service
-     * Records the API response step in global steps
-     */
-    const handleAPIResponse = useCallback(({ apiResponse }: APIResponseInput) => {
-        const step: AgenticAPIResponseStep = {
-            type: 'api-response',
-            action: apiResponse
-        };
-
-        setScenario(prev => {
-            if (!prev) {
-                return prev;
-            }
-            const updatedScenario: Scenario = { ...prev, steps: [...prev.steps, step] };
-            return updatedScenario;
-        })
-    }, []);
-
-    /**
-     * Execute a step based on its type
-     */
-    const handleStep = useCallback(
-        (stepToExecute: AgenticStep) => {
-            const id = createId();
-            console.log("handleStep !!!", { stepToExecute });
-            const timestamp = Date.now();
-            switch (stepToExecute.type) {
-                case "send-message":
-                    handleSendMessage({ message: { ...stepToExecute.action, id, timestamp } });
-                    break;
-                case "make-call":
-                    handleMakeCall({ call: { ...stepToExecute.action, id, timestamp } });
-                    break;
-                case "accept-call":
-                    handleAcceptCall({ call: { ...stepToExecute.action, id, timestamp } });
-                    break;
-                case "finish-call":
-                    handleFinishCall({ call: { ...stepToExecute.action, id, timestamp } });
-                    break;
-                case "api-call":
-                    handleAPICall({ apiCall: { ...stepToExecute.action, id, timestamp } });
-                    break;
-                case "api-response":
-                    handleAPIResponse({
-                        apiResponse: { ...stepToExecute.action, id, timestamp },
-                    });
-                    break;
-                default:
-                    console.warn("Unknown step type:", stepToExecute);
-            }
+  /**
+   * Reset the scenario state to initial state or load a new scenario
+   * @param newScenario - Optional new scenario to load. If not provided, resets to empty state
+   */
+  const resetScenario = useCallback((newScenario?: Scenario) => {
+    console.log('reset ', { newScenario });
+    if (newScenario) {
+      // Set the complete scenario with fresh state
+      const freshScenario: Scenario = {
+        ...newScenario,
+        // Reset AI agents with empty steps
+        agents: newScenario.agents.map((agent) => ({
+          ...agent,
+          steps: [],
+        })),
+        // Reset customer with empty message box
+        customer: {
+          ...newScenario.customer,
+          messageBox: {},
+          state: 'message',
         },
-        [handleSendMessage, handleMakeCall, handleAcceptCall, handleFinishCall, handleAPICall, handleAPIResponse]
-    );
+        // Reset servers with empty message boxes
+        servers: newScenario.servers.map((server) => ({
+          ...server,
+          messageBox: {},
+          state: 'message',
+        })),
+        steps: [],
+      };
 
-    /**
-     * Auto-execute step when progress changes
-     */
-    useEffect(() => {
-        if (
-            currentScenario &&
-            progress >= 0 &&
-            progress < currentScenario.steps.length
-        ) {
-            const stepToExecute = currentScenario.steps[progress];
-            if (stepToExecute) {
-                handleStep(stepToExecute);
-            }
+      setScenario(freshScenario);
+      // Move to before-first-step to prevent auto-exec
+      setProgress(-1);
+    } else {
+      // Complete reset - clear all scenario info
+      setScenario((prev) => {
+        if (!prev) {
+          return prev;
         }
-    }, [progress, currentScenario, handleStep]);
-
-    /**
-     * Reset scenario and progress when scenario changes
-     */
-    useEffect(() => {
-        if (
-            currentScenario &&
-            currentScenarioRef.current?.id !== currentScenario.id
-        ) {
-            currentScenarioRef.current = currentScenario;
-            console.log("init : ", { currentScenario });
-            // Build a fresh scenario with cleared steps/messages
-            const freshScenario: Scenario = {
-                ...currentScenario,
-                agents: currentScenario.agents.map(agent => ({ ...agent, steps: [] })),
-                customer: { ...currentScenario.customer, messageBox: {}, state: 'message' },
-                servers: currentScenario.servers.map(server => ({ ...server, messageBox: {}, state: 'message' })),
-                steps: []
-            };
-            setScenario(freshScenario);
-            setProgress(-1); // avoid auto-exec on load
-        }
-    }, [currentScenario]);
-
-    /**
-     * Reset the scenario state to initial state or load a new scenario
-     * @param newScenario - Optional new scenario to load. If not provided, resets to empty state
-     */
-    const resetScenario = useCallback((newScenario?: Scenario) => {
-        console.log("reset ", { newScenario });
-        if (newScenario) {
-            // Set the complete scenario with fresh state
-            const freshScenario: Scenario = {
-                ...newScenario,
-                // Reset AI agents with empty steps
-                agents: newScenario.agents.map(agent => ({
-                    ...agent,
-                    steps: []
-                })),
-                // Reset customer with empty message box
-                customer: {
-                    ...newScenario.customer,
-                    messageBox: {},
-                    state: "message"
-                },
-                // Reset servers with empty message boxes
-                servers: newScenario.servers.map(server => ({
-                    ...server,
-                    messageBox: {},
-                    state: "message"
-                })),
-                steps: []
-            };
-
-            setScenario(freshScenario);
-            // Move to before-first-step to prevent auto-exec
-            setProgress(-1);
-        } else {
-            // Complete reset - clear all scenario info
-            setScenario(prev => {
-                if (!prev) {
-                    return prev;
-                }
-                const updateScenario: Scenario = {
-                    ...prev,
-                    customer: { ...prev.customer, messageBox: {}, state: 'message' },
-                    agents: [...prev.agents.map(a => ({ ...a, steps: [] }))],
-                    servers: [...prev.servers.map(s => ({ ...s, messageBox: {}, state: 'message' }) satisfies HumanState)],
-                    steps: []
-                };
-                return updateScenario;
-            });
-            setProgress(-1);
-        }
-
-    }, []);
-
-    /**
-     * Memoized context value containing current scenario state and available actions
-     */
-    const contextValue: ScenarioContextType = useMemo(() => {
-        if (!scenario) {
-            // Return empty scenario when no scenario is loaded
-            return {
-                state: currentScenario,
-                active: {
-                    agent: lastAgent || undefined,
-                    server: lastServer || undefined
-                },
-                reset: resetScenario,
-                action: {
-                    sendMessage: handleSendMessage,
-                    makeCall: handleMakeCall,
-                    acceptCall: handleAcceptCall,
-                    finishCall: handleFinishCall,
-                    apiCall: handleAPICall,
-                    apiResponse: handleAPIResponse,
-                },
-                scenarios,
-                currentScenario,
-                progress,
-                setCurrent,
-                progressNext,
-            };
-        }
-
-        return {
-            state: scenario,
-            active: {
-                agent: lastAgent || undefined,
-                server: lastServer || undefined
-            },
-            reset: resetScenario,
-            action: {
-                sendMessage: handleSendMessage,
-                makeCall: handleMakeCall,
-                acceptCall: handleAcceptCall,
-                finishCall: handleFinishCall,
-                apiCall: handleAPICall,
-                apiResponse: handleAPIResponse,
-            },
-            scenarios,
-            currentScenario,
-            progress,
-            setCurrent,
-            progressNext,
+        const updateScenario: Scenario = {
+          ...prev,
+          customer: { ...prev.customer, messageBox: {}, state: 'message' },
+          agents: [...prev.agents.map((a) => ({ ...a, steps: [] }))],
+          servers: [
+            ...prev.servers.map(
+              (s) =>
+                ({
+                  ...s,
+                  messageBox: {},
+                  state: 'message',
+                }) satisfies HumanState
+            ),
+          ],
+          steps: [],
         };
-    }, [
-        scenario,
-        lastAgent,
-        lastServer,
-        handleSendMessage,
-        handleMakeCall,
-        handleAcceptCall,
-        handleFinishCall,
-        handleAPICall,
-        handleAPIResponse,
-        resetScenario,
+        return updateScenario;
+      });
+      setProgress(-1);
+    }
+  }, []);
+
+  /**
+   * Memoized context value containing current scenario state and available actions
+   */
+  const contextValue: ScenarioContextType = useMemo(() => {
+    if (!scenario) {
+      // Return empty scenario when no scenario is loaded
+      return {
+        state: currentScenario,
+        active: {
+          agent: lastAgent || undefined,
+          server: lastServer || undefined,
+        },
+        reset: resetScenario,
+        action: {
+          sendMessage: handleSendMessage,
+          makeCall: handleMakeCall,
+          acceptCall: handleAcceptCall,
+          finishCall: handleFinishCall,
+          apiCall: handleAPICall,
+          apiResponse: handleAPIResponse,
+        },
         scenarios,
         currentScenario,
         progress,
         setCurrent,
         progressNext,
-    ]);
+      };
+    }
 
-    return (
-        <ScenarioContext.Provider value={contextValue}>
-            {children}
-        </ScenarioContext.Provider>
-    );
+    return {
+      state: scenario,
+      active: {
+        agent: lastAgent || undefined,
+        server: lastServer || undefined,
+      },
+      reset: resetScenario,
+      action: {
+        sendMessage: handleSendMessage,
+        makeCall: handleMakeCall,
+        acceptCall: handleAcceptCall,
+        finishCall: handleFinishCall,
+        apiCall: handleAPICall,
+        apiResponse: handleAPIResponse,
+      },
+      scenarios,
+      currentScenario,
+      progress,
+      setCurrent,
+      progressNext,
+    };
+  }, [
+    scenario,
+    lastAgent,
+    lastServer,
+    handleSendMessage,
+    handleMakeCall,
+    handleAcceptCall,
+    handleFinishCall,
+    handleAPICall,
+    handleAPIResponse,
+    resetScenario,
+    scenarios,
+    currentScenario,
+    progress,
+    setCurrent,
+    progressNext,
+  ]);
+
+  return (
+    <ScenarioContext.Provider value={contextValue}>
+      {children}
+    </ScenarioContext.Provider>
+  );
 }
 
 /**

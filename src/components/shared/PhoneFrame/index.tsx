@@ -1,17 +1,14 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { StatusBar } from "@/components/shared/StatusBar";
-import { useEffect, useRef } from "react";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { StatusBar } from '@/components/shared/StatusBar';
+import { useEffect, useRef } from 'react';
 
 interface PhoneFrameProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export function PhoneFrame({
-  children,
-  className,
-}: PhoneFrameProps) {
+export function PhoneFrame({ children, className }: PhoneFrameProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto scroll to bottom when children change
@@ -24,21 +21,23 @@ export function PhoneFrame({
   return (
     <div
       className={cn(
-        "w-full h-full flex items-center justify-center",
-        className,
+        'w-full h-full flex items-center justify-center',
+        className
       )}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
         className="relative w-full max-w-[20vw] aspect-[9/19.5]"
       >
         {/* iPhone-style outer bezel */}
-        <div className={cn(
-          "relative w-full h-full rounded-[2.5rem] shadow-2xl shadow-gray-900/50 p-2",
-          "bg-gradient-to-br from-gray-800 to-gray-900"
-        )}>
+        <div
+          className={cn(
+            'relative w-full h-full rounded-[2.5rem] shadow-2xl shadow-gray-900/50 p-2',
+            'bg-gradient-to-br from-gray-800 to-gray-900'
+          )}
+        >
           {/* Dynamic Island / Notch */}
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-black rounded-full z-20"></div>
 
@@ -46,7 +45,7 @@ export function PhoneFrame({
           <div className="w-full h-full bg-white dark:bg-gray-950 rounded-[2rem] overflow-hidden flex flex-col relative">
             {/* Status Bar */}
             <div className="relative z-10">
-              <StatusBar/>
+              <StatusBar />
             </div>
 
             {/* Screen Content */}
@@ -55,10 +54,7 @@ export function PhoneFrame({
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-50/10 pointer-events-none"></div>
 
               {/* Content */}
-              <div
-                ref={scrollRef}
-                className="w-full h-full overflow-y-auto"
-              >
+              <div ref={scrollRef} className="w-full h-full overflow-y-auto">
                 {children}
               </div>
             </div>

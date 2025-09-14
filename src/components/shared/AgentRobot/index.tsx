@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Bot, Brain, Settings } from "lucide-react";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { Bot, Brain, Settings } from 'lucide-react';
 
 interface AgentRobotProps {
   size?: number;
@@ -14,17 +14,21 @@ export function AgentRobot({
   isThinking = false,
 }: AgentRobotProps) {
   return (
-    <div className={cn("relative flex items-center justify-center", className)}>
+    <div className={cn('relative flex items-center justify-center', className)}>
       {/* Main robot container with integrated elements */}
       <motion.div
         className="relative"
-        animate={isThinking ? {
-          scale: [1, 1.05, 1],
-        } : {}}
+        animate={
+          isThinking
+            ? {
+                scale: [1, 1.05, 1],
+              }
+            : {}
+        }
         transition={{
           duration: 2,
           repeat: isThinking ? Infinity : 0,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         }}
         style={{ width: size, height: size }}
         data-testid="agent-robot-container"
@@ -48,14 +52,18 @@ export function AgentRobot({
           {/* Integrated brain icon - top */}
           <motion.div
             className="absolute -top-2 left-1/2 transform -translate-x-1/2"
-            animate={isThinking ? {
-              y: [0, -2, 0],
-              scale: [1, 1.1, 1]
-            } : {}}
+            animate={
+              isThinking
+                ? {
+                    y: [0, -2, 0],
+                    scale: [1, 1.1, 1],
+                  }
+                : {}
+            }
             transition={{
               duration: 1.5,
               repeat: isThinking ? Infinity : 0,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
           >
             <div className="bg-card/80 backdrop-blur-sm rounded-full p-1 border border-primary/30 shadow-sm">
@@ -66,13 +74,17 @@ export function AgentRobot({
           {/* Integrated settings icon - bottom */}
           <motion.div
             className="absolute -bottom-2 left-1/2 transform -translate-x-1/2"
-            animate={isThinking ? {
-              rotate: [0, 180, 360]
-            } : {}}
+            animate={
+              isThinking
+                ? {
+                    rotate: [0, 180, 360],
+                  }
+                : {}
+            }
             transition={{
               duration: 3,
               repeat: isThinking ? Infinity : 0,
-              ease: "linear",
+              ease: 'linear',
             }}
           >
             <div className="bg-card/80 backdrop-blur-sm rounded-full p-1 border border-primary/30 shadow-sm">
@@ -87,27 +99,35 @@ export function AgentRobot({
           >
             <motion.div
               className="w-1.5 h-1.5 bg-primary rounded-full"
-              animate={isThinking ? {
-                scale: [1, 1.2, 1],
-                opacity: [1, 0.7, 1]
-              } : {}}
+              animate={
+                isThinking
+                  ? {
+                      scale: [1, 1.2, 1],
+                      opacity: [1, 0.7, 1],
+                    }
+                  : {}
+              }
               transition={{
                 duration: 1,
                 repeat: isThinking ? Infinity : 0,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
             />
             <motion.div
               className="w-1.5 h-1.5 bg-primary rounded-full"
-              animate={isThinking ? {
-                scale: [1, 1.2, 1],
-                opacity: [1, 0.7, 1]
-              } : {}}
+              animate={
+                isThinking
+                  ? {
+                      scale: [1, 1.2, 1],
+                      opacity: [1, 0.7, 1],
+                    }
+                  : {}
+              }
               transition={{
                 duration: 1,
                 delay: 0.2,
                 repeat: isThinking ? Infinity : 0,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
             />
           </div>

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
-import { useRecorder } from "@/hooks/useRecorder";
+import { useRecorder } from '@/hooks/useRecorder';
 import {
   Circle,
   Square,
@@ -12,7 +12,7 @@ import {
   Video,
   FileVideo,
   Loader2,
-} from "lucide-react";
+} from 'lucide-react';
 
 interface RecordingState {
   isRecording: boolean;
@@ -24,7 +24,7 @@ interface RecordingState {
 
 export function RecordingControls() {
   const { startRecording, stopRecording, downloadRecording } =
-    useRecorder("demoview");
+    useRecorder('demoview');
 
   const [recordingState, setRecordingState] = useState<RecordingState>({
     isRecording: false,
@@ -65,14 +65,13 @@ export function RecordingControls() {
       }));
 
       await startRecording();
-
     } catch (error) {
-      console.error("Failed to start recording:", error);
+      console.error('Failed to start recording:', error);
       setRecordingState((prev) => ({
         ...prev,
         isRecording: false,
         error:
-          "Failed to start recording. Please check your browser permissions.",
+          'Failed to start recording. Please check your browser permissions.',
       }));
     }
   };
@@ -93,14 +92,13 @@ export function RecordingControls() {
         isProcessing: false,
         hasRecording: true,
       }));
-
     } catch (error) {
-      console.error("Failed to stop recording:", error);
+      console.error('Failed to stop recording:', error);
       setRecordingState((prev) => ({
         ...prev,
         isRecording: false,
         isProcessing: false,
-        error: "Failed to stop recording.",
+        error: 'Failed to stop recording.',
       }));
     }
   };
@@ -114,14 +112,14 @@ export function RecordingControls() {
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const getFileSizeEstimate = (duration: number) => {
     // Rough estimate: ~2MB per minute for 1080p 30fps
     const mbPerMinute = 2;
     const estimatedMB = Math.round((duration / 60) * mbPerMinute * 10) / 10;
-    return estimatedMB > 0 ? `~${estimatedMB}MB` : "";
+    return estimatedMB > 0 ? `~${estimatedMB}MB` : '';
   };
 
   return (
@@ -130,7 +128,7 @@ export function RecordingControls() {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
         <Button
           size="sm"
-          variant={recordingState.isRecording ? "destructive" : "outline"}
+          variant={recordingState.isRecording ? 'destructive' : 'outline'}
           onClick={
             recordingState.isRecording
               ? handleStopRecording
@@ -138,8 +136,8 @@ export function RecordingControls() {
           }
           disabled={recordingState.isProcessing}
           className={cn(
-            "h-8 px-3 space-x-1.5",
-            recordingState.isRecording && "bg-red-600 hover:bg-red-700",
+            'h-8 px-3 space-x-1.5',
+            recordingState.isRecording && 'bg-red-600 hover:bg-red-700'
           )}
         >
           {recordingState.isProcessing ? (
@@ -166,7 +164,7 @@ export function RecordingControls() {
         {(recordingState.isRecording || recordingState.isProcessing) && (
           <motion.div
             initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "auto" }}
+            animate={{ opacity: 1, width: 'auto' }}
             exit={{ opacity: 0, width: 0 }}
             transition={{ duration: 0.3 }}
             className="flex items-center space-x-2"
@@ -183,8 +181,8 @@ export function RecordingControls() {
                   repeat: recordingState.isRecording ? Infinity : 0,
                 }}
                 className={cn(
-                  "w-2 h-2 rounded-full",
-                  recordingState.isRecording ? "bg-red-500" : "bg-orange-500",
+                  'w-2 h-2 rounded-full',
+                  recordingState.isRecording ? 'bg-red-500' : 'bg-orange-500'
                 )}
               />
 

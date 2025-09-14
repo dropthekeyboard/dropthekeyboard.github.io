@@ -1,22 +1,19 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  ChevronDown,
-  Bot,
-} from "lucide-react";
-import { useScenario } from "@/hooks/useScenario";
+} from '@/components/ui/select';
+import { ChevronDown, Bot } from 'lucide-react';
+import { useScenario } from '@/hooks/useScenario';
 
 export function ScenarioSelector() {
   const { scenarios, currentScenario, setCurrent } = useScenario();
 
   const handleScenarioSelect = (scenarioId: string) => {
-    const index = scenarios.findIndex(s => s.id === scenarioId);
+    const index = scenarios.findIndex((s) => s.id === scenarioId);
     if (index !== -1) {
       setCurrent(index);
     }
@@ -24,15 +21,17 @@ export function ScenarioSelector() {
 
   return (
     <Select
-      value={currentScenario?.id || ""}
+      value={currentScenario?.id || ''}
       onValueChange={handleScenarioSelect}
     >
-      <SelectTrigger className={cn(
-        "h-9 px-3 justify-between max-w-[30vw]",
-        "bg-muted/30 hover:bg-muted/50",
-        "border border-border hover:border-primary/50",
-        "transition-all duration-200",
-      )}>
+      <SelectTrigger
+        className={cn(
+          'h-9 px-3 justify-between max-w-[30vw]',
+          'bg-muted/30 hover:bg-muted/50',
+          'border border-border hover:border-primary/50',
+          'transition-all duration-200'
+        )}
+      >
         <div className="flex items-center space-x-2 flex-1 min-w-0">
           {currentScenario ? (
             <>

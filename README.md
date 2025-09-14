@@ -7,18 +7,20 @@ A modern React + TypeScript SPA for demonstrating Agent-to-Agent (A2A) communica
 This application showcases the evolution of AI agent communication through three distinct phases:
 
 - **A2H (Agent-to-Human)**: Traditional AI agents that communicate with human service providers
-- **Lite Agent**: AI agents that integrate with business APIs for streamlined operations  
+- **Lite Agent**: AI agents that integrate with business APIs for streamlined operations
 - **A2A (Agent-to-Agent)**: Full agent-to-agent communication with intelligent negotiation
 
 ## ✨ Features
 
 ### 🎬 Interactive Demo Experience
+
 - **3-Section Layout**: User Phone | AI Agent | Service Provider visualization
 - **Real-time Animation**: Framer Motion powered message flows and state transitions
 - **8 Demo Scenarios**: Pre-built scenarios covering restaurant reservations, medical appointments, travel booking, and more
 - **16:9 Aspect Ratio**: Optimized for professional presentation and recording
 
 ### 🎮 Control Interface
+
 - **Scenario Selector**: Browse and select from categorized demo scenarios
 - **Play Controls**: Play, pause, reset, and step through scenarios
 - **Recording Studio**: High-quality MP4 recording with MediaRecorder API
@@ -26,6 +28,7 @@ This application showcases the evolution of AI agent communication through three
 - **Theme Toggle**: Light/Dark mode with system preference detection
 
 ### 🏗️ Technical Architecture
+
 - **React 19** + **TypeScript 5.8** + **Vite 7**
 - **shadcn/ui** components with **TailwindCSS v4**
 - **Framer Motion** for smooth animations
@@ -36,10 +39,12 @@ This application showcases the evolution of AI agent communication through three
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ or Bun 1.0+
 - Modern browser with MediaRecorder API support
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -53,6 +58,7 @@ bun dev
 ```
 
 ### Building for Production
+
 ```bash
 # Build the application
 bun run build
@@ -64,11 +70,13 @@ bun run preview
 ## 📱 Demo Scenarios
 
 ### Phase 1: A2H (Agent-to-Human)
+
 - **Restaurant Reservation**: AI calls restaurant directly
 - **Doctor Appointment**: Traditional appointment booking via phone
 - **Customer Support**: AI handles billing issues with human agents
 
-### Phase 2: Lite Agent  
+### Phase 2: Lite Agent
+
 - **Restaurant with API**: Integration with OpenTable/booking platforms
 - **Medical with Portal**: Clinic management system integration
 - **Travel Booking**: Flight booking via travel APIs
@@ -76,7 +84,8 @@ bun run preview
 - **Car Service**: Vehicle maintenance scheduling
 
 ### Phase 3: A2A (Full Agent Communication)
-- **Personalized Dining**: Restaurant and customer agents negotiate custom experiences  
+
+- **Personalized Dining**: Restaurant and customer agents negotiate custom experiences
 - **Multi-Service Travel**: Coordinated booking across airlines, hotels, cars, and dining
 - **Healthcare Coordination**: Medical agents coordinate specialist referrals and care
 - **Smart Home Services**: Home service agents coordinate maintenance and upgrades
@@ -89,7 +98,7 @@ src/
 ├── components/
 │   ├── DemoView/           # Main 3-section demo area
 │   │   ├── LeftSection/    # User phone simulation
-│   │   ├── CenterSection/  # AI Agent visualization  
+│   │   ├── CenterSection/  # AI Agent visualization
 │   │   └── RightSection/   # Service provider phone
 │   ├── ControlHeader/      # Demo controls and settings
 │   └── shared/            # Reusable UI components
@@ -105,20 +114,23 @@ src/
 ## 🎬 Recording Features
 
 ### Supported Formats
+
 - **Video**: MP4 with H.264 codec
-- **Quality**: 1080p 30fps  
+- **Quality**: 1080p 30fps
 - **Audio**: 128kbps AAC
 - **Aspect Ratio**: Fixed 16:9
 
 ### Browser Compatibility
+
 - ✅ Chrome 100+
-- ✅ Firefox 100+ 
+- ✅ Firefox 100+
 - ✅ Safari 15+
 - ✅ Edge 100+
 
 ## 🛠️ Development
 
 ### Key Technologies
+
 - **Framer Motion**: Advanced animations with layout transitions
 - **shadcn/ui**: High-quality, accessible UI components
 - **TailwindCSS v4**: Utility-first styling with custom design tokens
@@ -126,6 +138,7 @@ src/
 - **MediaRecorder API**: Native browser screen recording
 
 ### Development Commands
+
 ```bash
 # Start development server
 bun dev
@@ -141,6 +154,7 @@ npx shadcn@latest add <component-name>
 ```
 
 ### Performance Optimizations
+
 - **Lazy Loading**: Code splitting for scenario data
 - **Animation Optimization**: GPU-accelerated transforms
 - **Memory Management**: Automatic cleanup for long recordings
@@ -157,13 +171,15 @@ npx shadcn@latest add <component-name>
 ## 🎯 Roadmap
 
 ### Version 2.0 Features
+
 - [ ] PlantUML integration for scenario visualization
 - [ ] Multi-language scenario support
 - [ ] Advanced animation timeline editor
 - [ ] Cloud scenario sharing
 - [ ] Analytics and performance metrics
 
-### Integration Capabilities  
+### Integration Capabilities
+
 - [ ] Webhook support for live scenario data
 - [ ] API integration for real service providers
 - [ ] Custom branding and themes
@@ -172,8 +188,9 @@ npx shadcn@latest add <component-name>
 ## 🤝 Contributing
 
 This project follows modern React development practices:
+
 - TypeScript strict mode enabled
-- ESLint with React-specific rules  
+- ESLint with React-specific rules
 - Conventional commit messages
 - Component-driven development
 

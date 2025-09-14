@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { CheckCheck } from "lucide-react";
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { CheckCheck } from 'lucide-react';
 
 interface MessageBubbleProps {
   message: string;
@@ -22,23 +22,23 @@ export function MessageBubble({
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
-        type: "spring",
+        type: 'spring',
         stiffness: 400,
         damping: 25,
         duration: 0.3,
       }}
       className={cn(
-        "flex mb-3 max-w-[80%]",
-        isOwnMessage ? "justify-end ml-auto" : "justify-start",
+        'flex mb-3 max-w-[80%]',
+        isOwnMessage ? 'justify-end ml-auto' : 'justify-start'
       )}
     >
       <div className="flex flex-col">
         <div
           className={cn(
-            "relative px-4 py-2 rounded-2xl break-words shadow-sm",
+            'relative px-4 py-2 rounded-2xl break-words shadow-sm',
             isOwnMessage
-              ? "bg-primary text-primary-foreground rounded-br-md"
-              : "bg-muted text-muted-foreground rounded-bl-md",
+              ? 'bg-primary text-primary-foreground rounded-br-md'
+              : 'bg-muted text-muted-foreground rounded-bl-md'
           )}
         >
           {isTyping ? (
@@ -75,23 +75,23 @@ export function MessageBubble({
         {(timestamp || isOwnMessage) && !isTyping && (
           <div
             className={cn(
-              "flex items-center mt-1 text-xs text-muted-foreground/60",
-              isOwnMessage ? "justify-end" : "justify-start",
+              'flex items-center mt-1 text-xs text-muted-foreground/60',
+              isOwnMessage ? 'justify-end' : 'justify-start'
             )}
           >
             {timestamp && (
               <span className="mr-1">
                 {new Date(timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  hour: '2-digit',
+                  minute: '2-digit',
                 })}
               </span>
             )}
             {isOwnMessage && (
               <CheckCheck
                 className={cn(
-                  "w-3 h-3 transition-colors",
-                  isRead ? "text-blue-500" : "text-muted-foreground/60",
+                  'w-3 h-3 transition-colors',
+                  isRead ? 'text-blue-500' : 'text-muted-foreground/60'
                 )}
               />
             )}

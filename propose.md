@@ -6,7 +6,5 @@
 
 ## AI Agent와의 대화 상태 표시
 
-- AI Agent와 User와의 대화가 자연스러운 Chatting 처럼  Phone 화면에 Message Bubble로 좌/우로 표시되어야 함
+- AI Agent와 User와의 대화가 자연스러운 Chatting 처럼 Phone 화면에 Message Bubble로 좌/우로 표시되어야 함
 - 현재 AI Agent의 답변이 Robot 모양 아이콘 아래 박스 영역에서 표시되고 휘발되어 버림
-
-

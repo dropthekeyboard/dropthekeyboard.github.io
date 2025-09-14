@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 interface ProgressCircleProps {
   progress: number;
@@ -9,7 +9,7 @@ interface ProgressCircleProps {
   strokeWidth?: number;
   className?: string;
   showPercentage?: boolean;
-  color?: "primary" | "success" | "warning" | "danger";
+  color?: 'primary' | 'success' | 'warning' | 'danger';
 }
 
 export function ProgressCircle({
@@ -19,7 +19,7 @@ export function ProgressCircle({
   strokeWidth = 4,
   className,
   showPercentage = false,
-  color = "primary",
+  color = 'primary',
 }: ProgressCircleProps) {
   const [displayProgress, setDisplayProgress] = useState(0);
 
@@ -38,15 +38,15 @@ export function ProgressCircle({
     circumference - (displayProgress / 100) * circumference;
 
   const colorClasses = {
-    primary: "stroke-primary",
-    success: "stroke-green-500",
-    warning: "stroke-yellow-500",
-    danger: "stroke-red-500",
+    primary: 'stroke-primary',
+    success: 'stroke-green-500',
+    warning: 'stroke-yellow-500',
+    danger: 'stroke-red-500',
   };
 
   return (
     <div
-      className={cn("relative flex items-center justify-center", className)}
+      className={cn('relative flex items-center justify-center', className)}
       style={{ width: size, height: size }}
     >
       {/* SVG Progress Circle */}
@@ -79,12 +79,12 @@ export function ProgressCircle({
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset }}
           transition={{
-            type: "spring",
+            type: 'spring',
             stiffness: 100,
             damping: 20,
             duration: 0.8,
           }}
-          className={cn("transition-colors duration-300", colorClasses[color])}
+          className={cn('transition-colors duration-300', colorClasses[color])}
         />
       </svg>
 
@@ -120,11 +120,11 @@ export function ProgressCircle({
       {progress > 0 && progress < 100 && (
         <motion.div
           className={cn(
-            "absolute inset-0 rounded-full opacity-20",
-            color === "primary" && "bg-primary",
-            color === "success" && "bg-green-500",
-            color === "warning" && "bg-yellow-500",
-            color === "danger" && "bg-red-500",
+            'absolute inset-0 rounded-full opacity-20',
+            color === 'primary' && 'bg-primary',
+            color === 'success' && 'bg-green-500',
+            color === 'warning' && 'bg-yellow-500',
+            color === 'danger' && 'bg-red-500'
           )}
           animate={{
             scale: [1, 1.1, 1],
@@ -133,7 +133,7 @@ export function ProgressCircle({
           transition={{
             duration: 2,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
       )}
