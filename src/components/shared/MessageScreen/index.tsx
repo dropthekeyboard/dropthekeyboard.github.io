@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { Send, MessageCircle } from 'lucide-react';
 import { MessageBubble } from '@/components/shared/MessageBubble';
 import type { Message } from '@/contexts/scenario';
 
@@ -27,7 +28,7 @@ export function MessageScreen({
         <div className="flex items-center space-x-3">
           {/* Contact avatar */}
           <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-            <span className="text-sm">💬</span>
+            <MessageCircle className="h-4 w-4 text-primary" />
           </div>
 
           {/* Contact info */}
@@ -35,16 +36,6 @@ export function MessageScreen({
             <h3 className="font-medium text-sm">{contactName}</h3>
             <p className="text-xs text-muted-foreground">{contactStatus}</p>
           </div>
-        </div>
-
-        {/* Header actions */}
-        <div className="flex items-center space-x-2">
-          <button className="text-muted-foreground hover:text-foreground">
-            <span className="text-lg">📞</span>
-          </button>
-          <button className="text-muted-foreground hover:text-foreground">
-            <span className="text-lg">📹</span>
-          </button>
         </div>
       </div>
 
@@ -99,11 +90,8 @@ export function MessageScreen({
                 readOnly
               />
             </div>
-            <button className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-full hover:bg-primary/10">
-              <span className="text-lg">📎</span>
-            </button>
             <button className="p-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
-              <span className="text-sm">↑</span>
+              <Send className="h-4 w-4" />
             </button>
           </div>
         </div>

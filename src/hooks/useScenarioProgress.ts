@@ -25,18 +25,19 @@ export function useScenarioProgress(): UseScenarioProgressReturnType {
     (interval = 1500) => {
       stopAutoPlay();
       setIsPlaying(true);
-      timerRef.current = setInterval(
-        () => {
-          if (progress < currentScenario.steps.length - 1) {
-            progressNext();
-          } else {
-            stopAutoPlay();
-          }
-        },
-        Math.max(200, interval)
-      );
+
+      const runStep = () => {
+        // 클로저를 통해 최신 상태에 접근
+        if (progress < currentScenario.steps.length - 1) {
+          progressNext();
+        } else {
+          stopAutoPlay();
+        }
+      };
+
+      timerRef.current = setInterval(runStep, Math.max(200, interval));
     },
-    [progress, currentScenario.steps.length, progressNext, stopAutoPlay]
+    [progressNext, stopAutoPlay, progress, currentScenario.steps.length]
   );
 
   const togglePlay = useCallback(() => {
@@ -46,6 +47,13 @@ export function useScenarioProgress(): UseScenarioProgressReturnType {
       startAutoPlay();
     }
   }, [isPlaying, startAutoPlay, stopAutoPlay]);
+
+  // progress가 마지막 스텝에 도달하면 자동으로 정지
+  useEffect(() => {
+    if (isPlaying && progress >= currentScenario.steps.length - 1) {
+      stopAutoPlay();
+    }
+  }, [progress, currentScenario.steps.length, isPlaying, stopAutoPlay]);
 
   // Clean up on unmount
   useEffect(() => {
