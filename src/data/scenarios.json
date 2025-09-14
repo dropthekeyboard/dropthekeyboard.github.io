@@ -231,11 +231,6 @@
     "agents": [
       {
         "type": "ai",
-        "name": "lite_agent",
-        "steps": []
-      },
-      {
-        "type": "ai",
         "name": "customer_agent",
         "steps": []
       }
@@ -247,6 +242,11 @@
       "messageBox": {}
     },
     "servers": [
+      {
+        "type": "ai",
+        "name": "lite_agent",
+        "steps": []
+      },
       {
         "type": "human",
         "name": "restaurant_owner",
@@ -340,11 +340,6 @@
         "type": "ai",
         "name": "customer_agent",
         "steps": []
-      },
-      {
-        "type": "ai",
-        "name": "merchant_agent",
-        "steps": []
       }
     ],
     "customer": {
@@ -353,7 +348,13 @@
       "state": "message",
       "messageBox": {}
     },
-    "servers": [],
+    "servers": [
+      {
+        "type": "ai",
+        "name": "merchant_agent",
+        "steps": []
+      }
+    ],
     "steps": [
       {
         "type": "send-message",

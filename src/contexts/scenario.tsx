@@ -9,6 +9,7 @@ import {
 } from 'react';
 import scenariosData from '@/data/scenarios.json';
 import { createId } from '@paralleldrive/cuid2';
+import { isRelevantAction } from '@/lib/utils';
 
 /**
  * Message types supported in communication
@@ -188,17 +189,18 @@ function deliverMessage(scenario: Scenario, message: Message): Scenario {
     (s) => s.name === message.to || s.name === message.from
   );
   if (serverIndex !== -1) {
-    newScenario.servers = [...scenario.servers];
-    newScenario.servers[serverIndex] = {
-      ...scenario.servers[serverIndex],
-      messageBox: {
-        ...scenario.servers[serverIndex].messageBox,
-        [message.from]: [
-          ...(scenario.servers[serverIndex].messageBox[message.from] || []),
-          message,
-        ],
-      },
-    };
+    const server = scenario.servers[serverIndex];
+    // Only update messageBox for human servers
+    if (server.type === 'human') {
+      newScenario.servers = [...scenario.servers];
+      newScenario.servers[serverIndex] = {
+        ...server,
+        messageBox: {
+          ...server.messageBox,
+          [message.from]: [...(server.messageBox[message.from] || []), message],
+        },
+      };
+    }
   }
   return newScenario;
 }
@@ -219,11 +221,15 @@ function updateEntityState(
       (s) => s.name === entityName
     );
     if (serverIndex !== -1) {
-      newScenario.servers = [...scenario.servers];
-      newScenario.servers[serverIndex] = {
-        ...scenario.servers[serverIndex],
-        state: newState,
-      };
+      const server = scenario.servers[serverIndex];
+      // Only update state for human servers
+      if (server.type === 'human') {
+        newScenario.servers = [...scenario.servers];
+        newScenario.servers[serverIndex] = {
+          ...server,
+          state: newState,
+        };
+      }
     }
   }
   return newScenario;
@@ -362,6 +368,8 @@ export interface AIAgentState extends Entity {
   steps: AgenticStep[];
 }
 
+export type ServerState = AIAgentState | HumanState;
+
 /**
  * Complete scenario containing all participants and their interactions
  */
@@ -374,7 +382,7 @@ export interface Scenario {
 
   customer: HumanState;
 
-  servers: HumanState[];
+  servers: ServerState[];
   /** Global sequence of all steps in chronological order */
   steps: AgenticStep[];
 }
@@ -387,7 +395,7 @@ export interface ScenarioContextType {
   state: Scenario;
   active: {
     agent?: AIAgentState;
-    server?: HumanState;
+    server?: ServerState;
   };
   reset: (scenario?: Scenario) => void;
   /** Available actions for scenario control */
@@ -428,9 +436,6 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
   /**
    * Helper function to get the 'from' field from any AgenticStep
    */
-  const getActionFrom = useCallback((step: AgenticStep): string => {
-    return step.action.from;
-  }, []);
 
   /**
    * Global sequence of all steps that have occurred in the scenario
@@ -462,25 +467,26 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
   const [lastAgent, setLastAgent] = useState<AIAgentState | null>(null);
 
   useEffect(() => {
-    setLastAgent((prev) => {
-      if (!scenario) {
-        return prev;
-      }
-      if (!prev) {
-        return prev;
-      }
-      const { steps } = scenario;
-      const lastStep = steps[steps.length - 1];
-      if (lastStep && scenario) {
-        const whom = getActionFrom(lastStep);
-        const agentWhom = scenario.agents.find((a) => a.name === whom);
-        return agentWhom || null;
-      }
-      return prev;
-    });
-  }, [scenario, getActionFrom]);
+    if (!scenario) {
+      setLastAgent(null);
+      return;
+    }
 
-  const [lastServer, setLastServer] = useState<HumanState | null>(null);
+    const { steps } = scenario;
+    const lastStep = steps[steps.length - 1];
+
+    if (lastStep) {
+      const agentWhom = scenario.agents.find((a) =>
+        isRelevantAction(lastStep, a)
+      );
+      setLastAgent(agentWhom || null);
+    } else {
+      // If no steps yet, return first agent as default
+      setLastAgent(scenario.agents.length > 0 ? scenario.agents[0] : null);
+    }
+  }, [scenario]);
+
+  const [lastServer, setLastServer] = useState<ServerState | null>(null);
 
   useEffect(() => {
     if (!scenario) {
@@ -491,22 +497,27 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
     const { steps } = scenario;
     const lastStep = steps[steps.length - 1];
 
+    console.log('lastServer debug:', { lastStep, servers: scenario.servers });
+
     if (lastStep) {
-      const whom = getActionFrom(lastStep);
-      const serverWhom = scenario.servers.find((s) => s.name === whom);
-      if (serverWhom) {
-        setLastServer(serverWhom);
+      const relevantServer = scenario.servers.find((s) =>
+        isRelevantAction(lastStep, s)
+      );
+      console.log('relevantServer found:', relevantServer);
+      if (relevantServer) {
+        setLastServer(relevantServer);
         return;
       }
     }
 
     // If no last step or no matching server, use first server as default
     if (scenario.servers.length > 0) {
+      console.log('setting default server:', scenario.servers[0]);
       setLastServer(scenario.servers[0]);
     } else {
       setLastServer(null);
     }
-  }, [scenario, getActionFrom]);
+  }, [scenario]);
 
   /**
    * Current scenario metadata
@@ -826,13 +837,19 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
           customer: { ...prev.customer, messageBox: {}, state: 'message' },
           agents: [...prev.agents.map((a) => ({ ...a, steps: [] }))],
           servers: [
-            ...prev.servers.map(
-              (s) =>
-                ({
-                  ...s,
-                  messageBox: {},
-                  state: 'message',
-                }) satisfies HumanState
+            ...prev.servers.map((s) =>
+              s.type === 'human'
+                ? ({
+                    ...s,
+                    messageBox: {},
+                    state: 'message',
+                  } satisfies HumanState)
+                : s.type === 'ai'
+                ? ({
+                    ...s,
+                    steps: [],
+                  } satisfies AIAgentState)
+                : s
             ),
           ],
           steps: [],

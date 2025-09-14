@@ -1,9 +1,9 @@
-import type { AgenticStep } from '@/contexts/scenario';
+import type { AgenticStep, ServerState } from '@/contexts/scenario';
 import { useScenario } from '@/hooks/useScenario';
-import { cn, isRelevantAction } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { createId } from '@paralleldrive/cuid2';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Terminal, Bot } from 'lucide-react';
+import { Terminal, Cpu } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 
 interface LogicCard {
@@ -12,17 +12,28 @@ interface LogicCard {
   timestamp: Date;
 }
 
-export function AgentSection() {
-  const {
-    state,
-    active: { agent },
-  } = useScenario();
+interface TerminalSectionProps {
+  entity: ServerState | null;
+  label: string;
+  labelColor: string;
+  sectionClass: string;
+}
 
-  // Agent logic cards state
+export function TerminalSection({
+  entity,
+  label,
+  labelColor,
+  sectionClass,
+}: TerminalSectionProps) {
+  const { state } = useScenario();
+
+  // Terminal logic cards state - filter steps related to this AI agent
   const logicCards = useMemo(
     () =>
       state.steps
-        .filter((s) => isRelevantAction(s, agent))
+        .filter(
+          (s) => s.action.from === entity?.name || s.action.to === entity?.name
+        )
         .map(
           (s) =>
             ({
@@ -31,7 +42,7 @@ export function AgentSection() {
               timestamp: new Date(s.action.timestamp),
             }) satisfies LogicCard
         ),
-    [state, agent]
+    [state, entity]
   );
 
   // Auto-scroll ref
@@ -44,39 +55,25 @@ export function AgentSection() {
     }
   }, [logicCards.length]);
 
-  // Processing state based on scenario progress
-  const isProcessing = useMemo(() => {
-    if (state.steps) {
-      const { steps } = state;
-      const lastStep = steps[steps.length - 1];
-      if (lastStep) {
-        return lastStep.action.from === agent?.name;
-      }
-    }
-    return false;
-  }, [state, agent]);
-
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'center-section',
+        sectionClass,
         'relative flex flex-col h-[60vh] w-[30vw] mx-auto'
       )}
     >
       {/* Terminal Header */}
       <div className="flex items-center justify-center mb-6">
-        <motion.div
-          className="flex items-center space-x-3 bg-card/80 backdrop-blur-sm rounded-lg px-4 py-2 border border-border"
-        >
+        <motion.div className="flex items-center space-x-3 bg-card/80 backdrop-blur-sm rounded-lg px-4 py-2 border border-border">
           <Terminal className="w-6 h-6 text-green-500" />
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-sm font-mono text-green-400">AI_AGENT</span>
           </div>
-          <Bot className="w-5 h-5 text-blue-500" />
+          <Cpu className="w-5 h-5 text-blue-500" />
         </motion.div>
       </div>
 
@@ -87,8 +84,13 @@ export function AgentSection() {
         transition={{ delay: 0.2 }}
         className="absolute -top-6 left-1/2 transform -translate-x-1/2"
       >
-        <div className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-          {agent?.name}
+        <div
+          className={cn(
+            'px-2 py-1 rounded-full text-xs font-medium',
+            labelColor
+          )}
+        >
+          {label}
         </div>
       </motion.div>
 
@@ -109,7 +111,7 @@ export function AgentSection() {
             <span>ai_agent_session --start</span>
           </div>
           <div className="text-xs text-green-300/70">
-            Connected to {agent?.name || 'AI Agent'} | Status: ACTIVE
+            Connected to {entity?.name || 'AI Agent'} | Status: ACTIVE
           </div>
         </div>
 
@@ -117,7 +119,7 @@ export function AgentSection() {
           <AnimatePresence mode="popLayout">
             {logicCards.map((card) => {
               // 메시지 방향 구분: 발신 vs 수신
-              const isOutgoing = card.step.action.from === agent?.name;
+              const isOutgoing = card.step.action.from === entity?.name;
 
               return (
                 <motion.div
@@ -280,10 +282,7 @@ export function AgentSection() {
         <div className="mt-4 pt-2 border-t border-green-500/30">
           <div className="flex items-center space-x-2 text-green-400">
             <span className="text-green-500">$</span>
-            <span className={cn(
-              "animate-pulse",
-              isProcessing ? "opacity-100" : "opacity-50"
-            )}>_</span>
+            <span className="animate-pulse">_</span>
           </div>
         </div>
       </div>
