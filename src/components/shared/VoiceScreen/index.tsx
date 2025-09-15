@@ -15,7 +15,6 @@ interface VoiceScreenProps {
   className?: string;
   maxMessages?: number;
   callDuration?: number;
-  isMuted?: boolean;
 }
 
 function getRelevantSession(scenario: Scenario, ownerName: string): CallSession | null {
@@ -28,7 +27,6 @@ export function VoiceScreen({
   contactName = 'Contact',
   className,
   callDuration = 0,
-  isMuted = false,
 }: VoiceScreenProps) {
   const { resolvedTheme } = useTheme();
   const { state } = useScenario();

@@ -3,7 +3,7 @@ import { MessageScreen } from '@/components/shared/MessageScreen';
 import { CallScreen } from '@/components/shared/CallScreen';
 import { SectionLabel } from '@/components/shared/SectionLabel';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Message, PhoneState } from '@/contexts/scenario';
 import { IncomingCallOverlay } from '@/components/shared/CallScreen/IncomingCallOverlay';
 
@@ -56,24 +56,52 @@ export function PhoneSection({
       className={cn('relative')}
     >
       <PhoneFrame>
-        {entity?.state === 'call' ? (
-          <CallScreen
-            contactName={contactName}
-            ownerName={entity?.name || 'Unknown'}
-            contactNumber={contactNumber}
-            callDuration={0}
-            voiceMessages={voiceMessages}
-            from={from}
-          />
-        ) : (
-          <MessageScreen
-            messages={textMessages}
-            isTyping={false}
-            ownerName={entity?.name || 'Unknown'}
-            contactName={contactName}
-            contactStatus={contactStatus}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          {entity?.state === 'call' ? (
+            <motion.div
+              key="call-screen"
+              initial={{ opacity: 0, x: 300, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -300, scale: 0.95 }}
+              transition={{
+                duration: 0.4,
+                ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
+                scale: { duration: 0.3 }
+              }}
+              className="absolute inset-0"
+            >
+              <CallScreen
+                contactName={contactName}
+                ownerName={entity?.name || 'Unknown'}
+                contactNumber={contactNumber}
+                callDuration={0}
+                voiceMessages={voiceMessages}
+                from={from}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="message-screen"
+              initial={{ opacity: 0, x: -300, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 300, scale: 0.95 }}
+              transition={{
+                duration: 0.4,
+                ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
+                scale: { duration: 0.3 }
+              }}
+              className="absolute inset-0"
+            >
+              <MessageScreen
+                messages={textMessages}
+                isTyping={false}
+                ownerName={entity?.name || 'Unknown'}
+                contactName={contactName}
+                contactStatus={contactStatus}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </PhoneFrame>
 
       {/* Section label */}

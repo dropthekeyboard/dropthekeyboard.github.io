@@ -22,7 +22,6 @@ export function VoiceBubbleOverlay({
   className,
   maxMessages = 5,
   callDuration = 0,
-  isMuted = false,
 }: VoiceBubbleOverlayProps) {
   return (
     <motion.div
@@ -48,7 +47,6 @@ export function VoiceBubbleOverlay({
           contactName={contactName}
           maxMessages={maxMessages}
           callDuration={callDuration}
-          isMuted={isMuted}
           className="bg-background/95 backdrop-blur-sm"
         />
       </div>

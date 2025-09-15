@@ -78,12 +78,12 @@ export function VoiceBubble({
       <Avatar
         {...getAvatarProps(senderType)}
         size="md"
-        className="flex-shrink-0 shadow-md ring-2 ring-border/50"
+        className="flex-shrink-0 shadow-md"
       />
 
       <div
         className={cn(
-          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-xl border border-border',
+          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-xl',
           'bg-gradient-to-br from-background/80 via-background/60 to-background/40',
           'max-w-[240px] min-w-[160px]',
           'relative overflow-hidden drop-shadow-sm',
