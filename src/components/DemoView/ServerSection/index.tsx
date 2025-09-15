@@ -35,6 +35,7 @@ export function ServerSection() {
         label={server.name}
         labelColor="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
         sectionClass=""
+        variant="formal"
       />
     );
   }

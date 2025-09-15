@@ -35,7 +35,7 @@ export function MessageBubble({
       <div className="flex flex-col">
         <div
           className={cn(
-            'relative px-4 py-2 rounded-2xl break-words shadow-sm',
+            'relative px-4 py-2 rounded-xl break-words shadow-lg',
             isOwnMessage
               ? 'bg-primary text-primary-foreground rounded-br-md'
               : 'bg-muted text-muted-foreground rounded-bl-md'

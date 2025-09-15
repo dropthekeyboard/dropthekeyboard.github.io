@@ -1,6 +1,7 @@
 import { PhoneFrame } from '@/components/shared/PhoneFrame';
 import { MessageScreen } from '@/components/shared/MessageScreen';
 import { CallScreen } from '@/components/shared/CallScreen';
+import { SectionLabel } from '@/components/shared/SectionLabel';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import type { Message, PhoneState } from '@/contexts/scenario';
@@ -29,7 +30,6 @@ export function PhoneSection({
   contactName,
   contactNumber,
   contactStatus,
-  showAdditionalStatus = false,
 }: PhoneSectionProps) {
   // Collect all messages from entity's messageBox
   const allMessages: Message[] = Object.values(entity?.messageBox || {}).flat();
@@ -50,7 +50,7 @@ export function PhoneSection({
       initial={{ opacity: 0, x: animationX }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={cn('relative overflow-hidden')}
+      className={cn('relative')}
     >
       <PhoneFrame>
         {entity?.state === 'call' ? (
@@ -73,30 +73,13 @@ export function PhoneSection({
       </PhoneFrame>
 
       {/* Section label */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="absolute -top-8 left-1/2 transform -translate-x-1/2"
-      >
-        <div
-          className={`px-3 py-1 ${labelColor} rounded-full text-xs font-medium`}
-        >
-          {label}
-        </div>
-      </motion.div>
-
-      {/* Additional status for server section */}
-      {showAdditionalStatus && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="absolute bottom-2 left-2 text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded"
-        >
-          {allMessages.length > 0 ? 'Online' : 'Available'}
-        </motion.div>
-      )}
+      <SectionLabel
+        label={label}
+        labelColor={labelColor}
+        position="top-high"
+        animation="slide"
+        delay={0.3}
+      />
 
       {/* Call state indicator */}
       {entity && <IncomingCallOverlay state={entity.state} />}

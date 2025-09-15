@@ -5,9 +5,10 @@ import { ServerSection } from './ServerSection';
 
 interface DemoViewProps {
   className?: string;
+  agentStyle?: 'minimal' | 'formal' | 'hacker';
 }
 
-export function DemoView({ className }: DemoViewProps) {
+export function DemoView({ className, agentStyle = 'hacker' }: DemoViewProps) {
   return (
     <div
       id="demoview"
@@ -17,7 +18,7 @@ export function DemoView({ className }: DemoViewProps) {
         <CustomerSection />
       </div>
       <div className="flex-[0_0_30%] flex flex-col">
-        <AgentSection />
+        <AgentSection agentStyle={agentStyle} />
       </div>
       <div className="flex-[0_0_30%] flex flex-col">
         <ServerSection />

@@ -11,14 +11,30 @@ import { ThemeToggle } from './ThemeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
+  onPlaybackSpeedChange?: (speed: number) => void;
+  onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker') => void;
   className?: string;
 }
 
 export function ControlHeader({
   onThemeToggle,
+  onPlaybackSpeedChange,
+  onAgentStyleChange,
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>('hacker');
+
+  const handlePlaybackSpeedChange = (speed: number) => {
+    setPlaybackSpeed(speed);
+    onPlaybackSpeedChange?.(speed);
+  };
+
+  const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker') => {
+    setAgentStyle(style);
+    onAgentStyleChange?.(style);
+  };
 
   return (
     <motion.header
@@ -105,7 +121,7 @@ export function ControlHeader({
               transition={{ delay: 0.1 }}
               className="pt-3 border-t border-border"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <Card className="p-3">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
                     <Settings className="w-4 h-4 mr-2" />
@@ -130,6 +146,78 @@ export function ControlHeader({
                     <div className="flex justify-between">
                       <span>Aspect Ratio:</span>
                       <span className="text-foreground">16:9</span>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-3">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center">
+                    ⚡ Playback Speed
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Speed:</span>
+                      <span className="text-foreground font-mono">{playbackSpeed}x</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.25"
+                      max="3.0"
+                      step="0.25"
+                      value={playbackSpeed}
+                      onChange={(e) => handlePlaybackSpeedChange(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>0.25x</span>
+                      <span>1.0x</span>
+                      <span>3.0x</span>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-3">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center">
+                    🎨 Agent Terminal Style
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-3 gap-1">
+                      <button
+                        onClick={() => handleAgentStyleChange('minimal')}
+                        className={cn(
+                          "px-2 py-1 text-xs rounded border transition-colors",
+                          agentStyle === 'minimal'
+                            ? "border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                            : "border-blue-500/30 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50"
+                        )}
+                      >
+                        Minimal
+                      </button>
+                      <button
+                        onClick={() => handleAgentStyleChange('formal')}
+                        className={cn(
+                          "px-2 py-1 text-xs rounded border transition-colors",
+                          agentStyle === 'formal'
+                            ? "border-slate-500 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300"
+                            : "border-slate-500/30 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/50"
+                        )}
+                      >
+                        Formal
+                      </button>
+                      <button
+                        onClick={() => handleAgentStyleChange('hacker')}
+                        className={cn(
+                          "px-2 py-1 text-xs rounded border transition-colors",
+                          agentStyle === 'hacker'
+                            ? "border-green-500 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300"
+                            : "border-green-500/30 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50"
+                        )}
+                      >
+                        Hacker
+                      </button>
+                    </div>
+                    <div className="text-xs text-muted-foreground text-center">
+                      Current: <span className="text-foreground font-mono capitalize">{agentStyle}</span>
                     </div>
                   </div>
                 </Card>
