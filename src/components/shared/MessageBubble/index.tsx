@@ -1,10 +1,13 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { CheckCheck } from 'lucide-react';
+import { Avatar } from '@/components/shared/Avatar';
+import { getAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 
 interface MessageBubbleProps {
   message: string;
   isOwnMessage: boolean;
+  senderType?: 'user' | 'ai' | 'agent' | 'server-human';
   isTyping?: boolean;
   timestamp?: number;
   isRead?: boolean;
@@ -13,6 +16,7 @@ interface MessageBubbleProps {
 export function MessageBubble({
   message,
   isOwnMessage,
+  senderType = 'user',
   isTyping = false,
   timestamp,
   isRead = false,
@@ -28,10 +32,17 @@ export function MessageBubble({
         duration: 0.3,
       }}
       className={cn(
-        'flex mb-3 max-w-[80%]',
-        isOwnMessage ? 'justify-end ml-auto' : 'justify-start'
+        'flex mb-3 max-w-[80%] items-end space-x-2',
+        isOwnMessage ? 'justify-end ml-auto flex-row-reverse space-x-reverse' : 'justify-start'
       )}
     >
+      {/* Avatar */}
+      <Avatar
+        {...getAvatarProps(senderType)}
+        size="md"
+        className="flex-shrink-0"
+      />
+
       <div className="flex flex-col">
         <div
           className={cn(

@@ -21,6 +21,19 @@ export function MessageScreen({
   contactStatus = 'Online',
   className,
 }: MessageScreenProps) {
+  // Helper function to convert scenario senderType to component senderType
+  const getComponentSenderType = (senderType?: 'agent' | 'customer' | 'server'): 'user' | 'ai' | 'agent' | 'server-human' => {
+    switch (senderType) {
+      case 'agent':
+        return 'ai';
+      case 'customer':
+        return 'user';
+      case 'server':
+        return 'server-human';
+      default:
+        return 'user';
+    }
+  };
   return (
     <div className={cn('w-full h-full bg-background flex flex-col', className)}>
       {/* Message header */}
@@ -58,6 +71,7 @@ export function MessageScreen({
                   <MessageBubble
                     message={msg.content}
                     isOwnMessage={msg.to === ownerName}
+                    senderType={getComponentSenderType(msg.senderType)}
                     timestamp={msg.timestamp}
                     isRead={msg.to === 'user'}
                   />

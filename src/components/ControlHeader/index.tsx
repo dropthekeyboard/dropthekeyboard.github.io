@@ -11,25 +11,20 @@ import { ThemeToggle } from './ThemeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
-  onPlaybackSpeedChange?: (speed: number) => void;
   onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker') => void;
+  playbackInterval?: number; // Auto-play interval in milliseconds
   className?: string;
 }
 
 export function ControlHeader({
   onThemeToggle,
-  onPlaybackSpeedChange,
   onAgentStyleChange,
+  playbackInterval = 5000, // Default 5 seconds
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>('hacker');
-
-  const handlePlaybackSpeedChange = (speed: number) => {
-    setPlaybackSpeed(speed);
-    onPlaybackSpeedChange?.(speed);
-  };
+  const [autoPlayInterval, setAutoPlayInterval] = useState(playbackInterval);
 
   const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker') => {
     setAgentStyle(style);
@@ -81,7 +76,7 @@ export function ControlHeader({
             <Card className="flex flex-row items-center p-1 bg-card/50">
               <ScenarioSelector />
               <Separator orientation="vertical" className="mx-1 h-6" />
-              <PlayControls />
+              <PlayControls interval={autoPlayInterval} />
               <Separator orientation="vertical" className="mx-1 h-6" />
               <RecordingControls />
             </Card>
@@ -152,26 +147,26 @@ export function ControlHeader({
 
                 <Card className="p-3">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
-                    ⚡ Playback Speed
+                    ⏱️ Auto-play Interval
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Speed:</span>
-                      <span className="text-foreground font-mono">{playbackSpeed}x</span>
+                      <span className="text-muted-foreground">Interval:</span>
+                      <span className="text-foreground font-mono">{(autoPlayInterval / 1000).toFixed(1)}s</span>
                     </div>
                     <input
                       type="range"
-                      min="0.25"
-                      max="3.0"
-                      step="0.25"
-                      value={playbackSpeed}
-                      onChange={(e) => handlePlaybackSpeedChange(parseFloat(e.target.value))}
+                      min="1000"
+                      max="10000"
+                      step="500"
+                      value={autoPlayInterval}
+                      onChange={(e) => setAutoPlayInterval(parseInt(e.target.value))}
                       className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>0.25x</span>
-                      <span>1.0x</span>
-                      <span>3.0x</span>
+                      <span>1s</span>
+                      <span>5s</span>
+                      <span>10s</span>
                     </div>
                   </div>
                 </Card>

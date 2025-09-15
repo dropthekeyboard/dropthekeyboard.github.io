@@ -7,18 +7,16 @@ import { useState } from 'react';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
-  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>('hacker');
 
   // Debug: 현재 설정값들 로깅
-  console.log('Current settings:', { playbackSpeed, agentStyle });
+  console.log('Current settings:', { agentStyle });
 
   return (
     <div className={`app ${theme}`}>
       <ScenarioContextProvider>
         <ControlHeader
           onThemeToggle={toggleTheme}
-          onPlaybackSpeedChange={setPlaybackSpeed}
           onAgentStyleChange={setAgentStyle}
         />
         <DemoView agentStyle={agentStyle} />

@@ -17,6 +17,21 @@ export function VoiceBubbleOverlay({
   className,
   maxMessages = 5,
 }: VoiceBubbleOverlayProps) {
+
+  // Helper function to convert scenario senderType to component senderType
+  const getComponentSenderType = (senderType?: 'agent' | 'customer' | 'server'): 'user' | 'ai' | 'agent' | 'server-human' => {
+    switch (senderType) {
+      case 'agent':
+        return 'ai';
+      case 'customer':
+        return 'user';
+      case 'server':
+        return 'server-human';
+      default:
+        return 'user';
+    }
+  };
+
   // Show only the most recent messages
   const displayMessages = voiceMessages.slice(-maxMessages);
 
@@ -44,6 +59,7 @@ export function VoiceBubbleOverlay({
               key={voiceMessage.id || voiceMessage.content}
               message={voiceMessage.content}
               isOwnMessage={voiceMessage.from === ownerName}
+              senderType={getComponentSenderType(voiceMessage.senderType)}
               timestamp={voiceMessage.timestamp}
             />
           ))}

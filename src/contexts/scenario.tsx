@@ -17,6 +17,11 @@ import { isRelevantAction } from '@/lib/utils';
 type MessageType = 'voice' | 'text' | 'dtmf';
 
 /**
+ * Sender types for messages
+ */
+export type SenderType = 'agent' | 'customer' | 'server';
+
+/**
  * Phone states for human entities
  */
 export type PhoneState = 'message' | 'call' | 'ring';
@@ -41,6 +46,8 @@ export interface Message extends Deliverable {
   content: string;
   /** Type of message (text or voice) */
   type: MessageType;
+  /** Type of sender (agent, customer, or server) */
+  senderType: SenderType;
   /** Optional reason for the message */
   reason?: string;
 }
@@ -59,6 +66,8 @@ interface SendMessageInput {
 interface Call extends Deliverable {
   /** Optional reason for the call */
   reason?: string;
+  /** Type of sender (agent, customer, or server) */
+  senderType?: SenderType;
 }
 
 /**
@@ -77,6 +86,8 @@ interface APICall extends Deliverable {
   service: string;
   /** Request details or query */
   request: string;
+  /** Type of sender (agent, customer, or server) */
+  senderType?: SenderType;
 }
 
 /**
@@ -95,6 +106,8 @@ interface APIResponse extends Deliverable {
   service: string;
   /** Response data from the service */
   response: string;
+  /** Type of sender (agent, customer, or server) */
+  senderType?: SenderType;
 }
 
 /**
@@ -165,6 +178,30 @@ export interface CommunicationAction {
    * apiResponse({ apiResponse: { service: "amazon", response: "Red Wine Set 29,000 KRW" } })
    */
   apiResponse: (input: APIResponseInput) => void;
+}
+
+/**
+ * Helper function to determine sender type based on scenario entities
+ */
+function getSenderType(scenario: Scenario, senderName: string): SenderType {
+  // Check if sender is an AI agent
+  if (scenario.agents.some(agent => agent.name === senderName)) {
+    return 'agent';
+  }
+
+  // Check if sender is the customer
+  if (scenario.customer.name === senderName) {
+    return 'customer';
+  }
+
+  // Check if sender is a server
+  if (scenario.servers.some(server => server.name === senderName)) {
+    return 'server';
+  }
+
+  // Default fallback (should not happen in well-formed scenarios)
+  console.warn(`Unknown sender type for: ${senderName}`);
+  return 'server';
 }
 
 function deliverMessage(scenario: Scenario, message: Message): Scenario {
@@ -550,9 +587,18 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * Updates message boxes for human recipients
    */
   const handleSendMessage = useCallback(({ message }: SendMessageInput) => {
+    // Determine sender type based on scenario entities
+    const senderType = getSenderType(currentScenario, message.from);
+
+    // Create message with senderType
+    const messageWithSenderType: Message = {
+      ...message,
+      senderType,
+    };
+
     const step: AgenticSendMessageStep = {
       type: 'send-message',
-      action: message,
+      action: messageWithSenderType,
     };
 
     // Update scenario state directly
@@ -564,18 +610,27 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         steps: [...prev.steps, step],
       };
       // Update customer if they are the recipient
-      return deliverMessage(updatedScenario, message);
+      return deliverMessage(updatedScenario, messageWithSenderType);
     });
-  }, []);
+  }, [currentScenario]);
 
   /**
    * Handle initiating a phone call
    * Updates recipient's state to "ring" if they are human
    */
   const handleMakeCall = useCallback(({ call }: CallInput) => {
+    // Determine sender type based on scenario entities
+    const senderType = getSenderType(currentScenario, call.from);
+
+    // Create call with senderType
+    const callWithSenderType: Call = {
+      ...call,
+      senderType,
+    };
+
     const step: AgenticMakeCallStep = {
       type: 'make-call',
-      action: call,
+      action: callWithSenderType,
     };
 
     // Update scenario state directly
@@ -592,16 +647,26 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         'ring'
       );
     });
-  }, []);
+  }, [currentScenario]);
 
   /**
    * Handle accepting a phone call
    * Sets both caller and recipient state to "call" if they are human
    */
   const handleAcceptCall = useCallback(({ call }: CallInput) => {
+    // For accept-call, the sender is actually the recipient of the original call
+    // So we need to determine sender type based on the 'to' field (who is accepting)
+    const senderType = getSenderType(currentScenario, call.to);
+
+    // Create call with senderType
+    const callWithSenderType: Call = {
+      ...call,
+      senderType,
+    };
+
     const step: AgenticAcceptCallStep = {
       type: 'accept-call',
-      action: call,
+      action: callWithSenderType,
     };
 
     // Update scenario state directly
@@ -620,16 +685,25 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       );
       return finalScenario;
     });
-  }, []);
+  }, [currentScenario]);
 
   /**
    * Handle finishing a phone call
    * Resets both caller and recipient state to "message" if they are human
    */
   const handleFinishCall = useCallback(({ call }: CallInput) => {
+    // Determine sender type based on who is finishing the call
+    const senderType = getSenderType(currentScenario, call.from);
+
+    // Create call with senderType
+    const callWithSenderType: Call = {
+      ...call,
+      senderType,
+    };
+
     const step: AgenticFinishCallStep = {
       type: 'finish-call',
-      action: call,
+      action: callWithSenderType,
     };
 
     // Update scenario state directly
@@ -646,16 +720,25 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         'message'
       );
     });
-  }, []);
+  }, [currentScenario]);
 
   /**
    * Handle API call to external service
    * Records the API call step in global steps
    */
   const handleAPICall = useCallback(({ apiCall }: APICallInput) => {
+    // Determine sender type based on scenario entities
+    const senderType = getSenderType(currentScenario, apiCall.from);
+
+    // Create API call with senderType
+    const apiCallWithSenderType: APICall = {
+      ...apiCall,
+      senderType,
+    };
+
     const step: AgenticAPICallStep = {
       type: 'api-call',
-      action: apiCall,
+      action: apiCallWithSenderType,
     };
 
     setScenario((prev) => {
@@ -668,16 +751,26 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       };
       return updatedScenario;
     });
-  }, []);
+  }, [currentScenario]);
 
   /**
    * Handle API response from external service
    * Records the API response step in global steps
    */
   const handleAPIResponse = useCallback(({ apiResponse }: APIResponseInput) => {
+    // For API response, the sender is typically the external service,
+    // but we determine type based on the recipient (who receives the response)
+    const senderType = getSenderType(currentScenario, apiResponse.to);
+
+    // Create API response with senderType
+    const apiResponseWithSenderType: APIResponse = {
+      ...apiResponse,
+      senderType,
+    };
+
     const step: AgenticAPIResponseStep = {
       type: 'api-response',
-      action: apiResponse,
+      action: apiResponseWithSenderType,
     };
 
     setScenario((prev) => {
@@ -690,7 +783,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       };
       return updatedScenario;
     });
-  }, []);
+  }, [currentScenario]);
 
   /**
    * Execute a step based on its type

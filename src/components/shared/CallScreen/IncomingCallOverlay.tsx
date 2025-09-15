@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, PhoneOff, User } from 'lucide-react';
+import { Phone, PhoneOff } from 'lucide-react';
+import logo from '@/assets/logo.png';
 import type { PhoneState } from '@/contexts/scenario';
 
 interface IncomingCallOverlayProps {
@@ -62,9 +63,15 @@ export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
                 <motion.div
                   animate={{ rotate: [0, 5, -5, 0] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                  className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg"
+                  className="w-30 h-30 bg-white/10 dark:bg-gray-800/50 rounded-full flex items-center justify-center mb-4 shadow-xl overflow-hidden backdrop-blur-sm"
                 >
-                  <User className="w-10 h-10 text-white" />
+                  <motion.img
+                    src={logo}
+                    alt="Logo"
+                    className="w-24 h-24 object-contain"
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
                 </motion.div>
 
                 <motion.h2

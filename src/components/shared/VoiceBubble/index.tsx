@@ -1,10 +1,13 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
+import { Avatar } from '@/components/shared/Avatar';
+import { getAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 
 interface VoiceBubbleProps {
   message: string;
   isOwnMessage: boolean;
+  senderType?: 'user' | 'ai' | 'agent' | 'server-human';
   timestamp?: number;
   className?: string;
 }
@@ -39,6 +42,7 @@ function VoiceWaveform({ isPlaying }: { isPlaying?: boolean }) {
 export function VoiceBubble({
   message,
   isOwnMessage,
+  senderType = 'user',
   timestamp,
   className,
 }: VoiceBubbleProps) {
@@ -56,11 +60,18 @@ export function VoiceBubble({
       exit={{ opacity: 0, y: -10, scale: 0.95 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
       className={cn(
-        'flex mb-3 max-w-[85%]',
-        isOwnMessage ? 'justify-start' : 'justify-end',
+        'flex mb-3 max-w-[85%] items-end space-x-2',
+        isOwnMessage ? 'justify-end ml-auto flex-row-reverse space-x-reverse' : 'justify-start',
         className
       )}
     >
+      {/* Avatar */}
+      <Avatar
+        {...getAvatarProps(senderType)}
+        size="md"
+        className="flex-shrink-0"
+      />
+
       <div
         className={cn(
           'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-sm border',
