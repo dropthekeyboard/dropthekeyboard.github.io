@@ -19,6 +19,7 @@ interface PhoneSectionProps {
   contactName: string;
   contactNumber: string;
   contactStatus: string;
+  from?: string;
   showAdditionalStatus?: boolean;
 }
 
@@ -30,6 +31,8 @@ export function PhoneSection({
   contactName,
   contactNumber,
   contactStatus,
+  from,
+  showAdditionalStatus = false,
 }: PhoneSectionProps) {
   // Collect all messages from entity's messageBox
   const allMessages: Message[] = Object.values(entity?.messageBox || {}).flat();
@@ -60,6 +63,7 @@ export function PhoneSection({
             contactNumber={contactNumber}
             callDuration={0}
             voiceMessages={voiceMessages}
+            from={from}
           />
         ) : (
           <MessageScreen

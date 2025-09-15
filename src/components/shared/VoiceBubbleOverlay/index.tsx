@@ -1,40 +1,29 @@
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
-import { VoiceBubble } from '@/components/shared/VoiceBubble';
+import { motion } from 'framer-motion';
+import { VoiceScreen } from '@/components/shared/VoiceScreen';
 import type { Message } from '@/contexts/scenario';
 
 interface VoiceBubbleOverlayProps {
   voiceMessages: Message[];
   ownerName: string;
   contactName?: string;
+  from?: string;
   className?: string;
   maxMessages?: number;
+  callDuration?: number;
+  isMuted?: boolean;
 }
 
 export function VoiceBubbleOverlay({
   voiceMessages,
   ownerName,
+  contactName = 'Contact',
+  from,
   className,
   maxMessages = 5,
+  callDuration = 0,
+  isMuted = false,
 }: VoiceBubbleOverlayProps) {
-
-  // Helper function to convert scenario senderType to component senderType
-  const getComponentSenderType = (senderType?: 'agent' | 'customer' | 'server'): 'user' | 'ai' | 'agent' | 'server-human' => {
-    switch (senderType) {
-      case 'agent':
-        return 'ai';
-      case 'customer':
-        return 'user';
-      case 'server':
-        return 'server-human';
-      default:
-        return 'user';
-    }
-  };
-
-  // Show only the most recent messages
-  const displayMessages = voiceMessages.slice(-maxMessages);
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -51,19 +40,18 @@ export function VoiceBubbleOverlay({
       {/* Overlay gradient for better readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-      {/* Voice bubbles container */}
-      <div className="relative z-10 space-y-2 max-h-[50vh] overflow-y-auto">
-        <AnimatePresence mode="popLayout">
-          {displayMessages.map((voiceMessage) => (
-            <VoiceBubble
-              key={voiceMessage.id || voiceMessage.content}
-              message={voiceMessage.content}
-              isOwnMessage={voiceMessage.from === ownerName}
-              senderType={getComponentSenderType(voiceMessage.senderType)}
-              timestamp={voiceMessage.timestamp}
-            />
-          ))}
-        </AnimatePresence>
+      {/* Voice screen container */}
+      <div className="relative z-10 flex-1 max-h-[80vh] overflow-hidden rounded-lg border border-white/20 shadow-2xl">
+        <VoiceScreen
+          voiceMessages={voiceMessages}
+          ownerName={ownerName}
+          contactName={contactName}
+          from={from}
+          maxMessages={maxMessages}
+          callDuration={callDuration}
+          isMuted={isMuted}
+          className="bg-background/95 backdrop-blur-sm"
+        />
       </div>
 
       {/* Status indicator */}

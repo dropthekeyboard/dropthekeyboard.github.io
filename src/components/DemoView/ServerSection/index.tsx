@@ -26,6 +26,7 @@ export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
         contactName={agent?.name||"AI Assistant"}
         contactNumber="+1 (800) 555-0199"
         contactStatus="Available"
+        from={server.name}
         showAdditionalStatus={true}
       />
     );

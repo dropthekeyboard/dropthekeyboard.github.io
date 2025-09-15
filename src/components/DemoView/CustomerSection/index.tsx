@@ -16,6 +16,7 @@ export function CustomerSection() {
       contactName={agent?.name || 'Agent'}
       contactNumber="+1 (555) 123-4567"
       contactStatus="Online"
+      from={customer?.name || 'Customer'}
     />
   );
 }
