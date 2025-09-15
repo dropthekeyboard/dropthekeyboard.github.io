@@ -87,7 +87,6 @@ export function VoiceBubble({
           'bg-gradient-to-br from-background/80 via-background/60 to-background/40',
           'max-w-[240px] min-w-[160px]',
           'relative overflow-hidden drop-shadow-sm',
-          isOwnMessage ? 'rounded-bl-lg' : 'rounded-br-lg'
         )}
       >
         {/* Glass effect overlay */}

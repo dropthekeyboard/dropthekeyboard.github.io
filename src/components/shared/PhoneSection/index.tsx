@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Message, PhoneState } from '@/contexts/scenario';
 import { IncomingCallOverlay } from '@/components/shared/CallScreen/IncomingCallOverlay';
+import { useScenario } from '@/hooks/useScenario';
 
 interface PhoneSectionProps {
   entity: {
@@ -34,6 +35,8 @@ export function PhoneSection({
   from,
   showAdditionalStatus: _showAdditionalStatus = false, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: PhoneSectionProps) {
+  const { state } = useScenario();
+
   // Collect all messages from entity's messageBox
   const allMessages: Message[] = Object.values(entity?.messageBox || {}).flat();
 
@@ -45,6 +48,19 @@ export function PhoneSection({
   const voiceMessages: Message[] = allMessages.filter(
     (msg) => msg.type === 'voice'
   );
+
+  // Get caller name from active call session
+  const getCallerName = () => {
+    if (!entity) return contactName;
+
+    const activeCallSession = state.callSessions?.find(session =>
+      session.participants.some(p => p === entity.name) && session.endTime === null
+    );
+
+    return activeCallSession?.callerName || contactName;
+  };
+
+  const callerName = getCallerName();
 
   const animationX = animationDirection === 'left' ? -50 : 50;
 
@@ -114,7 +130,7 @@ export function PhoneSection({
       />
 
       {/* Call state indicator */}
-      {entity && <IncomingCallOverlay state={entity.state} />}
+      {entity && <IncomingCallOverlay state={entity.state} callerName={callerName} />}
     </motion.div>
   );
 }

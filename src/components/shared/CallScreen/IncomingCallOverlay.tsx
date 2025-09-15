@@ -5,9 +5,10 @@ import type { PhoneState } from '@/contexts/scenario';
 
 interface IncomingCallOverlayProps {
   state: PhoneState;
+  callerName?: string;
 }
 
-export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
+export function IncomingCallOverlay({ state, callerName = 'Service Provider' }: IncomingCallOverlayProps) {
   if (state === 'message') {
     return null;
   }
@@ -83,7 +84,7 @@ export function IncomingCallOverlay({ state }: IncomingCallOverlayProps) {
                 </motion.h2>
 
                 <motion.p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Service Provider
+                  {callerName}
                 </motion.p>
               </motion.div>
 
