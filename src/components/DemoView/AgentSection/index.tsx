@@ -15,9 +15,6 @@ export function AgentSection({ agentStyle = 'hacker' }: AgentSectionProps) {
   // Agent 관련 steps만 필터링
   const agentSteps = state.steps.filter((s) => isRelevantAction(s, agent));
 
-  // Agent가 동작 중인지 확인 (steps가 있으면 동작 중)
-  const isAgentActive = agentSteps.length > 0;
-
   return (
     <TerminalSection
       entity={null}
@@ -26,7 +23,6 @@ export function AgentSection({ agentStyle = 'hacker' }: AgentSectionProps) {
       sectionClass="center-section"
       steps={agentSteps}
       entityName={agent?.name}
-      isActive={isAgentActive}
       variant={agentStyle}
     />
   );

@@ -21,7 +21,7 @@ export function DemoView({ className, agentStyle = 'hacker' }: DemoViewProps) {
         <AgentSection agentStyle={agentStyle} />
       </div>
       <div className="flex-[0_0_30%] flex flex-col">
-        <ServerSection />
+        <ServerSection agentStyle={agentStyle} />
       </div>
     </div>
   );
