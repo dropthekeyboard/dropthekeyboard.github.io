@@ -146,13 +146,6 @@ export function VoiceScreen({
             {formatDuration(callDuration)}
           </span>
         </div>
-
-        {/* Status indicator - minimal */}
-        <div className="text-center">
-          <p className={cn('text-xs', currentTheme.statusText)}>
-            {isMuted ? '🔇 Muted' : '🎤 Active'}
-          </p>
-        </div>
       </div>
 
       {/* Voice messages container - full screen with subtle blur - only when messages exist */}
@@ -167,7 +160,7 @@ export function VoiceScreen({
                   isOwnMessage={voiceMessage.from === ownerName}
                   senderType={getComponentSenderType(voiceMessage.senderType)}
                   timestamp={voiceMessage.timestamp}
-                  className="max-w-[280px] mx-auto shadow-lg relative z-30"
+                  className="max-w-[280px] mx-auto relative z-30"
                 />
               ))}
             </AnimatePresence>

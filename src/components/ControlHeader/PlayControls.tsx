@@ -15,7 +15,7 @@ interface PlayControlsProps {
  * Play/Pause controls for auto-playing scenario steps.
  * Includes a toggle button and conditionally renders the Player component.
  */
-export function PlayControls({ interval = 5000 }: PlayControlsProps) {
+export function PlayControls({ interval = 3000 }: PlayControlsProps) {
   const { reset, currentScenario } = useScenario();
   const { isPlaying, togglePlay, stopAutoPlay, startAutoPlay } =
     useScenarioProgress();

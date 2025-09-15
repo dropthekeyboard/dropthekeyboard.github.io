@@ -19,7 +19,7 @@ interface ControlHeaderProps {
 export function ControlHeader({
   onThemeToggle,
   onAgentStyleChange,
-  playbackInterval = 5000, // Default 5 seconds
+  playbackInterval = 3000, // Default 5 seconds
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
