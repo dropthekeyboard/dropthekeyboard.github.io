@@ -32,7 +32,7 @@ export function PhoneSection({
   contactNumber,
   contactStatus,
   from,
-  showAdditionalStatus = false,
+  showAdditionalStatus: _showAdditionalStatus = false, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: PhoneSectionProps) {
   // Collect all messages from entity's messageBox
   const allMessages: Message[] = Object.values(entity?.messageBox || {}).flat();

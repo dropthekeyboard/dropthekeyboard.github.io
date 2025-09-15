@@ -1,31 +1,40 @@
 import { cn } from '@/lib/utils';
 import { AnimatePresence } from 'framer-motion';
 import { VoiceBubble } from '@/components/shared/VoiceBubble';
-import type { Message } from '@/contexts/scenario';
+import { Avatar } from '@/components/shared/Avatar';
+import { getCallerAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import type { CallSession, Message, Scenario } from '@/contexts/scenario';
 import { useTheme } from '@/hooks/useTheme';
+import { useMemo } from 'react';
+import { useScenario } from '@/hooks/useScenario';
 
 interface VoiceScreenProps {
   voiceMessages: Message[];
   ownerName: string;
   contactName?: string;
-  from?: string;
   className?: string;
   maxMessages?: number;
   callDuration?: number;
   isMuted?: boolean;
 }
 
+function getRelevantSession(scenario: Scenario, ownerName: string): CallSession | null {
+  return scenario.callSessions?.find(s => s.participants.some((p) => p === ownerName)) || null;
+}
+
 export function VoiceScreen({
   voiceMessages,
   ownerName,
   contactName = 'Contact',
-  from,
   className,
-  maxMessages = 5,
   callDuration = 0,
   isMuted = false,
 }: VoiceScreenProps) {
   const { resolvedTheme } = useTheme();
+  const { state } = useScenario();
+
+  const session = useMemo(() => getRelevantSession(state, ownerName), [state, ownerName]);
+  console.log("voice screen session : ", { session, voiceMessages });
 
   // Helper function to convert scenario senderType to component senderType
   const getComponentSenderType = (senderType?: 'agent' | 'customer' | 'server'): 'user' | 'ai' | 'agent' | 'server-human' => {
@@ -48,8 +57,11 @@ export function VoiceScreen({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Show only the most recent messages
-  const displayMessages = voiceMessages.slice(-maxMessages);
+  // Show only the messages that belong to the current active call session
+  const displayMessages = voiceMessages.filter(m =>
+    m.callSession?.id === session?.id &&
+    m.callSession?.endTime === null // Only messages from active calls
+  );
 
   // Theme-based styling
   const themeStyles = {
@@ -108,15 +120,17 @@ export function VoiceScreen({
 
       {/* Contact info and call status - centered */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full space-y-6">
-        {/* Contact avatar - minimal design */}
-        <div className={cn(
-          'w-20 h-20 backdrop-blur-sm rounded-full mx-auto flex items-center justify-center',
-          currentTheme.avatarBg,
-          currentTheme.avatarBorder
-        )}>
-          <span className={cn('text-2xl font-light', currentTheme.textPrimary)}>
-            {(from || contactName).charAt(0).toUpperCase()}
-          </span>
+        {/* Contact avatar - using Avatar component with CallSession info */}
+        <div className="mx-auto">
+          <Avatar
+            {...getCallerAvatarProps(session?.callerType)}
+            size="lg"
+            className={cn(
+              'backdrop-blur-sm',
+              currentTheme.avatarBg,
+              currentTheme.avatarBorder
+            )}
+          />
         </div>
 
         {/* Contact name */}
@@ -143,8 +157,8 @@ export function VoiceScreen({
 
       {/* Voice messages container - full screen with subtle blur - only when messages exist */}
       {displayMessages.length > 0 && (
-        <div className={cn('absolute inset-0 backdrop-blur-sm flex flex-col justify-end p-6 pb-32 z-20', currentTheme.overlayBg)}>
-          <div className="flex-1 overflow-y-auto space-y-3 max-h-full">
+        <div className={cn('absolute inset-0 flex flex-col justify-end z-20', currentTheme.overlayBg)}>
+          <div className="flex-1 overflow-y-auto space-y-3 max-h-full px-4 py-4">
             <AnimatePresence mode="popLayout">
               {displayMessages.map((voiceMessage) => (
                 <VoiceBubble
@@ -153,7 +167,7 @@ export function VoiceScreen({
                   isOwnMessage={voiceMessage.from === ownerName}
                   senderType={getComponentSenderType(voiceMessage.senderType)}
                   timestamp={voiceMessage.timestamp}
-                  className="max-w-[320px] mx-auto shadow-lg relative z-30"
+                  className="max-w-[280px] mx-auto shadow-lg relative z-30"
                 />
               ))}
             </AnimatePresence>

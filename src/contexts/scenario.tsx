@@ -41,7 +41,7 @@ interface Deliverable {
 /**
  * Call session data structure
  */
-interface CallSession {
+export interface CallSession {
   id: string;
   /** Name of the caller */
   callerName: string;
@@ -513,7 +513,10 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * List of all available scenarios
    */
   const scenarios: Scenario[] = useMemo(() => {
-    return Object.values(scenariosData) as unknown as Scenario[];
+    return Object.values(scenariosData).map(scenario => ({
+      ...scenario,
+      callSessions: [],
+    })) as unknown as Scenario[];
   }, []);
 
   /**
@@ -610,37 +613,36 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * Updates message boxes for human recipients
    */
   const handleSendMessage = useCallback(({ message }: SendMessageInput) => {
-    // Determine sender type based on scenario entities
-    const senderType = getSenderType(currentScenario, message.from);
-
-    // Find active call session for voice messages
-    let callSession: CallSession | undefined;
-    if (message.type === 'voice') {
-      // Find the most recent active call session that includes both participants
-      const activeCallSession = currentScenario.callSessions
-        .filter(session => session.endTime === null && session.isAccepted)
-        .find(session =>
-          session.participants.includes(message.from) &&
-          session.participants.includes(message.to || '')
-        );
-      callSession = activeCallSession;
-    }
-
-    // Create message with senderType and callSession (if applicable)
-    const messageWithSenderType: Message = {
-      ...message,
-      senderType,
-      ...(callSession && { callSession }),
-    };
-
-    const step: AgenticSendMessageStep = {
-      type: 'send-message',
-      action: messageWithSenderType,
-    };
-
-    // Update scenario state directly
+    // Update scenario state and handle message sending
     setScenario((prev) => {
       if (!prev) return prev;
+
+      // Determine sender type based on scenario entities
+      const senderType = getSenderType(prev, message.from);
+
+      // Find active call session for voice messages
+      let callSession: CallSession | undefined;
+      if (message.type === 'voice') {
+        // Find the most recent active call session that includes both participants
+        const activeCallSession = (prev.callSessions || [])
+          .find(session =>
+            session.participants.includes(message.from) &&
+            session.participants.includes(message.to || '') &&
+            session.endTime === null // Only active calls
+          );
+        callSession = activeCallSession;
+      }
+
+      const messageWithSenderType: Message = {
+        ...message,
+        senderType,
+        ...(callSession && { callSession }),
+      };
+
+      const step: AgenticSendMessageStep = {
+        type: 'send-message',
+        action: messageWithSenderType,
+      };
 
       const updatedScenario: Scenario = {
         ...prev,
@@ -649,7 +651,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       // Update customer if they are the recipient
       return deliverMessage(updatedScenario, messageWithSenderType);
     });
-  }, [currentScenario]);
+  }, []);
 
   /**
    * Handle initiating a phone call
@@ -674,6 +676,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
     setScenario((prev) => {
       if (!prev) return prev;
 
+
       // Create new call session
       const newCallSession: CallSession = {
         id: createId(),
@@ -688,7 +691,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       const updatedScenario: Scenario = {
         ...prev,
         steps: [...prev.steps, step],
-        callSessions: [...prev.callSessions, newCallSession],
+        callSessions: [...(prev.callSessions || []), newCallSession],
       };
       return updateEntityState(
         updateEntityState(updatedScenario, call.to, 'ring'),
@@ -774,7 +777,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       if (!prev) return prev;
 
       // Find and update the call session
-      const updatedCallSessions = prev.callSessions.map(session => {
+      const updatedCallSessions = (prev.callSessions || []).map(session => {
         // Check if this session matches the call (participants match and is active)
         const hasParticipants = session.participants.includes(call.from) && session.participants.includes(call.to);
         if (hasParticipants && session.endTime === null) {

@@ -14,18 +14,18 @@ interface VoiceBubbleProps {
 
 function VoiceWaveform({ isPlaying }: { isPlaying?: boolean }) {
   return (
-    <div className="flex items-end space-x-1 h-6 px-2 py-1 bg-black/20 rounded-full">
+    <div className="flex items-end space-x-1 h-8 px-3 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
       {[...Array(5)].map((_, i) => (
         <motion.div
           key={i}
-          className="w-1 bg-gradient-to-t from-blue-400 to-cyan-300 rounded-full"
+          className="w-1.5 bg-gradient-to-t from-blue-300 to-cyan-200 rounded-full shadow-sm"
           animate={
             isPlaying
               ? {
-                  height: [4, 12, 4, 16, 4],
-                  opacity: [0.5, 1, 0.5, 1, 0.5],
+                  height: [6, 16, 6, 20, 6],
+                  opacity: [0.6, 1, 0.6, 1, 0.6],
                 }
-              : { height: 4, opacity: 0.5 }
+              : { height: 6, opacity: 0.6 }
           }
           transition={{
             duration: 1.2,
@@ -55,12 +55,12 @@ export function VoiceBubble({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      initial={{ opacity: 0, y: 15, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      exit={{ opacity: 0, y: -15, scale: 0.95 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'flex mb-3 max-w-[85%] items-end space-x-2',
+        'flex mb-4 max-w-[75%] items-end space-x-3',
         isOwnMessage ? 'justify-end ml-auto flex-row-reverse space-x-reverse' : 'justify-start',
         className
       )}
@@ -69,44 +69,50 @@ export function VoiceBubble({
       <Avatar
         {...getAvatarProps(senderType)}
         size="md"
-        className="flex-shrink-0"
+        className="flex-shrink-0 shadow-lg ring-2 ring-white/20"
       />
 
       <div
         className={cn(
-          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-sm border',
-          'bg-gradient-to-br from-blue-500/30 to-purple-500/30 text-white border-white/40',
-          'max-w-[320px] min-w-[200px]',
-          isOwnMessage ? 'rounded-bl-md' : 'rounded-br-md'
+          'px-4 py-3 rounded-2xl shadow-xl backdrop-blur-xl border border-white/30',
+          'bg-gradient-to-br from-white/20 via-white/15 to-white/10',
+          'max-w-[240px] min-w-[160px]',
+          'relative overflow-hidden',
+          isOwnMessage ? 'rounded-bl-lg' : 'rounded-br-lg'
         )}
       >
+        {/* Glass effect overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+
         {/* Voice visualization header */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
+        <div className="flex items-center justify-between mb-4 relative z-10">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               {isPlaying ? (
-                <Volume2 className="w-4 h-4 text-green-300 animate-pulse" />
+                <Volume2 className="w-5 h-5 text-emerald-400 animate-pulse drop-shadow-sm" />
               ) : (
-                <VolumeX className="w-4 h-4 text-white/70" />
+                <VolumeX className="w-5 h-5 text-slate-400 drop-shadow-sm" />
               )}
               <VoiceWaveform isPlaying={isPlaying} />
             </div>
-            <span className="text-xs text-white/70 font-medium">
+            <span className="text-sm font-semibold text-slate-700 tracking-wide">
               Voice Message
             </span>
           </div>
           {timestamp && (
-            <span className="text-xs text-white/70">
+            <span className="text-sm text-slate-500 font-medium">
               {formatTime(timestamp)}
             </span>
           )}
         </div>
 
         {/* Message content */}
-        <div className="text-sm leading-relaxed text-white/90">{message}</div>
+        <div className="text-base leading-relaxed text-slate-800 font-medium relative z-10">
+          {message}
+        </div>
 
         {/* Speaker indicator */}
-        <div className="mt-2 text-xs text-white/60">
+        <div className="mt-4 text-sm text-slate-600 font-medium relative z-10">
           {isOwnMessage ? 'You' : 'Contact'}
         </div>
       </div>

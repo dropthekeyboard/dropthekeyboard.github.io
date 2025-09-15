@@ -19,7 +19,7 @@ export function CallScreen({
   voiceMessages = [],
   ownerName,
   contactName = 'Contact',
-  contactNumber,
+  contactNumber: _contactNumber, // eslint-disable-line @typescript-eslint/no-unused-vars
   callDuration = 0,
   isMuted = false,
   from,

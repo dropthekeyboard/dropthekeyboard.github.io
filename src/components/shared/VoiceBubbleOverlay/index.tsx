@@ -18,7 +18,7 @@ export function VoiceBubbleOverlay({
   voiceMessages,
   ownerName,
   contactName = 'Contact',
-  from,
+  from: _from, // eslint-disable-line @typescript-eslint/no-unused-vars
   className,
   maxMessages = 5,
   callDuration = 0,
@@ -46,7 +46,6 @@ export function VoiceBubbleOverlay({
           voiceMessages={voiceMessages}
           ownerName={ownerName}
           contactName={contactName}
-          from={from}
           maxMessages={maxMessages}
           callDuration={callDuration}
           isMuted={isMuted}

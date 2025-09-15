@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, PhoneOff } from 'lucide-react';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/skt_logo.jpg';
 import type { PhoneState } from '@/contexts/scenario';
 
 interface IncomingCallOverlayProps {
