@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import './App.css';
 import { ControlHeader } from './components/ControlHeader';
 import { DemoView } from './components/DemoView';
-import { StorytellingPage } from './components/StorytellingPage';
+import { ScrollyTelling } from './components/Test';
 import { ScenarioContextProvider } from './contexts/scenario';
 import { useTheme } from './hooks/useTheme';
-import { useState } from 'react';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
@@ -28,7 +28,8 @@ function App() {
           {viewMode === 'demo' ? (
             <DemoView agentStyle={agentStyle} />
           ) : (
-            <StorytellingPage agentStyle={agentStyle} />
+            // <StorytellingPage agentStyle={agentStyle} />
+            <ScrollyTelling />
           )}
         </main>
       </ScenarioContextProvider>
