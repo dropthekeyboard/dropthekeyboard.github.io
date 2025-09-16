@@ -27,31 +27,41 @@ export function MessageFlowVisualization() {
       id: 'customer',
       type: 'customer',
       name: 'Customer',
-      position: { x: 50, y: 200 }
+      position: { x: 50, y: 200 },
     },
-    ...(active.agent ? [{
-      id: active.agent.name,
-      type: 'agent' as const,
-      name: active.agent.name,
-      position: { x: 250, y: 100 }
-    }] : []),
-    ...(active.server ? [{
-      id: active.server.name,
-      type: (active.server.type === 'ai' ? 'agent' : 'server') as 'agent' | 'server',
-      name: active.server.name,
-      position: { x: 250, y: 300 }
-    }] : [])
+    ...(active.agent
+      ? [
+          {
+            id: active.agent.name,
+            type: 'agent' as const,
+            name: active.agent.name,
+            position: { x: 250, y: 100 },
+          },
+        ]
+      : []),
+    ...(active.server
+      ? [
+          {
+            id: active.server.name,
+            type: (active.server.type === 'ai' ? 'agent' : 'server') as
+              | 'agent'
+              | 'server',
+            name: active.server.name,
+            position: { x: 250, y: 300 },
+          },
+        ]
+      : []),
   ];
 
   // 메시지 스텝들을 엣지로 변환
   const edges: MessageFlowEdge[] = state.steps
-    .filter(step => step.type === 'send-message')
+    .filter((step) => step.type === 'send-message')
     .map((step, index) => ({
       id: `edge-${index}`,
       from: step.action.from,
       to: step.action.to,
       content: step.action.content,
-      stepIndex: index
+      stepIndex: index,
     }));
 
   return (
@@ -63,28 +73,32 @@ export function MessageFlowVisualization() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           className={cn(
-            "absolute w-16 h-16 rounded-full flex items-center justify-center border-2",
-            node.type === 'customer' && "bg-blue-500/20 border-blue-500",
-            node.type === 'agent' && "bg-green-500/20 border-green-500",
-            node.type === 'server' && "bg-purple-500/20 border-purple-500"
+            'absolute w-16 h-16 rounded-full flex items-center justify-center border-2',
+            node.type === 'customer' && 'bg-blue-500/20 border-blue-500',
+            node.type === 'agent' && 'bg-green-500/20 border-green-500',
+            node.type === 'server' && 'bg-purple-500/20 border-purple-500'
           )}
           style={{
             left: `${node.position.x}px`,
             top: `${node.position.y}px`,
-            transform: 'translate(-50%, -50%)'
+            transform: 'translate(-50%, -50%)',
           }}
         >
-          {node.type === 'customer' && <User className="w-6 h-6 text-blue-500" />}
+          {node.type === 'customer' && (
+            <User className="w-6 h-6 text-blue-500" />
+          )}
           {node.type === 'agent' && <Bot className="w-6 h-6 text-green-500" />}
-          {node.type === 'server' && <MessageCircle className="w-6 h-6 text-purple-500" />}
+          {node.type === 'server' && (
+            <MessageCircle className="w-6 h-6 text-purple-500" />
+          )}
         </motion.div>
       ))}
 
       {/* 엣지들 렌더링 */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
         {edges.map((edge) => {
-          const fromNode = nodes.find(n => n.id === edge.from);
-          const toNode = nodes.find(n => n.id === edge.to);
+          const fromNode = nodes.find((n) => n.id === edge.from);
+          const toNode = nodes.find((n) => n.id === edge.to);
 
           if (!fromNode || !toNode) return null;
 
@@ -125,7 +139,9 @@ export function MessageFlowVisualization() {
                 height="40"
               >
                 <div className="bg-background/90 backdrop-blur-sm rounded px-2 py-1 border text-xs text-center shadow-lg">
-                  {edge.content.length > 30 ? `${edge.content.substring(0, 30)}...` : edge.content}
+                  {edge.content.length > 30
+                    ? `${edge.content.substring(0, 30)}...`
+                    : edge.content}
                 </div>
               </motion.foreignObject>
             </g>

@@ -1,27 +1,24 @@
 import { PhoneFrame } from '@/components/shared/PhoneFrame';
 import { MessageScreen } from '@/components/shared/MessageScreen';
 import { CallScreen } from '@/components/shared/CallScreen';
+import { HomeScreen } from '@/components/shared/HomeScreen';
 import { SectionLabel } from '@/components/shared/SectionLabel';
+import { IncomingCallOverlay } from '@/components/shared/CallScreen/IncomingCallOverlay';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Message, PhoneState } from '@/contexts/scenario';
-import { IncomingCallOverlay } from '@/components/shared/CallScreen/IncomingCallOverlay';
+import type { Message, HumanState, CallSession } from '@/contexts/scenario';
 import { useScenario } from '@/hooks/useScenario';
 
 interface PhoneSectionProps {
-  entity: {
-    name: string;
-    state: PhoneState;
-    messageBox: Record<string, Message[]>;
-  } | null;
+  entity: HumanState | null;
   label: string;
   labelColor: string;
   animationDirection: 'left' | 'right';
-  contactName: string;
+  contactName?: string;
   contactNumber: string;
-  contactStatus: string;
   from?: string;
   showAdditionalStatus?: boolean;
+  location?: 'customer' | 'server';
 }
 
 export function PhoneSection({
@@ -29,11 +26,11 @@ export function PhoneSection({
   label,
   labelColor,
   animationDirection,
-  contactName,
+  contactName = 'Contact',
   contactNumber,
-  contactStatus,
   from,
   showAdditionalStatus: _showAdditionalStatus = false, // eslint-disable-line @typescript-eslint/no-unused-vars
+  location = 'customer',
 }: PhoneSectionProps) {
   const { state } = useScenario();
 
@@ -46,15 +43,17 @@ export function PhoneSection({
   );
 
   const voiceMessages: Message[] = allMessages.filter(
-    (msg) => msg.type === 'voice'
+    (msg) => msg.type === 'voice' || msg.type === 'dtmf'
   );
 
   // Get caller name from active call session
   const getCallerName = () => {
     if (!entity) return contactName;
 
-    const activeCallSession = state.callSessions?.find(session =>
-      session.participants.some(p => p === entity.name) && session.endTime === null
+    const activeCallSession = state.callSessions?.find(
+      (session: CallSession) =>
+        session.participants.some((p: string) => p === entity.name) &&
+        session.endTime === null
     );
 
     return activeCallSession?.callerName || contactName;
@@ -82,18 +81,32 @@ export function PhoneSection({
               transition={{
                 duration: 0.4,
                 ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
-                scale: { duration: 0.3 }
+                scale: { duration: 0.3 },
               }}
               className="absolute inset-0"
             >
               <CallScreen
-                contactName={contactName}
+                contactName={entity?.name || contactName}
                 ownerName={entity?.name || 'Unknown'}
                 contactNumber={contactNumber}
                 callDuration={0}
                 voiceMessages={voiceMessages}
                 from={from}
               />
+            </motion.div>
+          ) : entity?.state === 'idle' ? (
+            <motion.div
+              key="home-screen"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{
+                duration: 0.4,
+                ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
+              }}
+              className="absolute inset-0"
+            >
+              <HomeScreen entity={entity} location={location} />
             </motion.div>
           ) : (
             <motion.div
@@ -104,7 +117,7 @@ export function PhoneSection({
               transition={{
                 duration: 0.4,
                 ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
-                scale: { duration: 0.3 }
+                scale: { duration: 0.3 },
               }}
               className="absolute inset-0"
             >
@@ -112,8 +125,7 @@ export function PhoneSection({
                 messages={textMessages}
                 isTyping={false}
                 ownerName={entity?.name || 'Unknown'}
-                contactName={contactName}
-                contactStatus={contactStatus}
+                contactName={entity?.name || contactName}
               />
             </motion.div>
           )}
@@ -130,7 +142,9 @@ export function PhoneSection({
       />
 
       {/* Call state indicator */}
-      {entity && <IncomingCallOverlay state={entity.state} callerName={callerName} />}
+      {entity && (
+        <IncomingCallOverlay state={entity.state} callerName={callerName} />
+      )}
     </motion.div>
   );
 }

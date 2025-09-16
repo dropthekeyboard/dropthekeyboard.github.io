@@ -18,7 +18,7 @@ export function AgentSection({ agentStyle = 'hacker' }: AgentSectionProps) {
   return (
     <TerminalSection
       entity={null}
-      label={agent?.name||"AI Agent"}
+      label={agent?.name || 'AI Agent'}
       labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
       sectionClass="center-section"
       steps={agentSteps}

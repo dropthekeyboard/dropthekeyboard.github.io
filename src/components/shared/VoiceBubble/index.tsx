@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { Avatar } from '@/components/shared/Avatar';
 import { getAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 import { useTheme } from '@/hooks/useTheme';
@@ -19,15 +19,18 @@ function VoiceWaveform({ isPlaying }: { isPlaying?: boolean }) {
   // Theme-based waveform colors for better visibility
   const waveformColors = {
     light: 'bg-gradient-to-t from-blue-600/80 to-blue-500',
-    dark: 'bg-gradient-to-t from-blue-400/90 to-blue-300'
+    dark: 'bg-gradient-to-t from-blue-400/90 to-blue-300',
   };
 
   return (
-    <div className="flex items-end space-x-1 h-8 px-3 py-2 bg-muted/50 backdrop-blur-md rounded-full border border-border/50">
+    <div className="flex items-end space-x-1 h-8 px-3 py-2 bg-white/30 backdrop-blur-3xl rounded-full border border-white/40 shadow-lg">
       {[...Array(5)].map((_, i) => (
         <motion.div
           key={i}
-          className={cn('w-1.5 rounded-full shadow-sm', waveformColors[resolvedTheme])}
+          className={cn(
+            'w-1.5 rounded-full shadow-sm',
+            waveformColors[resolvedTheme]
+          )}
           animate={
             isPlaying
               ? {
@@ -70,7 +73,9 @@ export function VoiceBubble({
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
         'flex mb-4 max-w-[75%] items-end space-x-4',
-        isOwnMessage ? 'justify-end ml-auto flex-row-reverse space-x-reverse' : 'justify-start',
+        isOwnMessage
+          ? 'justify-end ml-auto flex-row-reverse space-x-reverse'
+          : 'justify-start',
         className
       )}
     >
@@ -83,32 +88,24 @@ export function VoiceBubble({
 
       <div
         className={cn(
-          'px-4 py-3 rounded-2xl shadow-lg backdrop-blur-xl',
-          'bg-gradient-to-br from-background/80 via-background/60 to-background/40',
+          'px-4 py-3 rounded-2xl shadow-2xl',
+          'bg-white/50 border border-white/60',
           'max-w-[240px] min-w-[160px]',
-          'relative overflow-hidden drop-shadow-sm',
+          'relative overflow-hidden',
+          'backdrop-blur-ultra'
         )}
       >
-        {/* Glass effect overlay */}
-        <div className="absolute inset-0 backdrop-blur-lg" />
+        {/* Ultra-strong glass effect overlay with extreme blur kernel */}
+        <div className="absolute inset-0 backdrop-blur-extreme bg-gradient-to-br from-white/30 via-white/20 to-white/15 rounded-2xl" />
 
         {/* Voice visualization header */}
         <div className="flex items-center justify-between mb-4 relative z-10">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              {isPlaying ? (
-                <Volume2 className="w-5 h-5 text-primary animate-pulse drop-shadow-sm" />
-              ) : (
-                <VolumeX className="w-5 h-5 text-muted-foreground drop-shadow-sm" />
-              )}
-              <VoiceWaveform isPlaying={isPlaying} />
-            </div>
-            <span className="text-sm font-semibold text-foreground tracking-wide">
-              Voice Message
-            </span>
+          <div className="flex items-center space-x-3">
+            <Phone className="w-4 h-4 text-primary/70 flex-shrink-0" />
+            <VoiceWaveform isPlaying={isPlaying} />
           </div>
           {timestamp && (
-            <span className="text-sm text-muted-foreground font-medium">
+            <span className="text-xs text-muted-foreground font-medium flex-shrink-0">
               {formatTime(timestamp)}
             </span>
           )}

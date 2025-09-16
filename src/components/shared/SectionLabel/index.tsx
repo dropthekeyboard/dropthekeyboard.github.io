@@ -15,7 +15,8 @@ const sectionLabelVariants = cva(
         top: 'absolute -top-6 left-1/2 transform -translate-x-1/2',
         'top-high': 'absolute -top-8 left-1/2 transform -translate-x-1/2',
         'top-low': 'absolute -top-4 left-1/2 transform -translate-x-1/2',
-        center: 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+        center:
+          'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
         bottom: 'absolute -bottom-6 left-1/2 transform -translate-x-1/2',
       },
       animation: {
@@ -32,7 +33,8 @@ const sectionLabelVariants = cva(
   }
 );
 
-export interface SectionLabelProps extends VariantProps<typeof sectionLabelVariants> {
+export interface SectionLabelProps
+  extends VariantProps<typeof sectionLabelVariants> {
   label: string;
   labelColor: string;
   className?: string;
@@ -80,11 +82,12 @@ export function SectionLabel({
   return (
     <motion.div
       {...getAnimationProps()}
-      className={cn(sectionLabelVariants({ size, position, animation }), className)}
+      className={cn(
+        sectionLabelVariants({ size, position, animation }),
+        className
+      )}
     >
-      <div className={cn(labelColor)}>
-        {label}
-      </div>
+      <div className={cn(labelColor)}>{label}</div>
     </motion.div>
   );
 }

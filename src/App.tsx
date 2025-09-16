@@ -7,7 +7,9 @@ import { useState } from 'react';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
-  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>('hacker');
+  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>(
+    'hacker'
+  );
 
   // Debug: 현재 설정값들 로깅
   console.log('Current settings:', { agentStyle });

@@ -23,7 +23,9 @@ export function ControlHeader({
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>('hacker');
+  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>(
+    'hacker'
+  );
   const [autoPlayInterval, setAutoPlayInterval] = useState(playbackInterval);
 
   const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker') => {
@@ -152,7 +154,9 @@ export function ControlHeader({
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Interval:</span>
-                      <span className="text-foreground font-mono">{(autoPlayInterval / 1000).toFixed(1)}s</span>
+                      <span className="text-foreground font-mono">
+                        {(autoPlayInterval / 1000).toFixed(1)}s
+                      </span>
                     </div>
                     <input
                       type="range"
@@ -160,7 +164,9 @@ export function ControlHeader({
                       max="10000"
                       step="500"
                       value={autoPlayInterval}
-                      onChange={(e) => setAutoPlayInterval(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        setAutoPlayInterval(parseInt(e.target.value))
+                      }
                       className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
@@ -180,10 +186,10 @@ export function ControlHeader({
                       <button
                         onClick={() => handleAgentStyleChange('minimal')}
                         className={cn(
-                          "px-2 py-1 text-xs rounded border transition-colors",
+                          'px-2 py-1 text-xs rounded border transition-colors',
                           agentStyle === 'minimal'
-                            ? "border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
-                            : "border-blue-500/30 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50"
+                            ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                            : 'border-blue-500/30 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50'
                         )}
                       >
                         Minimal
@@ -191,10 +197,10 @@ export function ControlHeader({
                       <button
                         onClick={() => handleAgentStyleChange('formal')}
                         className={cn(
-                          "px-2 py-1 text-xs rounded border transition-colors",
+                          'px-2 py-1 text-xs rounded border transition-colors',
                           agentStyle === 'formal'
-                            ? "border-slate-500 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300"
-                            : "border-slate-500/30 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/50"
+                            ? 'border-slate-500 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300'
+                            : 'border-slate-500/30 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/50'
                         )}
                       >
                         Formal
@@ -202,17 +208,20 @@ export function ControlHeader({
                       <button
                         onClick={() => handleAgentStyleChange('hacker')}
                         className={cn(
-                          "px-2 py-1 text-xs rounded border transition-colors",
+                          'px-2 py-1 text-xs rounded border transition-colors',
                           agentStyle === 'hacker'
-                            ? "border-green-500 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300"
-                            : "border-green-500/30 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50"
+                            ? 'border-green-500 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
+                            : 'border-green-500/30 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50'
                         )}
                       >
                         Hacker
                       </button>
                     </div>
                     <div className="text-xs text-muted-foreground text-center">
-                      Current: <span className="text-foreground font-mono capitalize">{agentStyle}</span>
+                      Current:{' '}
+                      <span className="text-foreground font-mono capitalize">
+                        {agentStyle}
+                      </span>
                     </div>
                   </div>
                 </Card>

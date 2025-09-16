@@ -4,7 +4,9 @@ import avatarSmall from '@/assets/avatar_small.png';
 import type { SenderType } from '@/contexts/scenario';
 
 // Helper function to get avatar props based on sender type
-export function getAvatarProps(senderType?: 'user' | 'ai' | 'agent' | 'server-human') {
+export function getAvatarProps(
+  senderType?: 'user' | 'ai' | 'agent' | 'server-human'
+) {
   switch (senderType) {
     case 'ai':
     case 'agent':

@@ -24,7 +24,7 @@ export type SenderType = 'agent' | 'customer' | 'server';
 /**
  * Phone states for human entities
  */
-export type PhoneState = 'message' | 'call' | 'ring';
+export type PhoneState = 'idle' | 'message' | 'call' | 'ring';
 
 /**
  * Base interface for deliverable communication items
@@ -206,7 +206,7 @@ export interface CommunicationAction {
  */
 function getSenderType(scenario: Scenario, senderName: string): SenderType {
   // Check if sender is an AI agent
-  if (scenario.agents.some(agent => agent.name === senderName)) {
+  if (scenario.agents.some((agent) => agent.name === senderName)) {
     return 'agent';
   }
 
@@ -216,7 +216,7 @@ function getSenderType(scenario: Scenario, senderName: string): SenderType {
   }
 
   // Check if sender is a server
-  if (scenario.servers.some(server => server.name === senderName)) {
+  if (scenario.servers.some((server) => server.name === senderName)) {
     return 'server';
   }
 
@@ -513,7 +513,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * List of all available scenarios
    */
   const scenarios: Scenario[] = useMemo(() => {
-    return Object.values(scenariosData).map(scenario => ({
+    return Object.values(scenariosData).map((scenario) => ({
       ...scenario,
       callSessions: [],
     })) as unknown as Scenario[];
@@ -624,12 +624,12 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       let callSession: CallSession | undefined;
       if (message.type === 'voice') {
         // Find the most recent active call session that includes both participants
-        const activeCallSession = (prev.callSessions || [])
-          .find(session =>
+        const activeCallSession = (prev.callSessions || []).find(
+          (session) =>
             session.participants.includes(message.from) &&
             session.participants.includes(message.to || '') &&
             session.endTime === null // Only active calls
-          );
+        );
         callSession = activeCallSession;
       }
 
@@ -649,7 +649,30 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         steps: [...prev.steps, step],
       };
       // Update customer if they are the recipient
-      return deliverMessage(updatedScenario, messageWithSenderType);
+      let scenarioWithMessage = deliverMessage(
+        updatedScenario,
+        messageWithSenderType
+      );
+
+      // Update states based on message type: voice/dtmf -> 'call', text -> 'message'
+      const targetState: PhoneState =
+        message.type === 'voice' || message.type === 'dtmf'
+          ? 'call'
+          : 'message';
+      scenarioWithMessage = updateEntityState(
+        scenarioWithMessage,
+        message.from,
+        targetState
+      );
+      if (message.to) {
+        scenarioWithMessage = updateEntityState(
+          scenarioWithMessage,
+          message.to,
+          targetState
+        );
+      }
+
+      return scenarioWithMessage;
     });
   }, []);
 
@@ -657,213 +680,235 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * Handle initiating a phone call
    * Updates recipient's state to "ring" if they are human
    */
-  const handleMakeCall = useCallback(({ call }: CallInput) => {
-    // Determine sender type based on scenario entities
-    const senderType = getSenderType(currentScenario, call.from);
+  const handleMakeCall = useCallback(
+    ({ call }: CallInput) => {
+      // Determine sender type based on scenario entities
+      const senderType = getSenderType(currentScenario, call.from);
 
-    // Create call with senderType
-    const callWithSenderType: Call = {
-      ...call,
-      senderType,
-    };
-
-    const step: AgenticMakeCallStep = {
-      type: 'make-call',
-      action: callWithSenderType,
-    };
-
-    // Update scenario state directly
-    setScenario((prev) => {
-      if (!prev) return prev;
-
-
-      // Create new call session
-      const newCallSession: CallSession = {
-        id: createId(),
-        callerName: call.from,
-        callerType: senderType,
-        startTime: Date.now(),
-        endTime: null,
-        participants: [call.from, call.to],
-        isAccepted: false,
+      // Create call with senderType
+      const callWithSenderType: Call = {
+        ...call,
+        senderType,
       };
 
-      const updatedScenario: Scenario = {
-        ...prev,
-        steps: [...prev.steps, step],
-        callSessions: [...(prev.callSessions || []), newCallSession],
+      const step: AgenticMakeCallStep = {
+        type: 'make-call',
+        action: callWithSenderType,
       };
-      return updateEntityState(
-        updateEntityState(updatedScenario, call.to, 'ring'),
-        call.from,
-        'ring'
-      );
-    });
-  }, [currentScenario]);
+
+      // Update scenario state directly
+      setScenario((prev) => {
+        if (!prev) return prev;
+
+        // Create new call session
+        const newCallSession: CallSession = {
+          id: createId(),
+          callerName: call.from,
+          callerType: senderType,
+          startTime: Date.now(),
+          endTime: null,
+          participants: [call.from, call.to],
+          isAccepted: false,
+        };
+
+        const updatedScenario: Scenario = {
+          ...prev,
+          steps: [...prev.steps, step],
+          callSessions: [...(prev.callSessions || []), newCallSession],
+        };
+        return updateEntityState(
+          updateEntityState(updatedScenario, call.to, 'ring'),
+          call.from,
+          'ring'
+        );
+      });
+    },
+    [currentScenario]
+  );
 
   /**
    * Handle accepting a phone call
    * Sets both caller and recipient state to "call" if they are human
    */
-  const handleAcceptCall = useCallback(({ call }: CallInput) => {
-    // For accept-call, the sender is actually the recipient of the original call
-    // So we need to determine sender type based on the 'to' field (who is accepting)
-    const senderType = getSenderType(currentScenario, call.to);
+  const handleAcceptCall = useCallback(
+    ({ call }: CallInput) => {
+      // For accept-call, the sender is actually the recipient of the original call
+      // So we need to determine sender type based on the 'to' field (who is accepting)
+      const senderType = getSenderType(currentScenario, call.to);
 
-    // Create call with senderType
-    const callWithSenderType: Call = {
-      ...call,
-      senderType,
-    };
-
-    const step: AgenticAcceptCallStep = {
-      type: 'accept-call',
-      action: callWithSenderType,
-    };
-
-    // Update scenario state directly
-    setScenario((prev) => {
-      if (!prev) return prev;
-
-      // Find and update the call session
-      const updatedCallSessions = prev.callSessions.map(session => {
-        // Check if this session matches the call (participants match)
-        const hasParticipants = session.participants.includes(call.from) && session.participants.includes(call.to);
-        if (hasParticipants && !session.isAccepted) {
-          return {
-            ...session,
-            isAccepted: true,
-          };
-        }
-        return session;
-      });
-
-      const updatedScenario: Scenario = {
-        ...prev,
-        steps: [...prev.steps, step],
-        callSessions: updatedCallSessions,
+      // Create call with senderType
+      const callWithSenderType: Call = {
+        ...call,
+        senderType,
       };
-      let finalScenario = updateEntityState(updatedScenario, call.from, 'call');
-      finalScenario = updateEntityState(
-        updateEntityState(finalScenario, call.to, 'call'),
-        call.from,
-        'call'
-      );
-      return finalScenario;
-    });
-  }, [currentScenario]);
+
+      const step: AgenticAcceptCallStep = {
+        type: 'accept-call',
+        action: callWithSenderType,
+      };
+
+      // Update scenario state directly
+      setScenario((prev) => {
+        if (!prev) return prev;
+
+        // Find and update the call session
+        const updatedCallSessions = prev.callSessions.map((session) => {
+          // Check if this session matches the call (participants match)
+          const hasParticipants =
+            session.participants.includes(call.from) &&
+            session.participants.includes(call.to);
+          if (hasParticipants && !session.isAccepted) {
+            return {
+              ...session,
+              isAccepted: true,
+            };
+          }
+          return session;
+        });
+
+        const updatedScenario: Scenario = {
+          ...prev,
+          steps: [...prev.steps, step],
+          callSessions: updatedCallSessions,
+        };
+        let finalScenario = updateEntityState(
+          updatedScenario,
+          call.from,
+          'call'
+        );
+        finalScenario = updateEntityState(
+          updateEntityState(finalScenario, call.to, 'call'),
+          call.from,
+          'call'
+        );
+        return finalScenario;
+      });
+    },
+    [currentScenario]
+  );
 
   /**
    * Handle finishing a phone call
    * Resets both caller and recipient state to "message" if they are human
    */
-  const handleFinishCall = useCallback(({ call }: CallInput) => {
-    // Determine sender type based on who is finishing the call
-    const senderType = getSenderType(currentScenario, call.from);
+  const handleFinishCall = useCallback(
+    ({ call }: CallInput) => {
+      // Determine sender type based on who is finishing the call
+      const senderType = getSenderType(currentScenario, call.from);
 
-    // Create call with senderType
-    const callWithSenderType: Call = {
-      ...call,
-      senderType,
-    };
-
-    const step: AgenticFinishCallStep = {
-      type: 'finish-call',
-      action: callWithSenderType,
-    };
-
-    // Update scenario state directly
-    setScenario((prev) => {
-      if (!prev) return prev;
-
-      // Find and update the call session
-      const updatedCallSessions = (prev.callSessions || []).map(session => {
-        // Check if this session matches the call (participants match and is active)
-        const hasParticipants = session.participants.includes(call.from) && session.participants.includes(call.to);
-        if (hasParticipants && session.endTime === null) {
-          return {
-            ...session,
-            endTime: Date.now(),
-          };
-        }
-        return session;
-      });
-
-      const updatedScenario: Scenario = {
-        ...prev,
-        steps: [...prev.steps, step],
-        callSessions: updatedCallSessions,
+      // Create call with senderType
+      const callWithSenderType: Call = {
+        ...call,
+        senderType,
       };
-      return updateEntityState(
-        updateEntityState(updatedScenario, call.from, 'message'),
-        call.to,
-        'message'
-      );
-    });
-  }, [currentScenario]);
+
+      const step: AgenticFinishCallStep = {
+        type: 'finish-call',
+        action: callWithSenderType,
+      };
+
+      // Update scenario state directly
+      setScenario((prev) => {
+        if (!prev) return prev;
+
+        // Find and update the call session
+        const updatedCallSessions = (prev.callSessions || []).map((session) => {
+          // Check if this session matches the call (participants match and is active)
+          const hasParticipants =
+            session.participants.includes(call.from) &&
+            session.participants.includes(call.to);
+          if (hasParticipants && session.endTime === null) {
+            return {
+              ...session,
+              endTime: Date.now(),
+            };
+          }
+          return session;
+        });
+
+        const updatedScenario: Scenario = {
+          ...prev,
+          steps: [...prev.steps, step],
+          callSessions: updatedCallSessions,
+        };
+        return updateEntityState(
+          updateEntityState(updatedScenario, call.from, 'idle'),
+          call.to,
+          'idle'
+        );
+      });
+    },
+    [currentScenario]
+  );
 
   /**
    * Handle API call to external service
    * Records the API call step in global steps
    */
-  const handleAPICall = useCallback(({ apiCall }: APICallInput) => {
-    // Determine sender type based on scenario entities
-    const senderType = getSenderType(currentScenario, apiCall.from);
+  const handleAPICall = useCallback(
+    ({ apiCall }: APICallInput) => {
+      // Determine sender type based on scenario entities
+      const senderType = getSenderType(currentScenario, apiCall.from);
 
-    // Create API call with senderType
-    const apiCallWithSenderType: APICall = {
-      ...apiCall,
-      senderType,
-    };
-
-    const step: AgenticAPICallStep = {
-      type: 'api-call',
-      action: apiCallWithSenderType,
-    };
-
-    setScenario((prev) => {
-      if (!prev) {
-        return prev;
-      }
-      const updatedScenario: Scenario = {
-        ...prev,
-        steps: [...prev.steps, step],
+      // Create API call with senderType
+      const apiCallWithSenderType: APICall = {
+        ...apiCall,
+        senderType,
       };
-      return updatedScenario;
-    });
-  }, [currentScenario]);
+
+      const step: AgenticAPICallStep = {
+        type: 'api-call',
+        action: apiCallWithSenderType,
+      };
+
+      setScenario((prev) => {
+        if (!prev) {
+          return prev;
+        }
+        const updatedScenario: Scenario = {
+          ...prev,
+          steps: [...prev.steps, step],
+        };
+        return updatedScenario;
+      });
+    },
+    [currentScenario]
+  );
 
   /**
    * Handle API response from external service
    * Records the API response step in global steps
    */
-  const handleAPIResponse = useCallback(({ apiResponse }: APIResponseInput) => {
-    // For API response, the sender is typically the external service,
-    // but we determine type based on the recipient (who receives the response)
-    const senderType = getSenderType(currentScenario, apiResponse.to);
+  const handleAPIResponse = useCallback(
+    ({ apiResponse }: APIResponseInput) => {
+      // For API response, the sender is typically the external service,
+      // but we determine type based on the recipient (who receives the response)
+      const senderType = getSenderType(currentScenario, apiResponse.to);
 
-    // Create API response with senderType
-    const apiResponseWithSenderType: APIResponse = {
-      ...apiResponse,
-      senderType,
-    };
-
-    const step: AgenticAPIResponseStep = {
-      type: 'api-response',
-      action: apiResponseWithSenderType,
-    };
-
-    setScenario((prev) => {
-      if (!prev) {
-        return prev;
-      }
-      const updatedScenario: Scenario = {
-        ...prev,
-        steps: [...prev.steps, step],
+      // Create API response with senderType
+      const apiResponseWithSenderType: APIResponse = {
+        ...apiResponse,
+        senderType,
       };
-      return updatedScenario;
-    });
-  }, [currentScenario]);
+
+      const step: AgenticAPIResponseStep = {
+        type: 'api-response',
+        action: apiResponseWithSenderType,
+      };
+
+      setScenario((prev) => {
+        if (!prev) {
+          return prev;
+        }
+        const updatedScenario: Scenario = {
+          ...prev,
+          steps: [...prev.steps, step],
+        };
+        return updatedScenario;
+      });
+    },
+    [currentScenario]
+  );
 
   /**
    * Execute a step based on its type
@@ -952,12 +997,12 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         customer: {
           ...currentScenario.customer,
           messageBox: {},
-          state: 'message',
+          state: 'idle',
         },
         servers: currentScenario.servers.map((server) => ({
           ...server,
           messageBox: {},
-          state: 'message',
+          state: server.type === 'human' ? 'idle' : 'message',
         })),
         steps: [],
         callSessions: [],
@@ -986,13 +1031,13 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         customer: {
           ...newScenario.customer,
           messageBox: {},
-          state: 'message',
+          state: 'idle',
         },
         // Reset servers with empty message boxes
         servers: newScenario.servers.map((server) => ({
           ...server,
           messageBox: {},
-          state: 'message',
+          state: server.type === 'human' ? 'idle' : 'message',
         })),
         steps: [],
         callSessions: [],
@@ -1009,7 +1054,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         }
         const updateScenario: Scenario = {
           ...prev,
-          customer: { ...prev.customer, messageBox: {}, state: 'message' },
+          customer: { ...prev.customer, messageBox: {}, state: 'idle' },
           agents: [...prev.agents.map((a) => ({ ...a, steps: [] }))],
           servers: [
             ...prev.servers.map((s) =>
@@ -1017,14 +1062,14 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
                 ? ({
                     ...s,
                     messageBox: {},
-                    state: 'message',
+                    state: 'idle',
                   } satisfies HumanState)
                 : s.type === 'ai'
-                ? ({
-                    ...s,
-                    steps: [],
-                  } satisfies AIAgentState)
-                : s
+                  ? ({
+                      ...s,
+                      steps: [],
+                    } satisfies AIAgentState)
+                  : s
             ),
           ],
           steps: [],

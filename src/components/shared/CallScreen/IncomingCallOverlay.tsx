@@ -8,7 +8,10 @@ interface IncomingCallOverlayProps {
   callerName?: string;
 }
 
-export function IncomingCallOverlay({ state, callerName = 'Service Provider' }: IncomingCallOverlayProps) {
+export function IncomingCallOverlay({
+  state,
+  callerName = 'Service Provider',
+}: IncomingCallOverlayProps) {
   if (state === 'message') {
     return null;
   }

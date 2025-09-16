@@ -38,8 +38,8 @@ export function TerminalSection({
   const { state: scenarioState } = useScenario();
 
   // 외부에서 steps를 제공하면 그것을 사용, 아니면 scenario에서 가져옴
-  const state = useMemo(() =>
-    externalSteps ? { steps: externalSteps } : scenarioState,
+  const state = useMemo(
+    () => (externalSteps ? { steps: externalSteps } : scenarioState),
     [externalSteps, scenarioState]
   );
 
@@ -48,7 +48,9 @@ export function TerminalSection({
     () =>
       state.steps
         .filter(
-          (s: AgenticStep) => s.action.from === (entityName || entity?.name) || s.action.to === (entityName || entity?.name)
+          (s: AgenticStep) =>
+            s.action.from === (entityName || entity?.name) ||
+            s.action.to === (entityName || entity?.name)
         )
         .map(
           (s: AgenticStep) =>
@@ -83,12 +85,16 @@ export function TerminalSection({
   const lastTimestampRef = useRef<number>(0);
 
   // 새로운 카드가 추가되었는지 확인 (timestamp 기반)
-  const hasNewCards = logicCards.length > 0 && logicCards[logicCards.length - 1].timestamp.getTime() > lastTimestampRef.current;
+  const hasNewCards =
+    logicCards.length > 0 &&
+    logicCards[logicCards.length - 1].timestamp.getTime() >
+      lastTimestampRef.current;
 
   // 카드 개수 업데이트
   useEffect(() => {
     if (logicCards.length > 0) {
-      lastTimestampRef.current = logicCards[logicCards.length - 1].timestamp.getTime();
+      lastTimestampRef.current =
+        logicCards[logicCards.length - 1].timestamp.getTime();
     }
   }, [logicCards]);
 
@@ -102,7 +108,7 @@ export function TerminalSection({
           lastCardRef.current.scrollIntoView({
             behavior: 'smooth',
             block: 'end',
-            inline: 'nearest'
+            inline: 'nearest',
           });
         } else if (scrollRef.current) {
           // fallback: 부드러운 scrollTop 애니메이션
@@ -127,7 +133,8 @@ export function TerminalSection({
               const easeProgress = easeOutCubic(progress);
 
               if (scrollRef.current) {
-                scrollRef.current.scrollTop = startScrollTop + (distance * easeProgress);
+                scrollRef.current.scrollTop =
+                  startScrollTop + distance * easeProgress;
               }
 
               if (progress < 1) {
@@ -157,48 +164,60 @@ export function TerminalSection({
     >
       {/* Terminal Header */}
       <div className="flex items-center justify-center mb-6">
-        <motion.div className={cn(
-          "flex items-center space-x-3 rounded-lg px-4 py-2 border",
-          variant === 'minimal'
-            ? "bg-white/95 dark:bg-gray-50/95 backdrop-blur-sm border-gray-200/50 dark:border-gray-300/50"
-            : variant === 'formal'
-            ? "bg-muted/90 backdrop-blur-sm border-border/60 shadow-sm"
-            : "bg-card/80 backdrop-blur-sm border-border"
-        )}>
-          <Terminal className={cn(
-            "w-6 h-6",
+        <motion.div
+          className={cn(
+            'flex items-center space-x-3 rounded-lg px-4 py-2 border',
             variant === 'minimal'
-              ? "text-blue-600"
+              ? 'bg-white/95 dark:bg-gray-50/95 backdrop-blur-sm border-gray-200/50 dark:border-gray-300/50'
               : variant === 'formal'
-              ? "text-blue-600"
-              : "text-green-500"
-          )} />
+                ? 'bg-muted/90 backdrop-blur-sm border-border/60 shadow-sm'
+                : 'bg-card/80 backdrop-blur-sm border-border'
+          )}
+        >
+          <Terminal
+            className={cn(
+              'w-6 h-6',
+              variant === 'minimal'
+                ? 'text-blue-600'
+                : variant === 'formal'
+                  ? 'text-blue-600'
+                  : 'text-green-500'
+            )}
+          />
           <div className="flex items-center space-x-2">
-            <div className={cn(
-              "w-2 h-2 rounded-full animate-pulse",
-              variant === 'minimal'
-                ? "bg-blue-600"
-                : variant === 'formal'
-                ? "bg-blue-600"
-                : "bg-green-500"
-            )} />
-            <span className={cn(
-              "text-sm font-mono",
-              variant === 'minimal'
-                ? "text-blue-700"
-                : variant === 'formal'
-                ? "text-blue-700"
-                : "text-green-400"
-            )}>AI_AGENT</span>
+            <div
+              className={cn(
+                'w-2 h-2 rounded-full animate-pulse',
+                variant === 'minimal'
+                  ? 'bg-blue-600'
+                  : variant === 'formal'
+                    ? 'bg-blue-600'
+                    : 'bg-green-500'
+              )}
+            />
+            <span
+              className={cn(
+                'text-sm font-mono',
+                variant === 'minimal'
+                  ? 'text-blue-700'
+                  : variant === 'formal'
+                    ? 'text-blue-700'
+                    : 'text-green-400'
+              )}
+            >
+              AI_AGENT
+            </span>
           </div>
-          <Cpu className={cn(
-            "w-5 h-5",
-            variant === 'minimal'
-              ? "text-slate-600"
-              : variant === 'formal'
-              ? "text-slate-600"
-              : "text-blue-500"
-          )} />
+          <Cpu
+            className={cn(
+              'w-5 h-5',
+              variant === 'minimal'
+                ? 'text-slate-600'
+                : variant === 'formal'
+                  ? 'text-slate-600'
+                  : 'text-blue-500'
+            )}
+          />
         </motion.div>
       </div>
 
@@ -223,44 +242,52 @@ export function TerminalSection({
           variant === 'minimal'
             ? 'bg-white/95 dark:bg-gray-50/95 backdrop-blur-md shadow-blue-500/10 border border-gray-200/50 dark:border-gray-300/50'
             : variant === 'formal'
-            ? 'bg-slate-100/95 dark:bg-slate-800/95 backdrop-blur-md shadow-slate-500/20 border-2 border-slate-300/60 dark:border-slate-600/60'
-            : 'bg-black/90 backdrop-blur-md shadow-green-500/10 border border-green-500/30',
-          isActive ? (
-            variant === 'minimal'
+              ? 'bg-slate-100/95 dark:bg-slate-800/95 backdrop-blur-md shadow-slate-500/20 border-2 border-slate-300/60 dark:border-slate-600/60'
+              : 'bg-black/90 backdrop-blur-md shadow-green-500/10 border border-green-500/30',
+          isActive
+            ? variant === 'minimal'
               ? 'neon-border-active-minimal'
               : variant === 'formal'
-              ? 'neon-border-active-formal'
-              : 'neon-border-active-hacker'
-          ) : ''
+                ? 'neon-border-active-formal'
+                : 'neon-border-active-hacker'
+            : ''
         )}
       >
         {/* Terminal Header */}
-        <div className={cn(
-          "mb-4 pb-2 border-b",
-          variant === 'minimal'
-            ? "text-blue-700 dark:text-blue-300 border-blue-500/30"
-            : variant === 'formal'
-            ? "text-slate-700 dark:text-slate-300 border-slate-400/40"
-            : "text-green-400 border-green-500/30"
-        )}>
+        <div
+          className={cn(
+            'mb-4 pb-2 border-b',
+            variant === 'minimal'
+              ? 'text-blue-700 dark:text-blue-300 border-blue-500/30'
+              : variant === 'formal'
+                ? 'text-slate-700 dark:text-slate-300 border-slate-400/40'
+                : 'text-green-400 border-green-500/30'
+          )}
+        >
           <div className="flex items-center space-x-2 mb-1">
-            <span className={cn(
-              variant === 'minimal'
-                ? "text-blue-600"
-                : variant === 'formal'
-                ? "text-slate-600 dark:text-slate-400"
-                : "text-green-500"
-            )}>$</span>
+            <span
+              className={cn(
+                variant === 'minimal'
+                  ? 'text-blue-600'
+                  : variant === 'formal'
+                    ? 'text-slate-600 dark:text-slate-400'
+                    : 'text-green-500'
+              )}
+            >
+              $
+            </span>
             <span>ai_agent_session --start</span>
           </div>
-          <div className={cn(
-            "text-xs",
-            variant === 'minimal'
-              ? "text-blue-600/70 dark:text-blue-400/70"
-              : variant === 'formal'
-              ? "text-slate-500 dark:text-slate-400"
-              : "text-green-300/70"
-          )}>
+          <div
+            className={cn(
+              'text-xs',
+              variant === 'minimal'
+                ? 'text-blue-600/70 dark:text-blue-400/70'
+                : variant === 'formal'
+                  ? 'text-slate-500 dark:text-slate-400'
+                  : 'text-green-300/70'
+            )}
+          >
             Connected to {entity?.name || 'AI Agent'} | Status: ACTIVE
           </div>
         </div>
@@ -285,29 +312,37 @@ export function TerminalSection({
         </div>
 
         {/* Terminal Prompt */}
-        <div className={cn(
-          "mt-4 pt-2 border-t",
-          variant === 'minimal'
-            ? "border-blue-500/30"
-            : variant === 'formal'
-            ? "border-slate-400/40"
-            : "border-green-500/30"
-        )}>
-          <div className={cn(
-            "flex items-center space-x-2",
+        <div
+          className={cn(
+            'mt-4 pt-2 border-t',
             variant === 'minimal'
-              ? "text-blue-700 dark:text-blue-300"
+              ? 'border-blue-500/30'
               : variant === 'formal'
-              ? "text-slate-700 dark:text-slate-300"
-              : "text-green-400"
-          )}>
-            <span className={cn(
+                ? 'border-slate-400/40'
+                : 'border-green-500/30'
+          )}
+        >
+          <div
+            className={cn(
+              'flex items-center space-x-2',
               variant === 'minimal'
-                ? "text-blue-600"
+                ? 'text-blue-700 dark:text-blue-300'
                 : variant === 'formal'
-                ? "text-slate-600 dark:text-slate-400"
-                : "text-green-500"
-            )}>$</span>
+                  ? 'text-slate-700 dark:text-slate-300'
+                  : 'text-green-400'
+            )}
+          >
+            <span
+              className={cn(
+                variant === 'minimal'
+                  ? 'text-blue-600'
+                  : variant === 'formal'
+                    ? 'text-slate-600 dark:text-slate-400'
+                    : 'text-green-500'
+              )}
+            >
+              $
+            </span>
             <span className="animate-pulse">_</span>
           </div>
         </div>

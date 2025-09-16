@@ -9,7 +9,6 @@ interface MessageScreenProps {
   isTyping?: boolean;
   ownerName: string;
   contactName?: string;
-  contactStatus?: string;
   className?: string;
 }
 
@@ -18,11 +17,12 @@ export function MessageScreen({
   isTyping = false,
   contactName = 'Contact',
   ownerName,
-  contactStatus = 'Online',
   className,
 }: MessageScreenProps) {
   // Helper function to convert scenario senderType to component senderType
-  const getComponentSenderType = (senderType?: 'agent' | 'customer' | 'server'): 'user' | 'ai' | 'agent' | 'server-human' => {
+  const getComponentSenderType = (
+    senderType?: 'agent' | 'customer' | 'server'
+  ): 'user' | 'ai' | 'agent' | 'server-human' => {
     switch (senderType) {
       case 'agent':
         return 'ai';
@@ -47,7 +47,6 @@ export function MessageScreen({
           {/* Contact info */}
           <div>
             <h3 className="font-medium text-sm">{contactName}</h3>
-            <p className="text-xs text-muted-foreground">{contactStatus}</p>
           </div>
         </div>
       </div>
@@ -85,7 +84,11 @@ export function MessageScreen({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
               >
-                <MessageBubble message="" isOwnMessage={false} isTyping={true} />
+                <MessageBubble
+                  message=""
+                  isOwnMessage={false}
+                  isTyping={true}
+                />
               </motion.div>
             )}
           </>

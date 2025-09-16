@@ -8,7 +8,7 @@ interface ServerSectionProps {
 
 export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
   const {
-    active: { server, agent },
+    active: { server },
   } = useScenario();
 
   if (!server) {
@@ -23,11 +23,10 @@ export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
         label={server.name}
         labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
         animationDirection="right"
-        contactName={agent?.name||"AI Assistant"}
         contactNumber="+1 (800) 555-0199"
-        contactStatus="Available"
         from={server.name}
         showAdditionalStatus={true}
+        location="server"
       />
     );
   }

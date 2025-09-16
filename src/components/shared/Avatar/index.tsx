@@ -8,7 +8,13 @@ interface AvatarProps {
   fallbackIcon?: React.ComponentType<{ className?: string }>;
 }
 
-export function Avatar({ src, alt, size = 'md', className, fallbackIcon: FallbackIcon }: AvatarProps) {
+export function Avatar({
+  src,
+  alt,
+  size = 'md',
+  className,
+  fallbackIcon: FallbackIcon,
+}: AvatarProps) {
   const sizeClasses = {
     sm: 'w-6 h-6',
     md: 'w-8 h-8',
@@ -16,17 +22,15 @@ export function Avatar({ src, alt, size = 'md', className, fallbackIcon: Fallbac
   };
 
   return (
-    <div className={cn(
-      'rounded-full overflow-hidden border-2 border-background shadow-sm flex items-center justify-center',
-      sizeClasses[size],
-      className
-    )}>
+    <div
+      className={cn(
+        'rounded-full overflow-hidden border-2 border-background shadow-sm flex items-center justify-center',
+        sizeClasses[size],
+        className
+      )}
+    >
       {src ? (
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover"
-        />
+        <img src={src} alt={alt} className="w-full h-full object-cover" />
       ) : FallbackIcon ? (
         <FallbackIcon className="w-5 h-5 text-muted-foreground" />
       ) : null}

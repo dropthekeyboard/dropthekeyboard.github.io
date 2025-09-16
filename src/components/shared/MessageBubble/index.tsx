@@ -33,7 +33,9 @@ export function MessageBubble({
       }}
       className={cn(
         'flex mb-3 max-w-[80%] items-end space-x-2',
-        isOwnMessage ? 'justify-end ml-auto flex-row-reverse space-x-reverse' : 'justify-start'
+        isOwnMessage
+          ? 'justify-end ml-auto flex-row-reverse space-x-reverse'
+          : 'justify-start'
       )}
     >
       {/* Avatar */}
