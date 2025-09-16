@@ -8,10 +8,13 @@ import { PlayControls } from './PlayControls';
 import { RecordingControls } from './RecordingControls';
 import { ScenarioSelector } from './ScenarioSelector.tsx';
 import { ThemeToggle } from './ThemeToggle';
+import { ViewModeToggle } from './ViewModeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
   onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker') => void;
+  onViewModeChange?: (mode: 'demo' | 'storytelling') => void;
+  currentViewMode?: 'demo' | 'storytelling';
   playbackInterval?: number; // Auto-play interval in milliseconds
   className?: string;
 }
@@ -19,7 +22,9 @@ interface ControlHeaderProps {
 export function ControlHeader({
   onThemeToggle,
   onAgentStyleChange,
-  playbackInterval = 3000, // Default 5 seconds
+  onViewModeChange,
+  currentViewMode = 'demo',
+  playbackInterval = 3000, // Default 3 seconds
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -97,6 +102,10 @@ export function ControlHeader({
               <Settings className="w-4 h-4" />
             </motion.button>
 
+            <ViewModeToggle
+              currentMode={currentViewMode}
+              onToggle={onViewModeChange}
+            />
             <ThemeToggle onToggle={onThemeToggle} />
           </div>
         </div>

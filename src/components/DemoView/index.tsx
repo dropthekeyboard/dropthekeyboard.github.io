@@ -12,7 +12,7 @@ export function DemoView({ className, agentStyle = 'hacker' }: DemoViewProps) {
   return (
     <div
       id="demoview"
-      className={cn('flex gap-4 p-4 h-full items-center', className)}
+      className={cn('flex gap-4 p-4 h-full items-center pt-10', className)}
     >
       <div className="flex-[0_0_30%] flex flex-col">
         <CustomerSection />
