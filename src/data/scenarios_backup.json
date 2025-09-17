@@ -38,14 +38,16 @@
         "type": "make-call",
         "action": {
           "from": "customer_agent",
-          "to": "restaurant_owner"
+          "to": "restaurant_owner",
+          "reason": "The customer wants me to find and book a restaurant. The first step is to contact the restaurant to check for availability. I will try calling them first."
         }
       },
       {
         "type": "finish-call",
         "action": {
           "from": "customer_agent",
-          "to": "restaurant_owner"
+          "to": "restaurant_owner",
+          "reason": "The restaurant owner did not answer my call. I need to try another way to contact them to make the reservation."
         }
       },
       {
@@ -54,7 +56,8 @@
           "from": "customer_agent",
           "to": "restaurant_owner",
           "content": "Customer requested a reservation for 8/31 at 7 PM. Is this available? Reply 1 for yes, 2 for no, 3 for alternative time.",
-          "type": "text"
+          "type": "text",
+          "reason": "Since the phone call was not answered, I will send an SMS message as a fallback. This allows the owner to respond asynchronously. I will ask for the reservation and provide simple options for them to reply."
         }
       },
       {
@@ -72,7 +75,8 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "7 PM is not available, but 8 PM is. Would you like to change?",
-          "type": "text"
+          "type": "text",
+          "reason": "The restaurant owner has proposed an alternative time of 8 PM. I need to confirm this change with the customer before proceeding with the booking."
         }
       },
       {
@@ -90,7 +94,8 @@
           "from": "customer_agent",
           "to": "restaurant_owner",
           "content": "Reservation confirmed for 8 PM",
-          "type": "text"
+          "type": "text",
+          "reason": "The customer has agreed to the new time. I will now send a message to the restaurant owner to confirm the reservation for 8 PM."
         }
       }
     ]
@@ -125,7 +130,8 @@
         "type": "make-call",
         "action": {
           "from": "care_agent",
-          "to": "elderly_person"
+          "to": "elderly_person",
+          "reason": "It's time for the scheduled daily check-in call with the elderly person. I will initiate the call now."
         }
       },
       {
@@ -141,7 +147,8 @@
           "from": "care_agent",
           "to": "elderly_person",
           "content": "Grandma, how are you feeling today? Press 1 for good, 2 for a little sick, 3 for very sick.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "The call is connected. I will start the check-in by asking about their well-being and provide simple numeric options for an easy response."
         }
       },
       {
@@ -157,7 +164,8 @@
         "type": "make-call",
         "action": {
           "from": "care_agent",
-          "to": "guardian"
+          "to": "guardian",
+          "reason": "The user responded that they are feeling 'a little sick'. According to my protocol, this requires notifying the guardian. I will call the guardian now."
         }
       },
       {
@@ -173,7 +181,8 @@
           "from": "care_agent",
           "to": "guardian",
           "content": "Grandma reported feeling a little sick today. Please check on her.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "I've connected with the guardian. I will inform them that the elderly person reported feeling a little sick so they can check on them."
         }
       },
       {
@@ -189,7 +198,8 @@
           "from": "care_agent",
           "to": "elderly_person",
           "content": "Have you taken your blood pressure medication? Press 1 for yes, 2 for no, 3 for out of medicine.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "I've notified the guardian. Now I will continue the check-in with the elderly person and ask about their medication."
         }
       },
       {
@@ -205,7 +215,8 @@
         "type": "make-call",
         "action": {
           "from": "care_agent",
-          "to": "guardian"
+          "to": "guardian",
+          "reason": "The user has indicated they are out of their blood pressure medication. This is an important issue that requires the guardian's attention. I will call the guardian again to inform them."
         }
       },
       {
@@ -221,7 +232,8 @@
           "from": "care_agent",
           "to": "guardian",
           "content": "Grandma is out of blood pressure medication. Please assist with medication delivery.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "I've connected with the guardian again. I will inform them that the elderly person is out of their medication so they can arrange for a refill."
         }
       },
       {
@@ -235,7 +247,8 @@
         "type": "finish-call",
         "action": {
           "from": "care_agent",
-          "to": "elderly_person"
+          "to": "elderly_person",
+          "reason": "The check-in is complete, and the guardian has been notified of all important issues. I will now end the call with the elderly person."
         }
       }
     ]
@@ -283,8 +296,10 @@
       {
         "type": "api-call",
         "action": {
+          "from": "lite_agent",
           "service": "catchtable",
-          "request": "check availability 7PM"
+          "request": "check availability 7PM",
+          "reason": "The customer wants to book a table. I will use the CatchTable API to check for availability at the requested time."
         }
       },
       {
@@ -300,7 +315,8 @@
           "from": "lite_agent",
           "to": "customer",
           "content": "7 PM is fully booked, but 8 PM is available for 2 people. Change?",
-          "type": "text"
+          "type": "text",
+          "reason": "The CatchTable API response shows that the requested time is unavailable, but 8 PM is free. I need to inform the customer and ask if they want to book for the alternative time."
         }
       },
       {
@@ -315,8 +331,10 @@
       {
         "type": "api-call",
         "action": {
+          "from": "lite_agent",
           "service": "catchtable",
-          "request": "book 8PM table for 2"
+          "request": "book 8PM table for 2",
+          "reason": "The customer has agreed to the 8 PM reservation. I will now use the CatchTable API to book the table."
         }
       },
       {
@@ -332,7 +350,8 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "This restaurant has a CatchTable promotion for a free dessert this week. Confirm?",
-          "type": "text"
+          "type": "text",
+          "reason": "The booking is confirmed. I see there's a promotion available through CatchTable. I should inform the customer about this potential benefit."
         }
       },
       {
@@ -349,7 +368,7 @@
   "phase3_scenario3_1": {
     "id": "phase3_scenario3_1",
     "title": "Personalized Restaurant Reservation",
-    "description": "Customer Agent and Merchant Agent directly communicate. The Merchant Agent uses past order history and preferences to offer personalized suggestions, while the Customer Agent leverages customer profiles.",
+    "description": "Customer Agent and Merchant Agent communicate directly. The Merchant Agent uses past order history and preferences to offer personalized suggestions, while the Customer Agent leverages customer profiles.",
     "agents": [
       {
         "type": "ai",
@@ -377,7 +396,8 @@
           "from": "customer_agent",
           "to": "merchant_agent",
           "content": "Book a table for 2 tomorrow evening.",
-          "type": "text"
+          "type": "text",
+          "reason": "My customer wants to book a table. I will contact the restaurant's merchant agent directly to make the request."
         }
       },
       {
@@ -386,7 +406,8 @@
           "from": "merchant_agent",
           "to": "customer_agent",
           "content": "Last time, you ordered Carbonara and a bottle of wine. Shall I prepare them again?",
-          "type": "text"
+          "type": "text",
+          "reason": "I've received a reservation request. I have access to this customer's order history. To provide a personalized experience, I will ask if they want to repeat their previous order."
         }
       },
       {
@@ -395,7 +416,8 @@
           "from": "customer_agent",
           "to": "merchant_agent",
           "content": "What new items are on the menu?",
-          "type": "text"
+          "type": "text",
+          "reason": "The merchant agent offered to repeat the last order, but my customer might want something new. I will ask for new menu items on behalf of my customer."
         }
       },
       {
@@ -404,7 +426,8 @@
           "from": "merchant_agent",
           "to": "customer_agent",
           "content": "We just launched a new Truffle Pasta this week.",
-          "type": "text"
+          "type": "text",
+          "reason": "The customer agent is asking for new items. We have a new Truffle Pasta. I will recommend it."
         }
       },
       {
@@ -413,7 +436,8 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "They have a new Truffle Pasta. Would you like to try it, or repeat your last order?",
-          "type": "text"
+          "type": "text",
+          "reason": "The merchant agent has suggested a new menu item. I need to present this option to my customer and ask for their preference."
         }
       },
       {
@@ -468,14 +492,16 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "네, 주로 이용하시는 서울 2호선 라인의 와인이 유명한 이탈리안 식당 정보를 확인해볼게요.",
-          "type": "text"
+          "type": "text",
+          "reason": "The customer has requested a reservation. Based on their profile and past preferences, I know they frequent restaurants along Seoul's Line 2. I'll start my search there and inform them of my plan."
         }
       },
       {
         "type": "make-call",
         "action": {
           "from": "customer_agent",
-          "to": "restaurant_owner"
+          "to": "restaurant_owner",
+          "reason": "I've identified a potential restaurant. I will call them to check for availability for 8 people and inquire about their Amarone wine stock as requested."
         }
       },
       {
@@ -491,7 +517,8 @@
           "from": "customer_agent",
           "to": "restaurant_owner",
           "content": "안녕하세요, SKT 인증 Agent 서비스입니다. 이정윤 고객님을 대신해 오늘 저녁 7시, 8명 단체 예약 예정입니다. 예약 가능여부 및 아마로네 와인 재고 응답해주시면 전달드리겠습니다.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "The call is connected. I will introduce myself as a certified agent and clearly state the customer's request: a table for 8 at 7 PM and the availability of Amarone wine."
         }
       },
       {
@@ -516,7 +543,8 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "정윤님, 와인 재고가 있는 식당 중, 예상 선호도 기반으로 예약 가능한 식당 실시간 확인을 마쳤어요. [명동키친]으로 예약해드릴까요? [정보 요약 제공] 명동키친 (식당링크, 평점) - 7시 가능 - 와인 재고 O - 콜키지, 주요 메뉴, 주차 오스테리아 꼬또 (식당링크, 평점) - 7시 불가, 8시/9시 가능 - 와인 재고O - 콜키지, 주요 메뉴, 주차",
-          "type": "text"
+          "type": "text",
+          "reason": "I have gathered information from multiple restaurants. I will now present the customer with the best options, including availability, wine stock, and other relevant details like ratings and policies, so they can make an informed decision."
         }
       },
       {
@@ -534,7 +562,8 @@
           "from": "customer_agent",
           "to": "restaurant_owner",
           "content": "안녕하세요, SKT 인증 Agent 서비스입니다. 이정윤 고객님을 대신해 오늘 저녁 7시, 8명 단체 예약 확정하려고 합니다. 고객님이 미리 아마로네 와인 3병 세팅 요청하셨습니다. 예약 가능할까요? [1. 예약 확정 / 2. 예약 불가 / 3. 직접 통화 연결]",
-          "type": "text"
+          "type": "text",
+          "reason": "The customer has made their choice and requested to secure 3 bottles of wine. I will send a confirmation request to the restaurant via SMS for efficiency, providing clear options for their response."
         }
       },
       {
@@ -552,7 +581,8 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "정윤님, 예약이 확정되었습니다. 예약 1시간 전 문자 알림 드릴게요. 구글 캘린더에 일정을 등록해드릴까요?",
-          "type": "text"
+          "type": "text",
+          "reason": "The reservation is confirmed. I will notify the customer and offer to add the event to their calendar for convenience."
         }
       },
       {
@@ -570,7 +600,8 @@
           "from": "customer_agent",
           "to": "amazon_api",
           "service": "amazon",
-          "request": "wine recommendations"
+          "request": "wine recommendations",
+          "reason": "The customer is having a wine club meeting. To enhance their experience, I will use an external API to get recommendations for other wines that would pair well with the restaurant's menu."
         }
       },
       {
@@ -579,7 +610,8 @@
           "from": "amazon_api",
           "to": "customer_agent",
           "service": "amazon",
-          "response": "해산물 파스타와 잘 어울려요, 산뜻한 피노 그리지오 (아마존 링크)\n고르곤졸라 피자에 추천해요, 단맛이 있는 모스카토 다스티 (아마존 링크)\n양고기 로스트와 먹었을 때 평이 좋아요. 높은 산도와 묵직함이 특징인 바롤로 (아마존 링크)"
+          "response": "해산물 파스타와 잘 어울려요, 산뜻한 피노 그리지오 (아마존 링크)\n고르곤졸라 피자에 추천해요, 단맛이 있는 모스카토 다스티 (아마존 링크)\n양고기 로스트와 먹었을 때 평이 좋아요. 높은 산도와 묵직함이 특징인 바롤로 (아마존 링크)",
+          "reason": "The customer is having a wine club meeting. To enhance their experience, I will use an external API to get recommendations for other wines that would pair well with the restaurant's menu."
         }
       },
       {
@@ -588,7 +620,8 @@
           "from": "customer_agent",
           "to": "customer",
           "content": "네, 캘린더에 등록해드렸어요. 캘린더에 등록된 연락처로 다른 멤버들에게도 문자 알림 드리겠습니다. 와인 모임을 위해 메뉴와 잘 어울릴만한 와인들도 추가 준비해보시는 건 어떤가요?\n==========\n해산물 파스타와 잘 어울려요, 산뜻한 피노 그리지오 (아마존 링크)\n고르곤졸라 피자에 추천해요, 단맛이 있는 모스카토 다스티 (아마존 링크)\n양고기 로스트와 먹었을 때 평이 좋아요. 높은 산도와 묵직함이 특징인 바롤로 (아마존 링크)",
-          "type": "text"
+          "type": "text",
+          "reason": "I have received the wine recommendations. I will forward this information to the customer, along with confirmation that the calendar event has been created and shared as requested."
         }
       },
       {
@@ -598,7 +631,7 @@
           "to": "customer",
           "content": "정윤님, 명동키친 방문 1시간 전이에요! 방문 장소까지 최소 시간이 소요되는 대중교통 경로를 제공해드릴까요?",
           "type": "text",
-          "reason": "reminder"
+          "reason": "The reservation is in one hour. I will send a reminder to the customer as scheduled and offer to provide directions to the restaurant."
         }
       }
     ]
@@ -664,7 +697,8 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "네, 어르신. 최근 혈당 수치와 식단 기록을 반영해 당뇨 관리에 좋은 식당을 추천드릴게요. 최근에 다녀오셨던 ‘신촌 닭한마리’ 혹은 ‘병천 유황오리’ 어떠세요?",
-          "type": "voice"
+          "type": "voice",
+          "reason": "The user wants a restaurant recommendation. Based on their health data (high blood sugar), I will suggest restaurants that are good for diabetic diets and that they have previously enjoyed."
         }
       },
       {
@@ -687,7 +721,8 @@
         "type": "make-call",
         "action": {
           "from": "lifemate_agent",
-          "to": "restaurant_1_staff"
+          "to": "restaurant_1_staff",
+          "reason": "The user chose 'Shinchon Dakhanmari'. I will call the restaurant to check if a reservation for 4 people at 7 PM is possible."
         }
       },
       {
@@ -703,7 +738,8 @@
           "from": "lifemate_agent",
           "to": "restaurant_1_staff",
           "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "The call is connected. I will state my purpose clearly: making a reservation on behalf of my user."
         }
       },
       {
@@ -726,7 +762,8 @@
         "type": "make-call",
         "action": {
           "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
+          "to": "restaurant_2_staff",
+          "reason": "The first choice was unavailable. I will now try the second option I suggested, 'Byeongcheon Yu황ori', which is also a healthy choice for the user."
         }
       },
       {
@@ -742,7 +779,8 @@
           "from": "lifemate_agent",
           "to": "restaurant_2_staff",
           "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "The call is connected. I will state my purpose clearly: making a reservation on behalf of my user."
         }
       },
       {
@@ -767,7 +805,8 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "어르신. 닭한마리는 예약이 불가능하고 유황오리는 가능해요. 7시 룸으로 4명 예약 확정할까요? 음성 답변이 어려우신 경우 ‘1: 좋아요, 2: 다시 찾아줘, 3: 그만하기’ 입력해주세요.",
-          "type": "text"
+          "type": "text",
+          "reason": "I have confirmed availability at the second restaurant. I will inform the user about the situation and ask for their confirmation to book it. I'll provide simple numeric options for an easy response."
         }
       },
       {
@@ -783,7 +822,8 @@
         "type": "make-call",
         "action": {
           "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
+          "to": "restaurant_2_staff",
+          "reason": "The user has confirmed the booking. I will call the restaurant again to finalize the reservation."
         }
       },
       {
@@ -799,7 +839,8 @@
           "from": "lifemate_agent",
           "to": "restaurant_2_staff",
           "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 병천 유황오리 룸으로 최종 예약 확정 부탁 드립니다.",
-          "type": "voice"
+          "type": "voice",
+          "reason": "The call is connected. I will confirm the final reservation details with the restaurant staff."
         }
       },
       {
@@ -824,7 +865,8 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "오늘 7시 4명 병천 유황오리로 예약 완료했습니다.",
-          "type": "text"
+          "type": "text",
+          "reason": "The reservation is confirmed. I will send a confirmation message to the user."
         }
       },
       {
@@ -833,7 +875,8 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "식당까지 이동을 도와드릴게요. 평소 이용하시던 우버 택시를 6시 30분에 불러드릴까요?",
-          "type": "text"
+          "type": "text",
+          "reason": "To provide further assistance, I will offer to book transportation for the user, suggesting their preferred service, Uber."
         }
       },
       {
@@ -851,7 +894,8 @@
           "from": "lifemate_agent",
           "to": "uber_api",
           "service": "uber",
-          "request": "book taxi for 6:30 PM"
+          "request": "book taxi for 6:30 PM",
+          "reason": "The user has requested a taxi. I will use the Uber API to book a ride for them at the appropriate time."
         }
       },
       {
@@ -869,7 +913,8 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "네, 택시 예약 완료했습니다. 택시가 도착 10분 전에 알림 드릴게요. 택시비는 SKT 통신사 빌링을 통해 자동 결제 됩니다.",
-          "type": "text"
+          "type": "text",
+          "reason": "The taxi is booked. I will inform the user, provide details about the booking, and explain how the payment will be handled for their convenience."
         }
       },
       {
@@ -878,7 +923,8 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "오늘 저녁 메뉴인 오리고기는 단백질이 풍부하고 포만감을 오래 유지시켜 당뇨 환자의 식단 조절에 도움이 돼요. 특히 야채와 함께 먹으면 혈당 관리에도 도움이 되니 참고해주세요. 식사 후 혈당 체크 잊지 않도록 2시간 뒤 알려드릴게요.",
-          "type": "text"
+          "type": "text",
+          "reason": "To provide further assistance, I will provide dietary advice related to their meal and set a reminder for them to check their blood sugar after eating."
         }
       }
     ]

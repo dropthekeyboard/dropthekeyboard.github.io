@@ -2,12 +2,14 @@
 function Slide002() {
   return (
     <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
-      <div className="max-w-4xl w-full space-y-10">
-        {/* 메인 질문 */}
-        <div className="text-center">
-          <h1 className="text-5xl sm:text-7xl font-bold text-foreground tracking-tight">
-            회장님 영상 ? 사진 ?
-          </h1>
+      <div className="max-w-6xl w-full">
+        {/* 메인 이미지 */}
+        <div className="w-full flex items-center justify-center">
+          <img
+            src="/tm_vs_jit.jpg"
+            alt="TM vs JIT"
+            className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+          />
         </div>
       </div>
     </div>

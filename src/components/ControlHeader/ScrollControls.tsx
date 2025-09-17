@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useScenario } from '@/hooks/useScenario';
-import { usePinning } from '@/hooks/usePinning';
+import type { SectionPinningState } from '@/contexts/pinning';
 
 interface ScrollControlsProps {
   /**
@@ -11,6 +11,10 @@ interface ScrollControlsProps {
    * Scroll threshold for triggering actions (in pixels)
    */
   threshold?: number;
+  /**
+   * Pinning state from parent component
+   */
+  pinnedState?: SectionPinningState;
   /**
    * Custom render function for the controls UI
    */
@@ -29,10 +33,18 @@ interface ScrollControlsProps {
 export function ScrollControls({
   enabled = true,
   threshold = 30,
+  pinnedState,
   children
 }: ScrollControlsProps) {
   const { progressNext, revertToPrev, reset, currentScenario } = useScenario();
-  const { isPinned, isEntering, isLeaving } = usePinning();
+  
+  // pinnedState가 전달되면 사용하고, 없으면 기본값 사용
+  const { isPinned, isEntering, isLeaving } = pinnedState || { 
+    isPinned: false, 
+    isEntering: false, 
+    isLeaving: false 
+  };
+  
   const accumulatedScroll = useRef(0);
   const isInitialized = useRef(false);
   const progressRef = useRef(0);

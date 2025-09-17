@@ -107,6 +107,8 @@ interface APICall extends Deliverable {
   service: string;
   /** Request details or query */
   request: string;
+  /** Optional reason for the API call */
+  reason?: string;
   /** Type of sender (agent, customer, or server) */
   senderType?: SenderType;
 }
