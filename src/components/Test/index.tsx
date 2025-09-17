@@ -2,6 +2,9 @@ import { useRef, useState, useEffect, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DemoView } from '../DemoView';
+import A2AExpansionAnalysisPage from '../Slide/A2AExpansionAnalysis';
+import A2ADigitalLevelSlide from '../Slide/A2ADigitalLevelSlide';
+import A2AAppBarrierSlide from '../Slide/A2AAppBarrierSlide';
 import { ScenarioContextProvider } from '@/contexts/scenario';
 import { ScenarioLoader } from '../ControlHeader/ScenarioLoader';
 import { ScrollControls } from '../ControlHeader/ScrollControls';
@@ -119,6 +122,24 @@ export function GSAPPinningDemo() {
 
   return (
     <div className="w-full">
+
+      {/* 첫번째 Section: A2AExpansionAnalysisPage */}
+      <section>
+        <A2AExpansionAnalysisPage />
+      </section>
+
+
+      {/* 두번째 Section: A2ADigitalLevelSlide */}
+      <section>
+        <A2ADigitalLevelSlide />
+      </section>
+
+      {/* 세번째 Section: A2AAppBarrierSlide */}
+      <section>
+        <A2AAppBarrierSlide />
+      </section>
+
+      {/* 기존 시나리오 섹션들 */}
       {scenarios.map((scenario, index) => (
         <div key={scenario.id}>
           {/* 시나리오 설명 섹션 (no pinning) */}
