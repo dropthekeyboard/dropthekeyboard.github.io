@@ -35,6 +35,7 @@ export function ScrollControls({
   const { isPinned, isEntering, isLeaving } = usePinning();
   const accumulatedScroll = useRef(0);
   const isInitialized = useRef(false);
+  const progressRef = useRef(0);
 
   // Reset on mount
   useEffect(() => {
@@ -60,13 +61,24 @@ export function ScrollControls({
 
     const handleScroll = (event: WheelEvent) => {
       const deltaY = event.deltaY;
+      // Validate deltaY to prevent NaN
+      if (isNaN(deltaY)) {
+        console.warn('ScrollControls: Received NaN deltaY, skipping');
+        return;
+      }
 
       // Accumulate scroll distance
-      accumulatedScroll.current += Math.abs(deltaY);
+      accumulatedScroll.current += deltaY;
+
+      // Safely update progress (prevent NaN accumulation)
+      const progressIncrement = deltaY / 50;
+      if (!isNaN(progressIncrement)) {
+        progressRef.current += progressIncrement;
+      }
 
       // Only trigger if we've scrolled enough
-      if (accumulatedScroll.current >= threshold) {
-        if (deltaY > 0) {
+      if (Math.abs(accumulatedScroll.current) >= threshold) {
+        if (accumulatedScroll.current > 0) {
           // Scrolling down - progress next
           console.log('ScrollControls: Scrolling down, calling progressNext');
           progressNext();
@@ -92,6 +104,7 @@ export function ScrollControls({
   const handleReset = () => {
     reset(currentScenario);
     accumulatedScroll.current = 0;
+    progressRef.current = 0; // Reset progress to prevent NaN accumulation
   };
 
   const handleManualNext = () => {
