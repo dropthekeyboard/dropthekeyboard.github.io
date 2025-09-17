@@ -250,14 +250,15 @@ function deliverMessage(scenario: Scenario, message: Message): Scenario {
     const server = scenario.servers[serverIndex];
     // Only update messageBox for human servers
     if (server.type === 'human') {
+      const humanServer = server as HumanState;
       newScenario.servers = [...scenario.servers];
       newScenario.servers[serverIndex] = {
-        ...server,
+        ...humanServer,
         messageBox: {
-          ...server.messageBox,
-          [message.from]: [...(server.messageBox[message.from] || []), message],
+          ...humanServer.messageBox,
+          [message.from]: [...(humanServer.messageBox[message.from] || []), message],
         },
-      };
+      } as HumanState;
     }
   }
   return newScenario;
@@ -471,6 +472,8 @@ export interface ScenarioContextType {
   setCurrent: (index: number) => void;
   /** Advance to next step */
   progressNext: () => void;
+  /** Go back to previous step */
+  revertToPrev: () => void;
   /** Reset progress to 0 */
 }
 
@@ -607,6 +610,100 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
   const progressNext = useCallback(() => {
     setProgress((prev) => prev + 1);
   }, []);
+
+  /**
+   * Step의 효과를 취소하는 함수
+   */
+  const revertStepEffect = useCallback((currentScenario: Scenario, step: AgenticStep): Scenario => {
+    switch (step.type) {
+      case 'send-message': {
+        // 메시지 전송 취소 - 메시지 박스에서 제거
+        const message = step.action;
+        return {
+          ...currentScenario,
+          customer: message.to === currentScenario.customer.name ? {
+            ...currentScenario.customer,
+            messageBox: Object.fromEntries(
+              Object.entries(currentScenario.customer.messageBox || {}).filter(
+                ([key]) => key !== message.id
+              )
+            ),
+          } : currentScenario.customer,
+          servers: currentScenario.servers.map((server) => {
+            if (server.type === 'human' && (server.name === message.from || server.name === message.to)) {
+              const humanServer = server as HumanState;
+              return {
+                ...humanServer,
+                messageBox: Object.fromEntries(
+                  Object.entries(humanServer.messageBox || {}).filter(
+                    ([key]) => key !== message.id
+                  )
+                ),
+              } as HumanState;
+            }
+            return server;
+          }),
+        };
+      }
+
+      case 'make-call': {
+        // 전화 걸기 취소 - 통화 세션 제거
+        const call = step.action;
+        return {
+          ...currentScenario,
+          callSessions: (currentScenario.callSessions || []).filter(
+            (session) => session.callerName !== call.from || session.participants[1] !== call.to
+          ),
+        };
+      }
+
+      case 'accept-call': {
+        // 전화 받기 취소 - 통화 상태 취소
+        const call = step.action;
+        return updateEntityState(
+          updateEntityState(currentScenario, call.from, 'ring'),
+          call.to, 'ring'
+        );
+      }
+
+      case 'finish-call': {
+        // 전화 종료 취소 - 통화 상태 복원
+        const call = step.action;
+        return updateEntityState(
+          updateEntityState(currentScenario, call.from, 'call'),
+          call.to, 'call'
+        );
+      }
+
+      default:
+        console.log('No revert logic for step type:', step.type);
+        return currentScenario;
+    }
+  }, []);
+
+  /**
+   * Go back to previous step
+   */
+  const revertToPrev = useCallback(() => {
+    console.log('revertToPrev called, current progress:', progress);
+    setProgress((prev) => {
+      const newProgress = Math.max(0, prev - 1);
+      console.log('revertToPrev: progress changed from', prev, 'to', newProgress);
+
+      // 현재 step의 효과를 취소
+      if (prev > 0 && scenario) {
+        const stepToRevert = scenario.steps[prev - 1];
+        if (stepToRevert) {
+          setScenario(currentScenario => {
+            if (!currentScenario) return currentScenario;
+            return revertStepEffect(currentScenario, stepToRevert);
+          });
+        }
+      }
+
+      return newProgress;
+    });
+  }, [progress, scenario, revertStepEffect]);
 
   /**
    * Handle sending a message between participants
@@ -965,15 +1062,19 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * Auto-execute step when progress changes
    */
   useEffect(() => {
+    console.log('useEffect triggered: progress =', progress, 'currentScenario.steps.length =', currentScenario?.steps?.length);
     if (
       currentScenario &&
       progress >= 0 &&
       progress < currentScenario.steps.length
     ) {
       const stepToExecute = currentScenario.steps[progress];
+      console.log('Executing step at progress', progress, ':', stepToExecute);
       if (stepToExecute) {
         handleStep(stepToExecute);
       }
+    } else {
+      console.log('Not executing step: condition not met');
     }
   }, [progress, currentScenario, handleStep]);
 
@@ -1107,6 +1208,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
         progress,
         setCurrent,
         progressNext,
+        revertToPrev,
       };
     }
 
@@ -1130,6 +1232,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
       progress,
       setCurrent,
       progressNext,
+      revertToPrev,
     };
   }, [
     scenario,
@@ -1147,6 +1250,7 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
     progress,
     setCurrent,
     progressNext,
+    revertToPrev,
   ]);
 
   return (

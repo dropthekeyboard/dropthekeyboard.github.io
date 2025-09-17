@@ -1,98 +1,142 @@
-import * as Scrollytelling from "@bsmnt/scrollytelling";
-import { DemoView } from "../DemoView";
-import { ScenarioContextProvider } from "@/contexts/scenario";
-import { ScenarioSelector } from "../ControlHeader/ScenarioSelector";
+import { useRef, useState, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { DemoView } from '../DemoView';
+import { ScenarioContextProvider } from '@/contexts/scenario';
+import { ScenarioSelector } from '../ControlHeader/ScenarioSelector';
+import { ScrollControls } from '../ControlHeader/ScrollControls';
+import { PinningContext, type PinningContextType } from '@/contexts/pinning';
 
-export function ScrollyTelling() {
-    return (
-        <div className="flex flex-col items-center justify-center">
-            <Scrollytelling.Root scrub={true} start="top center" end="bottom center">
-                <div className="container space-y-8 mx-auto px-4">
-                    {/* 첫 번째 애니메이션 섹션 */}
-                    <Scrollytelling.Animation
-                        tween={{ start: 0, end: 25, from: { opacity: 0, y: 50 } }}
-                    >
-                        <div className="text-center py-16">
-                            <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                BSMNT Scrollytelling
-                            </h1>
-                            <p className="text-xl text-gray-600 dark:text-gray-300">
-                                스크롤 기반 애니메이션 라이브러리
-                            </p>
-                        </div>
-                    </Scrollytelling.Animation>
+// GSAP 플러그인 등록
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-                    {/* 두 번째 애니메이션 섹션 */}
-                    <Scrollytelling.Animation
-                        tween={{
-                            start: 25,
-                            end: 50,
-                            from: { opacity: 0, scale: 0.9 }
-                        }}
-                    >
-                        <div className="rounded-2xl shadow-xl">
-                            <ScenarioContextProvider>
-                                <ScenarioSelector/>
-                                <DemoView />
-                            </ScenarioContextProvider>
-                        </div>
-                    </Scrollytelling.Animation>
+export function GSAPPinningDemo() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const section2Ref = useRef<HTMLDivElement>(null);
+  const [pinningState, setPinningState] = useState<PinningContextType>({
+    isPinned: false,
+    isEntering: false,
+    isLeaving: false,
+  });
 
-                    {/* 세 번째 애니메이션 섹션 */}
-                    <Scrollytelling.Animation
-                        tween={{ start: 50, end: 75, from: { opacity: 0, x: -100 } }}
-                    >
-                        <div className="grid md:grid-cols-3 gap-8 py-16">
-                            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-                                <div className="text-4xl mb-4">🚀</div>
-                                <h3 className="text-xl font-bold mb-2">빠른 설정</h3>
-                                <p className="text-gray-600 dark:text-gray-300">
-                                    간단한 props로 복잡한 애니메이션 구현
-                                </p>
-                            </div>
-                            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-                                <div className="text-4xl mb-4">⚡</div>
-                                <h3 className="text-xl font-bold mb-2">고성능</h3>
-                                <p className="text-gray-600 dark:text-gray-300">
-                                    GSAP의 강력한 성능으로 부드러운 애니메이션
-                                </p>
-                            </div>
-                            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-                                <div className="text-4xl mb-4">🎯</div>
-                                <h3 className="text-xl font-bold mb-2">정밀 제어</h3>
-                                <p className="text-gray-600 dark:text-gray-300">
-                                    시작과 끝 지점을 정확하게 제어
-                                </p>
-                            </div>
-                        </div>
-                    </Scrollytelling.Animation>
+  useEffect(() => {
+    if (!section2Ref.current) {
+      console.warn('Section 2 ref is not available');
+      return;
+    }
 
-                    {/* 마지막 애니메이션 섹션 */}
-                    <Scrollytelling.Animation
-                        tween={{ start: 90, end: 100, from: { opacity: 0, y: 30 } }}
-                    >
-                        <div className="text-center py-20">
-                            <h2 className="text-4xl font-bold mb-4">시작해보세요!</h2>
-                            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-                                스크롤을 움직여 애니메이션을 확인해보세요
-                            </p>
-                            <div className="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg">
-                                ✨ BSMNT Scrollytelling
-                            </div>
-                        </div>
-                    </Scrollytelling.Animation>
-                </div>
-            </Scrollytelling.Root>
+    // GSAP가 로드되었는지 확인
+    if (!gsap || !ScrollTrigger) {
+      console.error('GSAP or ScrollTrigger is not loaded');
+      return;
+    }
 
-            {/* 추가 스크롤 공간 */}
-            <div className="h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-4">스크롤을 계속해서 위로 올라가보세요</h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                        애니메이션이 반복됩니다
-                    </p>
-                </div>
+    // 기존 ScrollTrigger 정리
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+    console.log('Creating ScrollTrigger for section 2');
+
+    // Section 2에 Pinning 적용
+    const trigger = ScrollTrigger.create({
+      trigger: section2Ref.current,
+      start: "top top",
+      end: "+=2000", // 2000px 스크롤 후 해제
+      pin: true,
+      pinSpacing: true, // 공간 유지
+      markers: process.env.NODE_ENV === 'development', // 개발 환경에서만 마커 표시
+      onEnter: () => {
+        console.log('Pinning started - Section 2 entered viewport');
+        setPinningState({
+          isPinned: true,
+          isEntering: true,
+          isLeaving: false,
+        });
+        // entering 상태를 잠시 후 false로 리셋
+        setTimeout(() => {
+          setPinningState(prev => ({ ...prev, isEntering: false }));
+        }, 100);
+      },
+      onLeave: () => {
+        console.log('Pinning ended - Section 2 left viewport');
+        setPinningState({
+          isPinned: false,
+          isEntering: false,
+          isLeaving: true,
+        });
+        // leaving 상태를 잠시 후 false로 리셋
+        setTimeout(() => {
+          setPinningState(prev => ({ ...prev, isLeaving: false }));
+        }, 100);
+      },
+      onEnterBack: () => {
+        console.log('Pinning re-entered - scrolling back up');
+        setPinningState({
+          isPinned: true,
+          isEntering: true,
+          isLeaving: false,
+        });
+      },
+      onLeaveBack: () => {
+        console.log('Pinning left back - scrolling back up');
+        setPinningState({
+          isPinned: false,
+          isEntering: false,
+          isLeaving: true,
+        });
+      },
+    });
+
+    console.log('ScrollTrigger created successfully', trigger);
+
+    // 클린업 함수
+    return () => {
+      console.log('Cleaning up ScrollTrigger');
+      trigger.kill();
+    };
+  }, []); // 빈 dependency array로 컴포넌트 마운트 시 한 번만 실행
+
+  return (
+    <PinningContext.Provider value={pinningState}>
+      <div ref={containerRef} className="w-full items-center justify-center">
+        {/* Section 1 */}
+        <section className="min-h-screen flex items-center justify-center bg-background w-full">
+          <div className="text-center w-full">
+            <h1 className="text-4xl font-bold mb-4 text-foreground">Section 1</h1>
+            <p className="text-muted-foreground">스크롤을 내려보세요</p>
+          </div>
+        </section>
+
+        {/* Section 2 - Pinning */}
+        <section
+          ref={section2Ref}
+          className="min-h-screen flex items-center justify-center bg-background w-full"
+        >
+          <div className="w-full max-w-7xl px-4">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold mb-4 text-foreground">Section 2 (Pinning)</h1>
+              <p className="mb-4 text-muted-foreground">이 섹션이 고정됩니다 - 스크롤로 시나리오를 제어해보세요</p>
             </div>
-        </div>
-    );
+
+            <div className="w-full">
+              <ScenarioContextProvider>
+                <ScrollControls enabled={true} threshold={15} />
+                <ScenarioSelector />
+                <DemoView />
+              </ScenarioContextProvider>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3 */}
+        <section className="min-h-screen flex items-center justify-center bg-background w-full">
+          <div className="text-center w-full">
+            <h1 className="text-4xl font-bold mb-4 text-foreground">Section 3</h1>
+            <p className="text-muted-foreground">Pinning이 해제됩니다</p>
+          </div>
+        </section>
+      </div>
+    </PinningContext.Provider>
+  );
 }
