@@ -636,12 +636,26 @@
     ],
     "steps": [
       {
+        "type": "make-call",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent"
+        }
+      },
+      {
         "type": "send-message",
         "action": {
           "from": "elderly_person",
           "to": "lifemate_agent",
           "content": "오늘 저녁 7시쯤, 친구들과 식당에서 모임을 하고 싶은데 적당한 장소 좀 찾아줘.",
-          "type": "text"
+          "type": "voice"
         }
       },
       {
@@ -650,7 +664,7 @@
           "from": "lifemate_agent",
           "to": "elderly_person",
           "content": "네, 어르신. 최근 혈당 수치와 식단 기록을 반영해 당뇨 관리에 좋은 식당을 추천드릴게요. 최근에 다녀오셨던 ‘신촌 닭한마리’ 혹은 ‘병천 유황오리’ 어떠세요?",
-          "type": "text"
+          "type": "voice"
         }
       },
       {
@@ -659,7 +673,14 @@
           "from": "elderly_person",
           "to": "lifemate_agent",
           "content": "닭한마리 좋아. 예약 되는지 확인해줘.",
-          "type": "text"
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent"
         }
       },
       {
@@ -745,7 +766,7 @@
         "action": {
           "from": "lifemate_agent",
           "to": "elderly_person",
-          "content": "어르신. 닭한마리는 예약이 불가능하고 유황오리는 가능해요. 7시 룸으로 4명 예약 확정할까요? 음성 답변이 어려우신 경우 ‘1: 좋아요, 2: 싫어요, 3: 다시 찾아줘’ 입력해주세요.",
+          "content": "어르신. 닭한마리는 예약이 불가능하고 유황오리는 가능해요. 7시 룸으로 4명 예약 확정할까요? 음성 답변이 어려우신 경우 ‘1: 좋아요, 2: 다시 찾아줘, 3: 그만하기’ 입력해주세요.",
           "type": "text"
         }
       },
@@ -756,6 +777,45 @@
           "to": "lifemate_agent",
           "content": "1",
           "type": "text"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 병천 유황오리 룸으로 최종 예약 확정 부탁 드립니다.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_2_staff",
+          "to": "lifemate_agent",
+          "content": "네, 예약 확정 되었습니다.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
         }
       },
       {
