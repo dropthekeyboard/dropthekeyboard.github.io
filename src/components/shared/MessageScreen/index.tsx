@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Send, MessageCircle } from 'lucide-react';
 import { MessageBubble } from '@/components/shared/MessageBubble';
 import type { Message } from '@/contexts/scenario';
+import { useEffect, useRef } from 'react';
 
 interface MessageScreenProps {
   messages: Message[];
@@ -19,6 +20,16 @@ export function MessageScreen({
   ownerName,
   className,
 }: MessageScreenProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change or typing state changes
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isTyping]);
+
   // Helper function to convert scenario senderType to component senderType
   const getComponentSenderType = (
     senderType?: 'agent' | 'customer' | 'server'
@@ -52,7 +63,7 @@ export function MessageScreen({
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0 scrollbar-hide">
         {messages.length === 0 ? (
           <div className="h-full" />
         ) : (
@@ -91,6 +102,9 @@ export function MessageScreen({
                 />
               </motion.div>
             )}
+
+            {/* Invisible element to scroll to */}
+            <div ref={messagesEndRef} />
           </>
         )}
       </div>

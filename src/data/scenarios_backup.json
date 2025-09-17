@@ -1,4 +1,432 @@
 {
+  "phase1_scenario1_1": {
+    "id": "phase1_scenario1_1",
+    "title": "Restaurant Reservation (Call & SMS Fallback)",
+    "description": "A customer asks their Agent to make a restaurant reservation. If the restaurant owner doesn't answer the call, the system automatically falls back to SMS, allowing the owner to respond with simple numerical inputs.",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "customer_agent",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "customer",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "human",
+        "name": "restaurant_owner",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "오늘 저녁 7시쯤, 친구들과 식당에서 모임을 하고 싶은데 적당한 장소 좀 찾아줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "Customer requested a reservation for 8/31 at 7 PM. Is this available? Reply 1 for yes, 2 for no, 3 for alternative time.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_owner",
+          "to": "customer_agent",
+          "content": "3 8pm",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "7 PM is not available, but 8 PM is. Would you like to change?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "Yes, change to 8 PM.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "Reservation confirmed for 8 PM",
+          "type": "text"
+        }
+      }
+    ]
+  },
+  "phase1_scenario1_2": {
+    "id": "phase1_scenario1_2",
+    "title": "Care Call (Daily Check-in & Emergency Call)",
+    "description": "An Agent makes daily check-in calls to an elderly person. Based on their response, it can trigger an emergency call to a guardian or hospital.",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "care_agent",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "elderly_person",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "human",
+        "name": "guardian",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "make-call",
+        "action": {
+          "from": "care_agent",
+          "to": "elderly_person"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "care_agent",
+          "to": "elderly_person"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "care_agent",
+          "to": "elderly_person",
+          "content": "Grandma, how are you feeling today? Press 1 for good, 2 for a little sick, 3 for very sick.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "care_agent",
+          "content": "2",
+          "type": "dtmf"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian",
+          "content": "Grandma reported feeling a little sick today. Please check on her.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "care_agent",
+          "to": "elderly_person",
+          "content": "Have you taken your blood pressure medication? Press 1 for yes, 2 for no, 3 for out of medicine.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "care_agent",
+          "content": "3",
+          "type": "dtmf"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian",
+          "content": "Grandma is out of blood pressure medication. Please assist with medication delivery.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "care_agent",
+          "to": "guardian"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "care_agent",
+          "to": "elderly_person"
+        }
+      }
+    ]
+  },
+  "phase2_scenario2_2": {
+    "id": "phase2_scenario2_2",
+    "title": "Restaurant Reservation (CatchTable Integration)",
+    "description": "The Lite Agent integrates with a third-party reservation platform like CatchTable, allowing customers to book through their Agent while still receiving platform-specific benefits.",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "customer_agent",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "customer",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "ai",
+        "name": "lite_agent",
+        "steps": []
+      },
+      {
+        "type": "human",
+        "name": "restaurant_owner",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "lite_agent",
+          "content": "Book a table for 2 tonight at 7 PM at [Restaurant Name] in Gangnam.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "service": "catchtable",
+          "request": "check availability 7PM"
+        }
+      },
+      {
+        "type": "api-response",
+        "action": {
+          "service": "catchtable",
+          "response": "7PM full, 8PM available"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lite_agent",
+          "to": "customer",
+          "content": "7 PM is fully booked, but 8 PM is available for 2 people. Change?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "lite_agent",
+          "content": "Yes, 8 PM.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "service": "catchtable",
+          "request": "book 8PM table for 2"
+        }
+      },
+      {
+        "type": "api-response",
+        "action": {
+          "service": "catchtable",
+          "response": "booking confirmed"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "This restaurant has a CatchTable promotion for a free dessert this week. Confirm?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "OK.",
+          "type": "text"
+        }
+      }
+    ]
+  },
+  "phase3_scenario3_1": {
+    "id": "phase3_scenario3_1",
+    "title": "Personalized Restaurant Reservation",
+    "description": "Customer Agent and Merchant Agent directly communicate. The Merchant Agent uses past order history and preferences to offer personalized suggestions, while the Customer Agent leverages customer profiles.",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "customer_agent",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "customer",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "ai",
+        "name": "merchant_agent",
+        "steps": []
+      }
+    ],
+    "steps": [
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "merchant_agent",
+          "content": "Book a table for 2 tomorrow evening.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "merchant_agent",
+          "to": "customer_agent",
+          "content": "Last time, you ordered Carbonara and a bottle of wine. Shall I prepare them again?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "merchant_agent",
+          "content": "What new items are on the menu?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "merchant_agent",
+          "to": "customer_agent",
+          "content": "We just launched a new Truffle Pasta this week.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "They have a new Truffle Pasta. Would you like to try it, or repeat your last order?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "Truffle Pasta sounds good. And the same wine.",
+          "type": "text"
+        }
+      }
+    ]
+  },
   "use_case_1_restaurant_reservation": {
     "id": "use_case_1_restaurant_reservation",
     "title": "식당 예약 (Use Case 1)",
