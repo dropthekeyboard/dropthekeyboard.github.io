@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DemoView } from '../DemoView';
 import { ScenarioContextProvider } from '@/contexts/scenario';
-import { ScenarioSelector } from '../ControlHeader/ScenarioSelector';
+import { ScenarioLoader } from '../ControlHeader/ScenarioLoader';
 import { ScrollControls } from '../ControlHeader/ScrollControls';
 import { PinningContext, type PinningContextType } from '@/contexts/pinning';
 import scenariosData from '@/data/scenarios.json';
@@ -15,24 +15,22 @@ if (typeof window !== 'undefined') {
 }
 
 export function GSAPPinningDemo() {
-  // 시나리오 데이터 로드 - Object.entries()로 key-value 쌍 활용
-  const scenarios = useMemo(() => {
-    return Object.entries(scenariosData)
-      .map(([scenarioKey, scenario]) => ({
-        ...scenario,
-        callSessions: [],
-        // 시나리오 key를 활용한 추가 메타데이터
-        key: scenarioKey,
-        // 시나리오 순서 제어 (key에 포함된 숫자 활용)
-        order: parseInt(scenarioKey.match(/\d+/)?.[0] || '0'),
-      }))
-      .sort((a, b) => a.order - b.order) // 순서대로 정렬
-      .map((item) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { key, order, ...scenario } = item;
-        return scenario;
-      }) as unknown as Scenario[]; // 정렬용 필드 제거
+  // 시나리오 ID 목록 생성 - Object.keys()로 모든 시나리오 ID 가져오기
+  const scenarioIds = useMemo(() => {
+    return Object.keys(scenariosData);
   }, []);
+
+  // 시나리오 데이터 로드 - ID 목록을 활용하여 순차적 배치
+  const scenarios = useMemo(() => {
+    return scenarioIds
+      .map((scenarioId) => {
+        const scenarioData = scenariosData[scenarioId as keyof typeof scenariosData];
+        return {
+          ...scenarioData,
+          callSessions: [], // Scenario 인터페이스에 맞게 추가
+        } as unknown as Scenario;
+      });
+  }, [scenarioIds]);
 
   // 각 시나리오별 ref와 pinning state 관리
   const scenarioRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -161,7 +159,11 @@ export function GSAPPinningDemo() {
                 <PinningContext.Provider value={pinningStates[index]}>
                   <ScenarioContextProvider>
                     <div className="mb-4">
-                      <ScenarioSelector />
+                      <ScenarioLoader
+                        initialScenarioId={scenario.id}
+                        onScenarioLoaded={(id) => console.log(`Scenario ${id} loaded`)}
+                        onScenarioError={(error) => console.error(`Scenario load error: ${error}`)}
+                      />
                     </div>
                     <ScrollControls enabled={true} threshold={15} />
                     <DemoView />
