@@ -95,7 +95,6 @@
       }
     ]
   },
-
   "phase1_scenario1_2": {
     "id": "phase1_scenario1_2",
     "title": "Care Call (Daily Check-in & Emergency Call)",
@@ -241,7 +240,6 @@
       }
     ]
   },
-
   "phase2_scenario2_2": {
     "id": "phase2_scenario2_2",
     "title": "Restaurant Reservation (CatchTable Integration)",
@@ -348,7 +346,6 @@
       }
     ]
   },
-
   "phase3_scenario3_1": {
     "id": "phase3_scenario3_1",
     "title": "Personalized Restaurant Reservation",
@@ -425,6 +422,402 @@
           "from": "customer",
           "to": "customer_agent",
           "content": "Truffle Pasta sounds good. And the same wine.",
+          "type": "text"
+        }
+      }
+    ]
+  },
+  "use_case_1_restaurant_reservation": {
+    "id": "use_case_1_restaurant_reservation",
+    "title": "식당 예약 (Use Case 1)",
+    "description": "Agent가 고객을 대신하여 식당 예약 및 와인 재고를 확인하고, API를 통해 와인 추천까지 제공하는 시나리오",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "customer_agent",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "customer",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "human",
+        "name": "restaurant_owner",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "오늘 저녁 7시쯤에 8명 정도 와인동호회 모임할만한 이탈리안 식당 찾아서 예약해줘. 아마로네 와인 재고 있는지도 확인해줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "네, 주로 이용하시는 서울 2호선 라인의 와인이 유명한 이탈리안 식당 정보를 확인해볼게요.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "안녕하세요, SKT 인증 Agent 서비스입니다. 이정윤 고객님을 대신해 오늘 저녁 7시, 8명 단체 예약 예정입니다. 예약 가능여부 및 아마로네 와인 재고 응답해주시면 전달드리겠습니다.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_owner",
+          "to": "customer_agent",
+          "content": "와인 재고는 충분히 있는데, 7시는 어렵고 8시/9시 타임 비어있어요.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "정윤님, 와인 재고가 있는 식당 중, 예상 선호도 기반으로 예약 가능한 식당 실시간 확인을 마쳤어요. [명동키친]으로 예약해드릴까요? [정보 요약 제공] 명동키친 (식당링크, 평점) - 7시 가능 - 와인 재고 O - 콜키지, 주요 메뉴, 주차 오스테리아 꼬또 (식당링크, 평점) - 7시 불가, 8시/9시 가능 - 와인 재고O - 콜키지, 주요 메뉴, 주차",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "응, 명동키친으로 예약해줘. 아마로네 와인도 3병 미리 확보 해줘",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "안녕하세요, SKT 인증 Agent 서비스입니다. 이정윤 고객님을 대신해 오늘 저녁 7시, 8명 단체 예약 확정하려고 합니다. 고객님이 미리 아마로네 와인 3병 세팅 요청하셨습니다. 예약 가능할까요? [1. 예약 확정 / 2. 예약 불가 / 3. 직접 통화 연결]",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_owner",
+          "to": "customer_agent",
+          "content": "1",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "정윤님, 예약이 확정되었습니다. 예약 1시간 전 문자 알림 드릴게요. 구글 캘린더에 일정을 등록해드릴까요?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "응. 와인 모임으로 된 공유 캘린더에 등록해주고, 모임 멤버들한테도 1시간 전에 문자 알림 줘",
+          "type": "text"
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "amazon_api",
+          "service": "amazon",
+          "request": "wine recommendations"
+        }
+      },
+      {
+        "type": "api-response",
+        "action": {
+          "from": "amazon_api",
+          "to": "customer_agent",
+          "service": "amazon",
+          "response": "해산물 파스타와 잘 어울려요, 산뜻한 피노 그리지오 (아마존 링크)\n고르곤졸라 피자에 추천해요, 단맛이 있는 모스카토 다스티 (아마존 링크)\n양고기 로스트와 먹었을 때 평이 좋아요. 높은 산도와 묵직함이 특징인 바롤로 (아마존 링크)"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "네, 캘린더에 등록해드렸어요. 캘린더에 등록된 연락처로 다른 멤버들에게도 문자 알림 드리겠습니다. 와인 모임을 위해 메뉴와 잘 어울릴만한 와인들도 추가 준비해보시는 건 어떤가요?\n==========\n해산물 파스타와 잘 어울려요, 산뜻한 피노 그리지오 (아마존 링크)\n고르곤졸라 피자에 추천해요, 단맛이 있는 모스카토 다스티 (아마존 링크)\n양고기 로스트와 먹었을 때 평이 좋아요. 높은 산도와 묵직함이 특징인 바롤로 (아마존 링크)",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "정윤님, 명동키친 방문 1시간 전이에요! 방문 장소까지 최소 시간이 소요되는 대중교통 경로를 제공해드릴까요?",
+          "type": "text",
+          "reason": "reminder"
+        }
+      }
+    ]
+  },
+  "use_case_2_senior_life_mate": {
+    "id": "use_case_2_senior_life_mate",
+    "title": "시니어 라이프 메이트 (Use Case 2)",
+    "description": "어르신을 위해 건강 맞춤 식당을 추천 및 예약하고, 교통편까지 예약해주는 시나리오",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "lifemate_agent",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "elderly_person",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "human",
+        "name": "restaurant_1_staff",
+        "state": "message",
+        "messageBox": {}
+      },
+      {
+        "type": "human",
+        "name": "restaurant_2_staff",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "오늘 저녁 7시쯤, 친구들과 식당에서 모임을 하고 싶은데 적당한 장소 좀 찾아줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "네, 어르신. 최근 혈당 수치와 식단 기록을 반영해 당뇨 관리에 좋은 식당을 추천드릴게요. 최근에 다녀오셨던 ‘신촌 닭한마리’ 혹은 ‘병천 유황오리’ 어떠세요?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "닭한마리 좋아. 예약 되는지 확인해줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff",
+          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_1_staff",
+          "to": "lifemate_agent",
+          "content": "오늘은 예약이 다 차서 불가능해요.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_2_staff",
+          "to": "lifemate_agent",
+          "content": "오늘 7시 가능해요. 룸으로 예약해드릴까요?",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "어르신. 닭한마리는 예약이 불가능하고 유황오리는 가능해요. 7시 룸으로 4명 예약 확정할까요? 음성 답변이 어려우신 경우 ‘1: 좋아요, 2: 싫어요, 3: 다시 찾아줘’ 입력해주세요.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "1",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "오늘 7시 4명 병천 유황오리로 예약 완료했습니다.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "식당까지 이동을 도와드릴게요. 평소 이용하시던 우버 택시를 6시 30분에 불러드릴까요?",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "응, 부탁해.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "uber_api",
+          "service": "uber",
+          "request": "book taxi for 6:30 PM"
+        }
+      },
+      {
+        "type": "api-response",
+        "action": {
+          "from": "uber_api",
+          "to": "lifemate_agent",
+          "service": "uber",
+          "response": "booking confirmed"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "네, 택시 예약 완료했습니다. 택시가 도착 10분 전에 알림 드릴게요. 택시비는 SKT 통신사 빌링을 통해 자동 결제 됩니다.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "오늘 저녁 메뉴인 오리고기는 단백질이 풍부하고 포만감을 오래 유지시켜 당뇨 환자의 식단 조절에 도움이 돼요. 특히 야채와 함께 먹으면 혈당 관리에도 도움이 되니 참고해주세요. 식사 후 혈당 체크 잊지 않도록 2시간 뒤 알려드릴게요.",
           "type": "text"
         }
       }
