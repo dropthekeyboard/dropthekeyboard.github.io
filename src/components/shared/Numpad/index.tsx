@@ -81,7 +81,7 @@ export function Numpad({
             'flex items-center justify-center font-medium transition-all duration-500 rounded-2xl border shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary',
             currentSize.button,
             currentTheme.keypadBg,
-            pressedKey === key
+            pressedKey?.toString() === key
               ? `${currentTheme.dtmfText} scale-115 ${currentTheme.dtmfBg} ${currentTheme.dtmfBorder} shadow-2xl ${currentTheme.dtmfShadow} ring-2 ring-green-300/50 animate-pulse`
               : `${currentTheme.keypadColor} ${currentTheme.keypadBorder} ${currentTheme.keypadHover} hover:scale-105 active:scale-95`
           )}

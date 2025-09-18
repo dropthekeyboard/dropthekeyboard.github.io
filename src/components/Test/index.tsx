@@ -9,6 +9,7 @@ import { PinningProvider, usePinning, useSectionPinning } from '@/contexts/pinni
 import { AnimatedSlide } from '@/components/shared/AnimatedSlide';
 import scenariosData from '@/data/scenarios.json';
 import type { ScrollTrigger as ScrollTriggerType } from 'gsap/ScrollTrigger';
+import type { SlideProps } from '@/types/slide';
 
 // Import all slide components
 import {
@@ -28,7 +29,7 @@ interface SectionData {
   title: string;
   pinned: boolean;
   pinEnd?: string; // 개별 pinning 구간 설정 (예: '+=300vh', '+=1000', '+=5s')
-  Component?: ComponentType;
+  Component?: ComponentType<object> | ComponentType<SlideProps>;
   id?: string;
   description?: string;
   // AnimatedSlide 속성들
@@ -68,9 +69,9 @@ function GSAPPinningDemoContent() {
       animationType: 'scale' as const,
       animationDelay: 0.4
     },
-    { 
-      Component: Slide004, 
-      pinned: false, 
+    {
+      Component: Slide004,
+      pinned: true,
       title: "A2A 확산이 어려운 구조적 요인",
       enableAnimation: true,
       animationType: 'slideDown' as const,
@@ -230,7 +231,7 @@ function GSAPPinningDemoContent() {
 
       // 시나리오 섹션은 더 긴 pinning 구간, 슬라이드는 기본값 사용
       const section = sections[index];
-      const pinEnd = section.type === 'scenario' ? '+=3000' : '+=1000'; // 시나리오는 3배 더 긴 구간
+      const pinEnd = section.type === 'scenario' ? '+=3000' : '+=2000'; // 슬라이드도 충분한 시간 제공
 
       const trigger = ScrollTrigger.create({
         trigger: sectionRef,
@@ -301,10 +302,10 @@ function GSAPPinningDemoContent() {
                     animationType={animationType} 
                     delay={animationDelay}
                   >
-                    {Component && <Component />}
+                    {Component && <Component sectionIndex={index} />}
                   </AnimatedSlide>
                 ) : (
-                  Component && <Component />
+                  Component && <Component sectionIndex={index} />
                 )}
               </div>
             </section>

@@ -1,16 +1,20 @@
 // Slide 002: 회장님 영상 ? 사진 ?
 function Slide002() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
-      <div className="max-w-6xl w-full">
-        {/* 메인 이미지 */}
-        <div className="w-full flex items-center justify-center">
-          <img
-            src="/tm_vs_jit.jpg"
-            alt="TM vs JIT"
-            className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
-          />
-        </div>
+    <div className="min-h-screen w-full bg-background text-foreground font-sans relative">
+      {/* 메인 이미지 - 전체 화면 */}
+      <div className="relative w-full h-screen">
+        <img
+          src="/tm_vs_jit.jpg"
+          alt="TM vs JIT"
+          className="w-full h-full min-w-full min-h-full object-cover"
+        />
+
+        {/* 위쪽 Shadow Overlay */}
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
+
+        {/* 아래쪽 Shadow Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
       </div>
     </div>
   );
