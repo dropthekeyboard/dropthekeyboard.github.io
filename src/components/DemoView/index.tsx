@@ -5,7 +5,7 @@ import { ServerSection } from './ServerSection';
 
 interface DemoViewProps {
   className?: string;
-  agentStyle?: 'minimal' | 'formal' | 'hacker';
+  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
 export function DemoView({ className, agentStyle = 'hacker' }: DemoViewProps) {

@@ -1,9 +1,10 @@
 import { PhoneSection } from '@/components/shared/PhoneSection';
 import { TerminalSection } from '@/components/shared/TerminalSection';
+import { ReasoningAgentSection } from '@/components/shared/ReasoningAgentSection';
 import { useScenario } from '@/hooks/useScenario';
 
 interface ServerSectionProps {
-  agentStyle?: 'minimal' | 'formal' | 'hacker';
+  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
 export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
@@ -31,8 +32,20 @@ export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
     );
   }
 
-  // AI server - use TerminalSection
+  // AI server - use ReasoningAgentSection for 'reasoning' variant, TerminalSection otherwise
   if (server.type === 'ai') {
+    if (agentStyle === 'reasoning') {
+      return (
+        <ReasoningAgentSection
+          entity={server}
+          label={server.name}
+          labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+          sectionClass=""
+          variant={agentStyle}
+        />
+      );
+    }
+
     return (
       <TerminalSection
         entity={server}

@@ -90,7 +90,7 @@ function GSAPPinningDemoContent() {
       pinned: false, 
       title: "첫 모바일 앱 출시 시기",
       enableAnimation: true,
-      animationType: 'slideUp' as const,
+      animationType: 'fade' as const,
       animationDelay: 0.2
     },
     { 
@@ -98,12 +98,12 @@ function GSAPPinningDemoContent() {
       pinned: true, 
       title: "앱 사용 현황",
       enableAnimation: true,
-      animationType: 'scale' as const,
+      animationType: 'fade' as const,
       animationDelay: 0.3
     },
     { 
       Component: Slide008, 
-      pinned: false, 
+      pinned: true, 
       title: "생성 AI의 급속한 성장",
       enableAnimation: true,
       animationType: 'fade' as const,
@@ -114,7 +114,7 @@ function GSAPPinningDemoContent() {
       pinned: false, 
       title: "Agent 기술의 발전",
       enableAnimation: true,
-      animationType: 'slideDown' as const,
+      animationType: 'fade' as const,
       animationDelay: 0.2
     },
     { 
@@ -130,7 +130,7 @@ function GSAPPinningDemoContent() {
       pinned: false, 
       title: "시니어 라이프 메이트 시나리오",
       enableAnimation: true,
-      animationType: 'slideUp' as const,
+      animationType: 'fade' as const,
       animationDelay: 0.3
     },
     { 
@@ -146,7 +146,7 @@ function GSAPPinningDemoContent() {
       pinned: false, 
       title: "의료 예약 관리 시나리오",
       enableAnimation: true,
-      animationType: 'slideDown' as const,
+      animationType: 'fade' as const,
       animationDelay: 0.4
     },
     { 
@@ -199,7 +199,7 @@ function GSAPPinningDemoContent() {
         id: scenario.id,
         title: scenario.title,
         description: scenario.description,
-        pinEnd: '',
+        pinEnd: '+400vh',
         pinned: false,
       },
       // 시나리오 데모뷰 섹션 (pinning 적용)
@@ -209,6 +209,7 @@ function GSAPPinningDemoContent() {
         title: scenario.title,
         description: scenario.description,
         pinned: true,
+        pinEnd: '+500vh'
       },
     ]);
 

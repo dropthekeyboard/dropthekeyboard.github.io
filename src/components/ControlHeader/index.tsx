@@ -12,7 +12,7 @@ import { ViewModeToggle } from './ViewModeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
-  onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker') => void;
+  onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker' | 'reasoning') => void;
   onViewModeChange?: (mode: 'demo' | 'storytelling') => void;
   currentViewMode?: 'demo' | 'storytelling';
   playbackInterval?: number; // Auto-play interval in milliseconds
@@ -28,12 +28,12 @@ export function ControlHeader({
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>(
+  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker' | 'reasoning'>(
     'hacker'
   );
   const [autoPlayInterval, setAutoPlayInterval] = useState(playbackInterval);
 
-  const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker') => {
+  const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker' | 'reasoning') => {
     setAgentStyle(style);
     onAgentStyleChange?.(style);
   };
@@ -191,7 +191,7 @@ export function ControlHeader({
                     🎨 Agent Terminal Style
                   </h3>
                   <div className="space-y-2">
-                    <div className="grid grid-cols-3 gap-1">
+                    <div className="grid grid-cols-2 gap-1">
                       <button
                         onClick={() => handleAgentStyleChange('minimal')}
                         className={cn(
@@ -224,6 +224,17 @@ export function ControlHeader({
                         )}
                       >
                         Hacker
+                      </button>
+                      <button
+                        onClick={() => handleAgentStyleChange('reasoning')}
+                        className={cn(
+                          'px-2 py-1 text-xs rounded border transition-colors',
+                          agentStyle === 'reasoning'
+                            ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300'
+                            : 'border-purple-500/30 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50'
+                        )}
+                      >
+                        Reasoning
                       </button>
                     </div>
                     <div className="text-xs text-muted-foreground text-center">

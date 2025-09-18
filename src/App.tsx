@@ -8,7 +8,7 @@ import { useTheme } from './hooks/useTheme';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
-  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker'>(
+  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker' | 'reasoning'>(
     'hacker'
   );
   const [viewMode, setViewMode] = useState<'demo' | 'storytelling'>('demo');

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasoningAgentSection 시각화 목업</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: hsl(222.2 84% 4.9%);
+            color: hsl(210 40% 98%);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        
+        .reasoning-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: hsl(222.2 84% 4.9%);
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid hsl(217.2 32.6% 17.5%);
+        }
+        
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid hsl(217.2 32.6% 17.5%);
+        }
+        
+        .agent-icon {
+            width: 40px;
+            height: 40px;
+            background: hsl(210 40% 98%);
+            color: hsl(222.2 84% 4.9%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .agent-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: hsl(210 40% 98%);
+        }
+        
+        .agent-subtitle {
+            margin: 0;
+            font-size: 14px;
+            color: hsl(215.4 16.3% 46.9%);
+        }
+        
+        .reasoning-flow {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .reasoning-step {
+            position: relative;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        
+        /* 연결선 - 미니멀하고 세련되게 */
+        .reasoning-step:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 38px;
+            width: 1px;
+            height: calc(100% + 16px);
+            background: hsl(217.2 32.6% 17.5%);
+            z-index: 1;
+        }
+        
+        .reasoning-step.step-reasoning:not(:last-child)::before {
+            background: hsl(47.9 95.8% 53.1%);
+            opacity: 0.3;
+        }
+        
+        .step-marker {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            border: 1px solid;
+        }
+        
+        .step-input .step-marker {
+            background: hsl(221.2 83.2% 53.3%);
+            color: hsl(210 40% 98%);
+            border-color: hsl(221.2 83.2% 53.3%);
+        }
+        
+        .step-reasoning .step-marker {
+            background: hsl(47.9 95.8% 53.1%);
+            color: hsl(222.2 84% 4.9%);
+            border-color: hsl(47.9 95.8% 53.1%);
+        }
+        
+        .step-output .step-marker {
+            background: hsl(142.1 76.2% 36.3%);
+            color: hsl(210 40% 98%);
+            border-color: hsl(142.1 76.2% 36.3%);
+        }
+        
+        .step-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* 입력/출력 단계는 미니멀하게 */
+        .step-input .step-content,
+        .step-output .step-content {
+            background: hsl(217.2 32.6% 17.5%);
+            border: 1px solid hsl(217.2 32.6% 17.5%);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        /* 추론 단계는 강조하되 세련되게 */
+        .step-reasoning .step-content {
+            background: hsl(222.2 84% 4.9%);
+            border: 1px solid hsl(47.9 95.8% 53.1%);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+        }
+        
+        .step-reasoning .step-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            padding: 1px;
+            background: linear-gradient(135deg, hsl(47.9 95.8% 53.1%), hsl(47.9 95.8% 43.1%));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: hsl(210 40% 98%);
+        }
+        
+        /* 추론 단계 제목은 더 눈에 띄게 */
+        .step-reasoning .step-title {
+            font-size: 16px;
+            color: hsl(47.9 95.8% 53.1%);
+            margin-bottom: 16px;
+        }
+        
+        .step-description {
+            font-size: 13px;
+            color: hsl(215.4 16.3% 46.9%);
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+        
+        /* 추론 내용을 세련되게 */
+        .reasoning-text {
+            background: hsl(224 71.4% 4.1%);
+            border: 1px solid hsl(215 27.9% 16.9%);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: hsl(213 31% 91%);
+        }
+        
+        .reasoning-text strong {
+            color: hsl(47.9 95.8% 53.1%);
+            font-weight: 600;
+        }
+        
+        /* Action 표시는 매우 미니멀하게 */
+        .action-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: hsl(215 27.9% 16.9%);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: hsl(215.4 16.3% 46.9%);
+            border: 1px solid hsl(215 27.9% 16.9%);
+            font-weight: 500;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.02);
+            }
+        }
+        
+        /* 그림자와 깊이감 추가 */
+        .reasoning-container {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .step-reasoning .step-content {
+            box-shadow: 0 0 0 1px hsl(47.9 95.8% 53.1%), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+    </style>
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .timestamp {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reasoning-container">
+        <div class="agent-header">
+            <div class="agent-icon">🤖</div>
+            <div>
+                <h3 class="agent-title">AI Agent Reasoning</h3>
+                <p class="agent-subtitle">Decision Process Visualization</p>
+            </div>
+        </div>
+        
+        <div class="reasoning-flow">
+            <!-- 입력 단계 - 미니멀 -->
+            <div class="reasoning-step step-input">
+                <div class="step-marker">📥</div>
+                <div class="step-content">
+                    <div class="step-title">SMS Received</div>
+                    <div class="action-indicator">📱 SMS</div>
+                </div>
+            </div>
+            
+            <!-- 추론 단계 - 세련됨 -->
+            <div class="reasoning-step step-reasoning">
+                <div class="step-marker pulse">🧠</div>
+                <div class="step-content">
+                    <div class="step-title">🔍 Situation Analysis & Strategy Planning</div>
+                    <div class="reasoning-text">
+                        <strong>Current Situation:</strong> User requested wine recommendation but lacks specific preferences and budget information<br><br>
+                        <strong>Required Information:</strong> Wine type (red/white), budget range, purpose (gift/personal), preferred brands<br><br>
+                        <strong>Optimal Strategy:</strong> Conduct direct phone consultation to understand detailed needs, then provide personalized recommendations via external shopping API
+                    </div>
+                    <div class="step-description">💡 Phone consultation → API search → Personalized recommendation flow</div>
+                </div>
+            </div>
+            
+            <!-- 출력 단계 - 미니멀 -->
+            <div class="reasoning-step step-output">
+                <div class="step-marker">📞</div>
+                <div class="step-content">
+                    <div class="step-title">Outgoing Call</div>
+                    <div class="action-indicator">📞 Call</div>
+                </div>
+            </div>
+            
+            <!-- 다음 입력 - 미니멀 -->
+            <div class="reasoning-step step-input">
+                <div class="step-marker">🎤</div>
+                <div class="step-content">
+                    <div class="step-title">Voice Information Collection</div>
+                    <div class="action-indicator">🎤 Voice</div>
+                </div>
+            </div>
+            
+            <!-- 추론 단계 2 - 세련됨 -->
+            <div class="reasoning-step step-reasoning">
+                <div class="step-marker pulse">🧠</div>
+                <div class="step-content">
+                    <div class="step-title">🎯 Information Synthesis & Search Optimization</div>
+                    <div class="reasoning-text">
+                        <strong>Collected Information Analysis:</strong><br>
+                        • Wine Type: Red Wine<br>
+                        • Budget: 30,000 KRW range (25,000-35,000 KRW)<br>
+                        • Purpose: Gift (packaging and brand recognition important)<br><br>
+                        
+                        <strong>Search Optimization Strategy:</strong><br>
+                        1. Search Amazon with "red wine gift set" keywords<br>
+                        2. Price filter: 25,000-35,000 KRW<br>
+                        3. Priority on 4.0+ rating products<br>
+                        4. Verify gift wrapping availability
+                    </div>
+                    <div class="step-description">🔍 Search keywords and filter conditions optimized</div>
+                </div>
+            </div>
+            
+            <!-- API 호출 - 미니멀 -->
+            <div class="reasoning-step step-output">
+                <div class="step-marker">🔍</div>
+                <div class="step-content">
+                    <div class="step-title">Product Search</div>
+                    <div class="action-indicator">🛒 API</div>
+                </div>
+            </div>
+            
+            <!-- API 응답 -->
+            <div class="reasoning-step step-input">
+                <div class="step-marker">📦</div>
+                <div class="step-content">
+                    <div class="step-title">Search Results Received</div>
+                    <div class="action-indicator">📦 Response</div>
+                </div>
+            </div>
+            
+            <!-- 최종 추론 - 세련됨 -->
+            <div class="reasoning-step step-reasoning">
+                <div class="step-marker pulse">🧠</div>
+                <div class="step-content">
+                    <div class="step-title">🏆 Final Product Selection & Recommendation Strategy</div>
+                    <div class="reasoning-text">
+                        <strong>Product Evaluation Criteria:</strong><br>
+                        1. Price Suitability: Budget alignment with 30,000 KRW range<br>
+                        2. Gift Suitability: Packaging and brand recognition<br>
+                        3. Quality Indicators: Review ratings and sales volume<br><br>
+                        
+                        <strong>Selected TOP 3:</strong><br>
+                        • Chateau Margaux Red Wine Set (29,000 KRW) - Rating 4.5/5<br>
+                        • French Bordeaux Gift Set (32,000 KRW) - Rating 4.3/5<br>
+                        • Italian Chianti Premium (28,000 KRW) - Rating 4.4/5<br><br>
+                        
+                        <strong>Recommendation Message Strategy:</strong> Emphasize each product's features and gift suitability to provide choice options
+                    </div>
+                    <div class="step-description">📋 Personalized recommendation list and explanatory message prepared</div>
+                </div>
+            </div>
+            
+            <!-- 최종 응답 - 미니멀 -->
+            <div class="reasoning-step step-output">
+                <div class="step-marker">💬</div>
+                <div class="step-content">
+                    <div class="step-title">Recommendation Message Sent</div>
+                    <div class="action-indicator">📱 SMS</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
