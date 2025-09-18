@@ -32,28 +32,33 @@ export function MessageBubble({
         duration: 0.3,
       }}
       className={cn(
-        'flex mb-3 max-w-[80%] items-end space-x-2',
+        'flex w-full items-end',
         isOwnMessage
-          ? 'justify-end ml-auto flex-row-reverse space-x-reverse'
-          : 'justify-start'
+          ? 'justify-end pl-12'
+          : 'justify-start pr-12'
       )}
     >
-      {/* Avatar */}
-      <Avatar
-        {...getAvatarProps(senderType)}
-        size="md"
-        className="flex-shrink-0"
-      />
+      {/* Content wrapper with proper spacing */}
+      <div className={cn(
+        'flex items-end',
+        isOwnMessage ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'
+      )}>
+        {/* Avatar */}
+        <Avatar
+          {...getAvatarProps(senderType)}
+          size="md"
+          className="flex-shrink-0"
+        />
 
-      <div className="flex flex-col">
-        <div
-          className={cn(
-            'relative px-4 py-2 rounded-xl break-words shadow-lg',
-            isOwnMessage
-              ? 'bg-primary text-primary-foreground rounded-br-md'
-              : 'bg-muted text-muted-foreground rounded-bl-md'
-          )}
-        >
+        <div className="flex flex-col">
+          <div
+            className={cn(
+              'relative px-4 py-2 rounded-xl break-words shadow-lg max-w-[280px]',
+              isOwnMessage
+                ? 'bg-primary text-primary-foreground rounded-br-md'
+                : 'bg-muted text-muted-foreground rounded-bl-md'
+            )}
+          >
           {isTyping ? (
             <div className="flex items-center space-x-1">
               <motion.div
@@ -77,39 +82,43 @@ export function MessageBubble({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.2 }}
-              className="text-sm leading-relaxed"
+              className={cn(
+                'text-sm leading-relaxed',
+                isOwnMessage ? 'text-right' : 'text-left'
+              )}
             >
               {message}
             </motion.span>
-          )}
-        </div>
-
-        {/* Timestamp and read status */}
-        {(timestamp || isOwnMessage) && !isTyping && (
-          <div
-            className={cn(
-              'flex items-center mt-1 text-xs text-muted-foreground/60',
-              isOwnMessage ? 'justify-end' : 'justify-start'
-            )}
-          >
-            {timestamp && (
-              <span className="mr-1">
-                {new Date(timestamp).toLocaleTimeString([], {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
-            )}
-            {isOwnMessage && (
-              <CheckCheck
-                className={cn(
-                  'w-3 h-3 transition-colors',
-                  isRead ? 'text-blue-500' : 'text-muted-foreground/60'
-                )}
-              />
             )}
           </div>
-        )}
+
+          {/* Timestamp and read status */}
+          {(timestamp || isOwnMessage) && !isTyping && (
+            <div
+              className={cn(
+                'flex items-center mt-1 text-xs text-muted-foreground/60',
+                isOwnMessage ? 'justify-end' : 'justify-start'
+              )}
+            >
+              {timestamp && (
+                <span className="mr-1">
+                  {new Date(timestamp).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+              )}
+              {isOwnMessage && (
+                <CheckCheck
+                  className={cn(
+                    'w-3 h-3 transition-colors',
+                    isRead ? 'text-blue-500' : 'text-muted-foreground/60'
+                  )}
+                />
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

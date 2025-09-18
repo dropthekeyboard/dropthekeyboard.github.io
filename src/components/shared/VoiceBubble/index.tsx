@@ -59,11 +59,30 @@ export function VoiceBubble({
   className,
 }: VoiceBubbleProps) {
   const isPlaying = true; // Voice messages are typically playable by default
+  const { resolvedTheme } = useTheme();
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
+
+  // Theme-based styling for better contrast
+  const bubbleStyles = {
+    light: {
+      background: 'bg-white/70 border border-white/80',
+      overlay: 'from-white/40 via-white/30 to-white/20',
+      text: 'text-gray-800',
+      mutedText: 'text-gray-600',
+    },
+    dark: {
+      background: 'bg-gray-800/90 border border-gray-700/60',
+      overlay: 'from-gray-800/50 via-gray-800/40 to-gray-800/30',
+      text: 'text-gray-100',
+      mutedText: 'text-gray-300',
+    },
+  };
+
+  const currentStyle = bubbleStyles[resolvedTheme];
 
   return (
     <motion.div
@@ -72,53 +91,72 @@ export function VoiceBubble({
       exit={{ opacity: 0, y: -15, scale: 0.95 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'flex mb-4 max-w-[75%] items-end space-x-4',
+        'flex mb-6 w-full items-end',
         isOwnMessage
-          ? 'justify-end ml-auto flex-row-reverse space-x-reverse'
-          : 'justify-start',
+          ? 'justify-end pl-12'
+          : 'justify-start pr-12',
         className
       )}
     >
-      {/* Avatar */}
-      <Avatar
-        {...getAvatarProps(senderType)}
-        size="md"
-        className="flex-shrink-0 shadow-md"
-      />
+      {/* Content wrapper with proper spacing */}
+      <div className={cn(
+        'flex items-end',
+        isOwnMessage ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'
+      )}>
+        {/* Avatar */}
+        <Avatar
+          {...getAvatarProps(senderType)}
+          size="md"
+          className="flex-shrink-0 shadow-md"
+        />
 
-      <div
-        className={cn(
-          'px-4 py-3 rounded-2xl shadow-2xl',
-          'bg-white/50 border border-white/60',
-          'max-w-[240px] min-w-[160px]',
-          'relative overflow-hidden',
-          'backdrop-blur-ultra'
-        )}
-      >
-        {/* Ultra-strong glass effect overlay with extreme blur kernel */}
-        <div className="absolute inset-0 backdrop-blur-extreme bg-gradient-to-br from-white/30 via-white/20 to-white/15 rounded-2xl" />
-
-        {/* Voice visualization header */}
-        <div className="flex items-center justify-between mb-4 relative z-10">
-          <div className="flex items-center space-x-3">
-            <Phone className="w-4 h-4 text-primary/70 flex-shrink-0" />
-            <VoiceWaveform isPlaying={isPlaying} />
-          </div>
-          {timestamp && (
-            <span className="text-xs text-muted-foreground font-medium flex-shrink-0">
-              {formatTime(timestamp)}
-            </span>
+        <div
+          className={cn(
+            'px-4 py-3 rounded-2xl shadow-2xl',
+            currentStyle.background,
+            'max-w-[280px] min-w-[160px]',
+            'relative overflow-hidden',
+            'backdrop-blur-ultra'
           )}
-        </div>
+        >
+          {/* Ultra-strong glass effect overlay with extreme blur kernel */}
+          <div className={cn(
+            'absolute inset-0 backdrop-blur-extreme bg-gradient-to-br rounded-2xl',
+            currentStyle.overlay
+          )} />
 
-        {/* Message content */}
-        <div className="text-base leading-relaxed text-foreground font-medium relative z-10">
-          {message}
-        </div>
+          {/* Voice visualization header */}
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <div className="flex items-center space-x-3">
+              <Phone className="w-4 h-4 text-primary/70 flex-shrink-0" />
+              <VoiceWaveform isPlaying={isPlaying} />
+            </div>
+            {timestamp && (
+              <span className={cn(
+                'text-xs font-medium flex-shrink-0',
+                currentStyle.mutedText
+              )}>
+                {formatTime(timestamp)}
+              </span>
+            )}
+          </div>
 
-        {/* Speaker indicator */}
-        <div className="mt-4 text-sm text-muted-foreground font-medium relative z-10">
-          {isOwnMessage ? 'You' : 'Contact'}
+          {/* Message content */}
+          <div className={cn(
+            'text-base leading-relaxed font-medium relative z-10',
+            currentStyle.text,
+            isOwnMessage ? 'text-right' : 'text-left'
+          )}>
+            {message}
+          </div>
+
+          {/* Speaker indicator */}
+          <div className={cn(
+            'mt-4 text-sm font-medium relative z-10',
+            currentStyle.mutedText
+          )}>
+            {isOwnMessage ? 'You' : 'Contact'}
+          </div>
         </div>
       </div>
     </motion.div>

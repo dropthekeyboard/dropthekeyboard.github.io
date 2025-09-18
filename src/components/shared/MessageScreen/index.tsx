@@ -81,7 +81,7 @@ export function MessageScreen({
         {messages.length === 0 ? (
           <div className="h-full" />
         ) : (
-          <>
+          <div className="w-full">
             {/* Sort messages by timestamp to ensure chronological order */}
             {[...messages]
               .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
@@ -91,10 +91,11 @@ export function MessageScreen({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  className="w-full mb-3"
                 >
                   <MessageBubble
                     message={msg.content}
-                    isOwnMessage={msg.to === ownerName}
+                    isOwnMessage={msg.from === ownerName}
                     senderType={getComponentSenderType(msg.senderType)}
                     timestamp={msg.timestamp}
                     isRead={msg.to === 'user'}
@@ -108,6 +109,7 @@ export function MessageScreen({
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
+                className="w-full mb-3"
               >
                 <MessageBubble
                   message=""
@@ -119,7 +121,7 @@ export function MessageScreen({
 
             {/* Invisible element to scroll to */}
             <div ref={messagesEndRef} />
-          </>
+          </div>
         )}
       </div>
 

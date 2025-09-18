@@ -200,14 +200,14 @@ export function VoiceScreen({
           <div className="h-full flex flex-col">
             {/* Messages in top portion with subtle overlay */}
             <div ref={messagesContainerRef} className="flex-1 pt-8 pb-32 px-4 overflow-y-auto scrollbar-hide">
-              <div className="space-y-3 max-w-md mx-auto">
+              <div className="space-y-2 w-full">
                 <AnimatePresence mode="popLayout">
                   {displayMessages
                     .filter((m) => m.type === 'voice')
                     .map((voiceMessage: Message) => (
                       <div
                         key={voiceMessage.id || voiceMessage.content}
-                        className="pointer-events-auto"
+                        className="pointer-events-auto w-full"
                       >
                         <VoiceBubble
                           message={voiceMessage.content}
@@ -216,7 +216,6 @@ export function VoiceScreen({
                             voiceMessage.senderType
                           )}
                           timestamp={voiceMessage.timestamp}
-                          className="max-w-[280px]"
                         />
                       </div>
                     ))}
