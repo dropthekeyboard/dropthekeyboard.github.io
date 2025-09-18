@@ -98,6 +98,53 @@
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
+}
+
+/* Custom Markdown component styles for message bubbles */
+.message-markdown {
+  color: oklch(var(--foreground));
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  max-width: none;
+}
+
+.message-markdown h1,
+.message-markdown h2,
+.message-markdown h3,
+.message-markdown h4,
+.message-markdown h5,
+.message-markdown h6 {
+  @apply mb-2 mt-4 first:mt-0;
+}
+
+.message-markdown p {
+  @apply mb-2 last:mb-0;
+}
+
+.message-markdown ul,
+.message-markdown ol {
+  @apply mb-2 last:mb-0;
+}
+
+.message-markdown li {
+  @apply mb-1;
+}
+
+.message-markdown hr {
+  @apply my-4 border-border;
+}
+
+.message-markdown a {
+  @apply text-primary hover:text-primary/80 underline decoration-1 underline-offset-2;
+  @apply transition-colors duration-200;
+}
+
+.message-markdown strong {
+  @apply font-semibold;
+}
+
+.message-markdown blockquote {
+  @apply border-l-4 border-border pl-4 italic text-muted-foreground;
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);

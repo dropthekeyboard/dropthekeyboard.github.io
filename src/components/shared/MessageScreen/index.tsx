@@ -77,7 +77,10 @@ export function MessageScreen({
       </div>
 
       {/* Messages area */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0 scrollbar-hide">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0 scrollbar-hide"
+      >
         {messages.length === 0 ? (
           <div className="h-full" />
         ) : (
@@ -99,6 +102,9 @@ export function MessageScreen({
                     senderType={getComponentSenderType(msg.senderType)}
                     timestamp={msg.timestamp}
                     isRead={msg.to === 'user'}
+                    enableMarkdown={
+                      msg.senderType === 'agent' || msg.senderType === 'server'
+                    }
                   />
                 </motion.div>
               ))}
