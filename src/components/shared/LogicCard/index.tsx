@@ -12,6 +12,8 @@ import {
   Database,
   Zap,
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { AgenticStep } from '@/contexts/scenario';
 
 interface LogicCardData {
@@ -97,6 +99,62 @@ interface LogicCardProps extends VariantProps<typeof logicCardVariants> {
   index?: number; // 카드의 인덱스 (애니메이션 지연 계산용)
 }
 
+// Markdown 렌더링 컴포넌트
+function MarkdownContent({ content, className }: { content: string; className?: string }) {
+  return (
+    <ReactMarkdown
+      className={cn('logic-card-markdown', className)}
+      remarkPlugins={[remarkGfm]}
+      components={{
+        a: ({ href, children, ...props }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 underline"
+            {...props}
+          >
+            {children}
+          </a>
+        ),
+        p: ({ children, ...props }) => (
+          <p className="mb-1 last:mb-0" {...props}>
+            {children}
+          </p>
+        ),
+        strong: ({ children, ...props }) => (
+          <strong className="font-semibold" {...props}>
+            {children}
+          </strong>
+        ),
+        em: ({ children, ...props }) => (
+          <em className="italic" {...props}>
+            {children}
+          </em>
+        ),
+        code: ({ children, ...props }) => (
+          <code
+            className="bg-black/20 px-1 py-0.5 rounded text-xs font-mono"
+            {...props}
+          >
+            {children}
+          </code>
+        ),
+        pre: ({ children, ...props }) => (
+          <pre
+            className="bg-black/30 p-2 rounded mt-1 overflow-x-auto text-xs font-mono"
+            {...props}
+          >
+            {children}
+          </pre>
+        ),
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
+}
+
 export function LogicCard({
   card,
   entityName,
@@ -139,7 +197,7 @@ export function LogicCard({
       >
         <IconComponent className={cn('w-4 h-4', config.color)} />
         <div className={cn('text-sm', config.color)}>
-          {getStepContent(card.step)}
+          <MarkdownContent content={getStepContent(card.step)} />
         </div>
       </div>
     );
@@ -175,7 +233,7 @@ export function LogicCard({
               : 'border-slate-300 text-slate-900 dark:text-slate-100'
           )}
         >
-          {getStepContent(card.step)}
+          <MarkdownContent content={getStepContent(card.step)} />
         </div>
       </div>
     );
@@ -243,7 +301,14 @@ export function LogicCard({
                   🔢 DTMF: {card.step.action.content}
                 </span>
               ) : (
-                <span>{getStepContent(card.step)}</span>
+                <MarkdownContent
+                  content={getStepContent(card.step)}
+                  className={cn(
+                    isOutgoing
+                      ? 'text-blue-300'
+                      : 'text-green-300'
+                  )}
+                />
               )}
             </div>
           </div>
@@ -346,7 +411,7 @@ export function LogicCard({
               <span>API Call to {card.step.action.service}</span>
             </div>
             <div className="text-green-300 mt-1 pl-2 border-l border-purple-500/30">
-              {card.step.action.request}
+              <MarkdownContent content={card.step.action.request || ''} />
             </div>
           </div>
         )}
@@ -364,7 +429,7 @@ export function LogicCard({
               <span>API Response from {card.step.action.service}</span>
             </div>
             <div className="text-green-300 mt-1 pl-2 border-l border-purple-500/30">
-              {card.step.action.response}
+              <MarkdownContent content={card.step.action.response || ''} />
             </div>
           </div>
         )}
