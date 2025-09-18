@@ -41,6 +41,7 @@ export function VoiceScreen({
 
   // Ref for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const session = useMemo(
     () => getRelevantSession(state, ownerName),
@@ -76,10 +77,24 @@ export function VoiceScreen({
     (m) => m.callSession?.id === session?.id && m.callSession?.endTime === null // Only messages from active calls
   );
 
-  // Auto scroll to bottom when new messages arrive
+  // Auto scroll to bottom when new messages arrive - with scroll isolation
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current && messagesEndRef.current) {
+      const container = messagesContainerRef.current;
+
+      // Use setTimeout to batch scroll updates and avoid interference with ScrollTrigger
+      const timeoutId = setTimeout(() => {
+        // Directly set scrollTop to avoid triggering scroll events that affect parent containers
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        const maxScrollTop = scrollHeight - clientHeight;
+
+        if (maxScrollTop > 0) {
+          container.scrollTop = maxScrollTop;
+        }
+      }, 16); // One frame delay to avoid immediate scroll event conflicts
+
+      return () => clearTimeout(timeoutId);
     }
   }, [displayMessages]);
 
@@ -184,7 +199,7 @@ export function VoiceScreen({
         >
           <div className="h-full flex flex-col">
             {/* Messages in top portion with subtle overlay */}
-            <div className="flex-1 pt-8 pb-32 px-4 overflow-y-auto scrollbar-hide">
+            <div ref={messagesContainerRef} className="flex-1 pt-8 pb-32 px-4 overflow-y-auto scrollbar-hide">
               <div className="space-y-3 max-w-md mx-auto">
                 <AnimatePresence mode="popLayout">
                   {displayMessages

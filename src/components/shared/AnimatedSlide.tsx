@@ -1,5 +1,5 @@
-import { useContext, useEffect, useRef } from 'react';
-import { PinningContext } from '@/contexts/pinning';
+import { useEffect, useRef } from 'react';
+import { useSectionPinning } from '@/contexts/pinning';
 import { gsap } from 'gsap';
 import { cn } from '@/lib/utils';
 
@@ -7,14 +7,17 @@ interface AnimatedSlideProps {
   children: React.ReactNode;
   animationType?: 'fade' | 'slideUp' | 'slideDown' | 'scale';
   delay?: number;
+  sectionIndex: number;
 }
 
 export function AnimatedSlide({ 
   children, 
   animationType = 'fade',
-  delay = 0 
+  delay = 0,
+  sectionIndex
 }: AnimatedSlideProps) {
-  const { isEntering } = useContext(PinningContext);
+  const { state } = useSectionPinning(sectionIndex);
+  const { isEntering } = state;
   const ref = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
 

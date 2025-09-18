@@ -23,10 +23,24 @@ export function MessageScreen({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change or typing state changes
+  // Auto-scroll to bottom when messages change or typing state changes - with scroll isolation
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current && messagesEndRef.current) {
+      const container = messagesContainerRef.current;
+
+      // Use setTimeout to batch scroll updates and avoid interference with ScrollTrigger
+      const timeoutId = setTimeout(() => {
+        // Directly set scrollTop to avoid triggering scroll events that affect parent containers
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        const maxScrollTop = scrollHeight - clientHeight;
+
+        if (maxScrollTop > 0) {
+          container.scrollTop = maxScrollTop;
+        }
+      }, 16); // One frame delay to avoid immediate scroll event conflicts
+
+      return () => clearTimeout(timeoutId);
     }
   }, [messages, isTyping]);
 

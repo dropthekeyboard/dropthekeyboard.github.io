@@ -6,6 +6,7 @@ import { ScenarioContextProvider } from '@/contexts/scenario';
 import { ScenarioLoader } from '../ControlHeader/ScenarioLoader';
 import { ScrollControls } from '../ControlHeader/ScrollControls';
 import { PinningProvider, usePinning, useSectionPinning } from '@/contexts/pinning';
+import { AnimatedSlide } from '@/components/shared/AnimatedSlide';
 import scenariosData from '@/data/scenarios.json';
 import type { ScrollTrigger as ScrollTriggerType } from 'gsap/ScrollTrigger';
 
@@ -30,6 +31,10 @@ interface SectionData {
   Component?: ComponentType;
   id?: string;
   description?: string;
+  // AnimatedSlide 속성들
+  animationType?: 'fade' | 'slideUp' | 'slideDown' | 'scale';
+  animationDelay?: number;
+  enableAnimation?: boolean; // 애니메이션 사용 여부
 }
 
 // 내부 데모 컴포넌트
@@ -39,22 +44,134 @@ function GSAPPinningDemoContent() {
 
   // Define slide components with pinning configuration - memoized to prevent re-renders
   const slideComponents = useMemo(() => [
-    { Component: Slide001, pinned: false, title: "A2A 혁신의 시대가 시작됩니다" },
-    { Component: Slide002, pinned: false, title: "A2A가 뭔가요?" },
-    { Component: Slide003, pinned: true, title: "A2A 확산 현황" },
-    { Component: Slide004, pinned: false, title: "A2A 확산이 어려운 구조적 요인" },
-    { Component: Slide005, pinned: true, title: "디지털 네이티브 세대의 성장" },
-    { Component: Slide006, pinned: false, title: "첫 모바일 앱 출시 시기" },
-    { Component: Slide007, pinned: true, title: "앱 사용 현황" },
-    { Component: Slide008, pinned: false, title: "생성 AI의 급속한 성장" },
-    { Component: Slide009, pinned: false, title: "Agent 기술의 발전" },
-    { Component: Slide010, pinned: true, title: "A2A 도입 효과" },
-    { Component: Slide011, pinned: false, title: "시니어 라이프 메이트 시나리오" },
-    { Component: Slide012, pinned: false, title: "은행 업무 자동화 시나리오" },
-    { Component: Slide013, pinned: false, title: "의료 예약 관리 시나리오" },
-    { Component: Slide014, pinned: false, title: "A2A 시나리오 종합" },
-    { Component: Slide015, pinned: false, title: "모두의 가능 A2A" },
-    { Component: Slide016, pinned: true, title: "3단계 로드맵" }
+    { 
+      Component: Slide001, 
+      pinned: false, 
+      title: "A2A 혁신의 시대가 시작됩니다",
+      enableAnimation: true,
+      animationType: 'fade' as const,
+      animationDelay: 0.3
+    },
+    { 
+      Component: Slide002, 
+      pinned: false, 
+      title: "A2A가 뭔가요?",
+      enableAnimation: true,
+      animationType: 'slideUp' as const,
+      animationDelay: 0.2
+    },
+    { 
+      Component: Slide003, 
+      pinned: true, 
+      title: "A2A 확산 현황",
+      enableAnimation: true,
+      animationType: 'scale' as const,
+      animationDelay: 0.4
+    },
+    { 
+      Component: Slide004, 
+      pinned: false, 
+      title: "A2A 확산이 어려운 구조적 요인",
+      enableAnimation: true,
+      animationType: 'slideDown' as const,
+      animationDelay: 0.1
+    },
+    { 
+      Component: Slide005, 
+      pinned: true, 
+      title: "디지털 네이티브 세대의 성장",
+      enableAnimation: true,
+      animationType: 'fade' as const,
+      animationDelay: 0.5
+    },
+    { 
+      Component: Slide006, 
+      pinned: false, 
+      title: "첫 모바일 앱 출시 시기",
+      enableAnimation: true,
+      animationType: 'slideUp' as const,
+      animationDelay: 0.2
+    },
+    { 
+      Component: Slide007, 
+      pinned: true, 
+      title: "앱 사용 현황",
+      enableAnimation: true,
+      animationType: 'scale' as const,
+      animationDelay: 0.3
+    },
+    { 
+      Component: Slide008, 
+      pinned: false, 
+      title: "생성 AI의 급속한 성장",
+      enableAnimation: true,
+      animationType: 'fade' as const,
+      animationDelay: 0.4
+    },
+    { 
+      Component: Slide009, 
+      pinned: false, 
+      title: "Agent 기술의 발전",
+      enableAnimation: true,
+      animationType: 'slideDown' as const,
+      animationDelay: 0.2
+    },
+    { 
+      Component: Slide010, 
+      pinned: true, 
+      title: "A2A 도입 효과",
+      enableAnimation: true,
+      animationType: 'scale' as const,
+      animationDelay: 0.5
+    },
+    { 
+      Component: Slide011, 
+      pinned: false, 
+      title: "시니어 라이프 메이트 시나리오",
+      enableAnimation: true,
+      animationType: 'slideUp' as const,
+      animationDelay: 0.3
+    },
+    { 
+      Component: Slide012, 
+      pinned: false, 
+      title: "은행 업무 자동화 시나리오",
+      enableAnimation: true,
+      animationType: 'fade' as const,
+      animationDelay: 0.2
+    },
+    { 
+      Component: Slide013, 
+      pinned: false, 
+      title: "의료 예약 관리 시나리오",
+      enableAnimation: true,
+      animationType: 'slideDown' as const,
+      animationDelay: 0.4
+    },
+    { 
+      Component: Slide014, 
+      pinned: false, 
+      title: "A2A 시나리오 종합",
+      enableAnimation: true,
+      animationType: 'scale' as const,
+      animationDelay: 0.1
+    },
+    { 
+      Component: Slide015, 
+      pinned: false, 
+      title: "모두의 가능 A2A",
+      enableAnimation: true,
+      animationType: 'fade' as const,
+      animationDelay: 0.3
+    },
+    { 
+      Component: Slide016, 
+      pinned: true, 
+      title: "3단계 로드맵",
+      enableAnimation: true,
+      animationType: 'slideUp' as const,
+      animationDelay: 0.4
+    }
   ], []);
 
   // 시나리오 데이터 로드 - ID 순서대로 단순 배열로 변환
@@ -168,7 +285,7 @@ function GSAPPinningDemoContent() {
       {sections.map((section, index) => {
         // 슬라이드 섹션 렌더링
         if (section.type === 'slide') {
-          const { Component } = section;
+          const { Component, enableAnimation = true, animationType = 'fade', animationDelay = 0.3 } = section;
           return (
             <section
               key={`slide-${index}`}
@@ -178,7 +295,17 @@ function GSAPPinningDemoContent() {
               className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center"
             >
               <div className="w-full max-w-7xl px-4">
-                {Component && <Component />}
+                {enableAnimation ? (
+                  <AnimatedSlide 
+                    sectionIndex={index} 
+                    animationType={animationType} 
+                    delay={animationDelay}
+                  >
+                    {Component && <Component />}
+                  </AnimatedSlide>
+                ) : (
+                  Component && <Component />
+                )}
               </div>
             </section>
           );
@@ -287,10 +414,20 @@ const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionC
                   onScenarioError={(error) => console.error(`Scenario load error: ${error}`)}
                 />
               </div>
-              <ScrollControls 
-                enabled={true} 
-                threshold={15} 
+              <ScrollControls
+                enabled={true}
+                threshold={30}
                 pinnedState={state}
+                excludeSelectors={[
+                  '.overflow-y-auto',
+                  '[class*="scrollbar"]',
+                  '.scrollbar-hide',
+                  '#demoview',
+                  '.message-container',
+                  '[class*="voice"]',
+                  '.voice-screen'
+                ]}
+                autoScrollThreshold={50}
               />
               <DemoView />
             </ScenarioContextProvider>

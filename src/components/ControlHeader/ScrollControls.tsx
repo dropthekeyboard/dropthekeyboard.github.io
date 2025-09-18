@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useScenario } from '@/hooks/useScenario';
 import type { SectionPinningState } from '@/contexts/pinning';
 
@@ -16,13 +16,13 @@ interface ScrollControlsProps {
    */
   pinnedState?: SectionPinningState;
   /**
-   * Custom render function for the controls UI
+   * CSS selectors to exclude from scroll handling
    */
-  children?: (props: {
-    onPrev: () => void;
-    onNext: () => void;
-    onReset: () => void;
-  }) => React.ReactNode;
+  excludeSelectors?: string[];
+  /**
+   * Threshold for detecting auto-scroll patterns (in pixels)
+   */
+  autoScrollThreshold?: number;
 }
 
 /**
@@ -34,7 +34,8 @@ export function ScrollControls({
   enabled = true,
   threshold = 30,
   pinnedState,
-  children
+  excludeSelectors = ['.overflow-y-auto', '[class*="scrollbar"]', '.scrollbar-hide'],
+  autoScrollThreshold = 50,
 }: ScrollControlsProps) {
   const { progressNext, revertToPrev, reset, currentScenario } = useScenario();
   
@@ -48,6 +49,23 @@ export function ScrollControls({
   const accumulatedScroll = useRef(0);
   const isInitialized = useRef(false);
   const progressRef = useRef(0);
+
+  // Scroll event filtering functions
+  const isInternalScrollTarget = useCallback((target: EventTarget | null): boolean => {
+    if (!target || !(target instanceof Element)) return false;
+    return excludeSelectors.some((selector) => {
+      try {
+        return target.closest(selector) !== null;
+      } catch {
+        return false;
+      }
+    });
+  }, [excludeSelectors]);
+
+  const isLikelyAutoScroll = useCallback((deltaY: number): boolean => {
+    // Auto-scroll typically has larger, more consistent deltaY values
+    return Math.abs(deltaY) > autoScrollThreshold;
+  }, [autoScrollThreshold]);
 
   // Reset on mount
   useEffect(() => {
@@ -73,9 +91,22 @@ export function ScrollControls({
 
     const handleScroll = (event: WheelEvent) => {
       const deltaY = event.deltaY;
+
       // Validate deltaY to prevent NaN
       if (isNaN(deltaY)) {
         console.warn('ScrollControls: Received NaN deltaY, skipping');
+        return;
+      }
+
+      // Filter internal scroll targets
+      if (isInternalScrollTarget(event.target)) {
+        console.log('ScrollControls: Ignoring scroll from internal element');
+        return;
+      }
+
+      // Filter auto-scroll patterns
+      if (isLikelyAutoScroll(deltaY)) {
+        console.log('ScrollControls: Ignoring auto-scroll pattern, deltaY:', deltaY);
         return;
       }
 
@@ -111,34 +142,7 @@ export function ScrollControls({
     return () => {
       window.removeEventListener('wheel', handleScroll);
     };
-  }, [enabled, isPinned, threshold, progressNext, revertToPrev]);
-
-  const handleReset = () => {
-    reset(currentScenario);
-    accumulatedScroll.current = 0;
-    progressRef.current = 0; // Reset progress to prevent NaN accumulation
-  };
-
-  const handleManualNext = () => {
-    progressNext();
-  };
-
-  const handleManualPrev = () => {
-    revertToPrev();
-  };
-
-  // If children is provided, use it as render prop
-  if (children) {
-    return (
-      <>
-        {children({
-          onPrev: handleManualPrev,
-          onNext: handleManualNext,
-          onReset: handleReset,
-        })}
-      </>
-    );
-  }
+  }, [enabled, isPinned, threshold, progressNext, revertToPrev, isInternalScrollTarget, isLikelyAutoScroll]);
 
   // Default headless behavior - no UI, just functionality
   return null;
