@@ -7,7 +7,7 @@ interface AgentSectionProps {
   agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
-export function AgentSection({ agentStyle = 'hacker' }: AgentSectionProps) {
+export function AgentSection({ agentStyle = 'reasoning' }: AgentSectionProps) {
   const {
     state,
     active: { agent },
