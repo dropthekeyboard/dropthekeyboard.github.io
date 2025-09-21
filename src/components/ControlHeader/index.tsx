@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { PlayControls } from './PlayControls';
 import { RecordingControls } from './RecordingControls';
+import { AgentDisplaySelector } from './AgentDisplaySelector';
 import { ScenarioSelector } from './ScenarioSelector.tsx';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeToggle } from './ThemeToggle';
@@ -14,7 +15,6 @@ import { ViewModeToggle } from './ViewModeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
-  onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker' | 'reasoning') => void;
   onViewModeChange?: (mode: 'demo' | 'storytelling') => void;
   currentViewMode?: 'demo' | 'storytelling';
   playbackInterval?: number; // Auto-play interval in milliseconds
@@ -23,7 +23,6 @@ interface ControlHeaderProps {
 
 export function ControlHeader({
   onThemeToggle,
-  onAgentStyleChange,
   onViewModeChange,
   currentViewMode = 'demo',
   playbackInterval = 3000, // Default 3 seconds
@@ -31,15 +30,7 @@ export function ControlHeader({
 }: ControlHeaderProps) {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker' | 'reasoning'>(
-    'hacker'
-  );
   const [autoPlayInterval, setAutoPlayInterval] = useState(playbackInterval);
-
-  const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker' | 'reasoning') => {
-    setAgentStyle(style);
-    onAgentStyleChange?.(style);
-  };
 
   return (
     <motion.header
@@ -53,36 +44,57 @@ export function ControlHeader({
       )}
     >
       <div className="container mx-auto">
-        <div className="flex flex-row justify-between">
-          {/* Top row - Logo & Title with Settings & Theme */}
-          <div className="flex items-center space-x-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center space-x-2"
-            >
-              <div className="relative">
-                <Bot className="w-6 h-6 text-primary" />
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
-                />
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-foreground">
-                  {t('A2A Demo Studio')}
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  {t('Agent-to-Agent Communication Demo')}
-                </p>
-              </div>
-            </motion.div>
+        <div className="flex flex-col space-y-3 py-2">
+          {/* Row 1: Logo & Title on left, Settings & Theme on right */}
+          <div className="flex justify-between items-center px-4">
+            <div className="flex items-center space-x-3">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center space-x-2"
+              >
+                <div className="relative">
+                  <Bot className="w-6 h-6 text-primary" />
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
+                  />
+                </div>
+                <div className="hidden sm:block">
+                  <h1 className="text-lg font-bold text-foreground">
+                    A2A Demo Studio
+                  </h1>
+                  <p className="text-xs text-muted-foreground">
+                    Agent-to-Agent Communication Demo
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={cn(
+                  'p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors',
+                  'border border-border hover:border-primary/50'
+                )}
+              >
+                <Settings className="w-4 h-4" />
+              </motion.button>
+
+              <ViewModeToggle
+                currentMode={currentViewMode}
+                onToggle={onViewModeChange}
+              />
+              <ThemeToggle onToggle={onThemeToggle} />
+            </div>
           </div>
 
-          {/* Middle row - Phase indicator and Main controls */}
-          <div className="flex items-center justify-between">
-            {/* Center section - Main controls */}
+          {/* Row 2: Main controls centered */}
+          <div className="flex justify-center">
             <Card className="flex flex-row items-center p-1 bg-card/50">
               <ScenarioSelector />
               <Separator orientation="vertical" className="mx-1 h-6" />
@@ -90,27 +102,6 @@ export function ControlHeader({
               <Separator orientation="vertical" className="mx-1 h-6" />
               <RecordingControls />
             </Card>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsExpanded(!isExpanded)}
-              className={cn(
-                'p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors',
-                'border border-border hover:border-primary/50'
-              )}
-            >
-              <Settings className="w-4 h-4" />
-            </motion.button>
-
-            <ViewModeToggle
-              currentMode={currentViewMode}
-              onToggle={onViewModeChange}
-            />
-            <ThemeToggle onToggle={onThemeToggle} />
-            <LanguageSwitcher />
           </div>
         </div>
 
@@ -190,65 +181,7 @@ export function ControlHeader({
                   </div>
                 </Card>
 
-                <Card className="p-3">
-                  <h3 className="font-semibold text-sm mb-2 flex items-center">
-                    🎨 {t('Agent Terminal Style')}
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="grid grid-cols-2 gap-1">
-                      <button
-                        onClick={() => handleAgentStyleChange('minimal')}
-                        className={cn(
-                          'px-2 py-1 text-xs rounded border transition-colors',
-                          agentStyle === 'minimal'
-                            ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                            : 'border-blue-500/30 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50'
-                        )}
-                      >
-                        {t('Minimal')}
-                      </button>
-                      <button
-                        onClick={() => handleAgentStyleChange('formal')}
-                        className={cn(
-                          'px-2 py-1 text-xs rounded border transition-colors',
-                          agentStyle === 'formal'
-                            ? 'border-slate-500 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300'
-                            : 'border-slate-500/30 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/50'
-                        )}
-                      >
-                        {t('Formal')}
-                      </button>
-                      <button
-                        onClick={() => handleAgentStyleChange('hacker')}
-                        className={cn(
-                          'px-2 py-1 text-xs rounded border transition-colors',
-                          agentStyle === 'hacker'
-                            ? 'border-green-500 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
-                            : 'border-green-500/30 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50'
-                        )}
-                      >
-                        {t('Hacker')}
-                      </button>
-                      <button
-                        onClick={() => handleAgentStyleChange('reasoning')}
-                        className={cn(
-                          'px-2 py-1 text-xs rounded border transition-colors',
-                          agentStyle === 'reasoning'
-                            ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300'
-                            : 'border-purple-500/30 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50'
-                        )}
-                      >
-                        {t('Reasoning')}
-                      </button>
-                    </div>
-                    <div className="text-xs text-muted-foreground text-center">
-                      {t('Current')}:{' '}
-                      <span className="text-foreground font-mono capitalize">
-                        {agentStyle}
-                      </span>
-                    </div>
-                  </div>
-                </Card>
+                <AgentDisplaySelector />
               </div>
 
               {/* Performance indicators */}

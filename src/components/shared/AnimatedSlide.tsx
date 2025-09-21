@@ -10,11 +10,11 @@ interface AnimatedSlideProps {
   sectionIndex: number;
 }
 
-export function AnimatedSlide({ 
-  children, 
+export function AnimatedSlide({
+  children,
   animationType = 'fade',
   delay = 0,
-  sectionIndex
+  sectionIndex,
 }: AnimatedSlideProps) {
   const { state } = useSectionPinning(sectionIndex);
   const { isEntering } = state;
@@ -28,7 +28,7 @@ export function AnimatedSlide({
       fade: { from: { opacity: 0 }, to: { opacity: 1 } },
       slideUp: { from: { opacity: 0, y: 50 }, to: { opacity: 1, y: 0 } },
       slideDown: { from: { opacity: 0, y: -50 }, to: { opacity: 1, y: 0 } },
-      scale: { from: { opacity: 0, scale: 0.8 }, to: { opacity: 1, scale: 1 } }
+      scale: { from: { opacity: 0, scale: 0.8 }, to: { opacity: 1, scale: 1 } },
     };
 
     const anim = animations[animationType];
@@ -39,7 +39,7 @@ export function AnimatedSlide({
       ease: 'power2.out',
       onComplete: () => {
         hasAnimated.current = true;
-      }
+      },
     });
   }, [animationType, delay]);
 
@@ -51,7 +51,7 @@ export function AnimatedSlide({
         duration: 0.3,
         yoyo: true,
         repeat: 1,
-        ease: 'power2.inOut'
+        ease: 'power2.inOut',
       });
     }
   }, [isEntering]);

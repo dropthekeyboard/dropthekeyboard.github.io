@@ -258,7 +258,10 @@ function deliverMessage(scenario: Scenario, message: Message): Scenario {
         ...humanServer,
         messageBox: {
           ...humanServer.messageBox,
-          [message.from]: [...(humanServer.messageBox[message.from] || []), message],
+          [message.from]: [
+            ...(humanServer.messageBox[message.from] || []),
+            message,
+          ],
         },
       } as HumanState;
     }
@@ -616,72 +619,85 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
   /**
    * Step의 효과를 취소하는 함수
    */
-  const revertStepEffect = useCallback((currentScenario: Scenario, step: AgenticStep): Scenario => {
-    switch (step.type) {
-      case 'send-message': {
-        // 메시지 전송 취소 - 메시지 박스에서 제거
-        const message = step.action;
-        return {
-          ...currentScenario,
-          customer: message.to === currentScenario.customer.name ? {
-            ...currentScenario.customer,
-            messageBox: Object.fromEntries(
-              Object.entries(currentScenario.customer.messageBox || {}).filter(
-                ([key]) => key !== message.id
-              )
+  const revertStepEffect = useCallback(
+    (currentScenario: Scenario, step: AgenticStep): Scenario => {
+      switch (step.type) {
+        case 'send-message': {
+          // 메시지 전송 취소 - 메시지 박스에서 제거
+          const message = step.action;
+          return {
+            ...currentScenario,
+            customer:
+              message.to === currentScenario.customer.name
+                ? {
+                    ...currentScenario.customer,
+                    messageBox: Object.fromEntries(
+                      Object.entries(
+                        currentScenario.customer.messageBox || {}
+                      ).filter(([key]) => key !== message.id)
+                    ),
+                  }
+                : currentScenario.customer,
+            servers: currentScenario.servers.map((server) => {
+              if (
+                server.type === 'human' &&
+                (server.name === message.from || server.name === message.to)
+              ) {
+                const humanServer = server as HumanState;
+                return {
+                  ...humanServer,
+                  messageBox: Object.fromEntries(
+                    Object.entries(humanServer.messageBox || {}).filter(
+                      ([key]) => key !== message.id
+                    )
+                  ),
+                } as HumanState;
+              }
+              return server;
+            }),
+          };
+        }
+
+        case 'make-call': {
+          // 전화 걸기 취소 - 통화 세션 제거
+          const call = step.action;
+          return {
+            ...currentScenario,
+            callSessions: (currentScenario.callSessions || []).filter(
+              (session) =>
+                session.callerName !== call.from ||
+                session.participants[1] !== call.to
             ),
-          } : currentScenario.customer,
-          servers: currentScenario.servers.map((server) => {
-            if (server.type === 'human' && (server.name === message.from || server.name === message.to)) {
-              const humanServer = server as HumanState;
-              return {
-                ...humanServer,
-                messageBox: Object.fromEntries(
-                  Object.entries(humanServer.messageBox || {}).filter(
-                    ([key]) => key !== message.id
-                  )
-                ),
-              } as HumanState;
-            }
-            return server;
-          }),
-        };
-      }
+          };
+        }
 
-      case 'make-call': {
-        // 전화 걸기 취소 - 통화 세션 제거
-        const call = step.action;
-        return {
-          ...currentScenario,
-          callSessions: (currentScenario.callSessions || []).filter(
-            (session) => session.callerName !== call.from || session.participants[1] !== call.to
-          ),
-        };
-      }
+        case 'accept-call': {
+          // 전화 받기 취소 - 통화 상태 취소
+          const call = step.action;
+          return updateEntityState(
+            updateEntityState(currentScenario, call.from, 'ring'),
+            call.to,
+            'ring'
+          );
+        }
 
-      case 'accept-call': {
-        // 전화 받기 취소 - 통화 상태 취소
-        const call = step.action;
-        return updateEntityState(
-          updateEntityState(currentScenario, call.from, 'ring'),
-          call.to, 'ring'
-        );
-      }
+        case 'finish-call': {
+          // 전화 종료 취소 - 통화 상태 복원
+          const call = step.action;
+          return updateEntityState(
+            updateEntityState(currentScenario, call.from, 'call'),
+            call.to,
+            'call'
+          );
+        }
 
-      case 'finish-call': {
-        // 전화 종료 취소 - 통화 상태 복원
-        const call = step.action;
-        return updateEntityState(
-          updateEntityState(currentScenario, call.from, 'call'),
-          call.to, 'call'
-        );
+        default:
+          console.log('No revert logic for step type:', step.type);
+          return currentScenario;
       }
-
-      default:
-        console.log('No revert logic for step type:', step.type);
-        return currentScenario;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Go back to previous step
@@ -690,13 +706,18 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
     console.log('revertToPrev called, current progress:', progress);
     setProgress((prev) => {
       const newProgress = Math.max(0, prev - 1);
-      console.log('revertToPrev: progress changed from', prev, 'to', newProgress);
+      console.log(
+        'revertToPrev: progress changed from',
+        prev,
+        'to',
+        newProgress
+      );
 
       // 현재 step의 효과를 취소
       if (prev > 0 && scenario) {
         const stepToRevert = scenario.steps[prev - 1];
         if (stepToRevert) {
-          setScenario(currentScenario => {
+          setScenario((currentScenario) => {
             if (!currentScenario) return currentScenario;
             return revertStepEffect(currentScenario, stepToRevert);
           });
@@ -1064,7 +1085,12 @@ function ScenarioContextProvider({ children }: ScenarioContextProviderProps) {
    * Auto-execute step when progress changes
    */
   useEffect(() => {
-    console.log('useEffect triggered: progress =', progress, 'currentScenario.steps.length =', currentScenario?.steps?.length);
+    console.log(
+      'useEffect triggered: progress =',
+      progress,
+      'currentScenario.steps.length =',
+      currentScenario?.steps?.length
+    );
     if (
       currentScenario &&
       progress >= 0 &&

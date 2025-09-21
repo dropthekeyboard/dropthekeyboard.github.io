@@ -29,7 +29,7 @@ export function ScenarioLoader({
   initialScenarioId,
   onScenarioChange,
   onScenarioLoaded,
-  onScenarioError
+  onScenarioError,
 }: ScenarioLoaderProps) {
   const { scenarios, currentScenario, setCurrent } = useScenario();
 
@@ -41,7 +41,9 @@ export function ScenarioLoader({
         // 현재 시나리오와 다른 경우에만 설정
         if (currentScenario?.id !== initialScenarioId) {
           setCurrent(index);
-          console.log(`ScenarioLoader: Loading initial scenario ${initialScenarioId}`);
+          console.log(
+            `ScenarioLoader: Loading initial scenario ${initialScenarioId}`
+          );
           onScenarioLoaded?.(initialScenarioId);
         }
       } else {
@@ -50,7 +52,14 @@ export function ScenarioLoader({
         onScenarioError?.(errorMsg);
       }
     }
-  }, [initialScenarioId, scenarios, currentScenario?.id, setCurrent, onScenarioLoaded, onScenarioError]);
+  }, [
+    initialScenarioId,
+    scenarios,
+    currentScenario?.id,
+    setCurrent,
+    onScenarioLoaded,
+    onScenarioError,
+  ]);
 
   // 시나리오 변경 감지 및 콜백 호출
   React.useEffect(() => {
@@ -62,8 +71,10 @@ export function ScenarioLoader({
 
   // 시나리오 데이터 로드 상태 로깅
   React.useEffect(() => {
-    console.log(`ScenarioLoader: ${scenarios.length} scenarios available:`, 
-      scenarios.map(s => s.id).join(', '));
+    console.log(
+      `ScenarioLoader: ${scenarios.length} scenarios available:`,
+      scenarios.map((s) => s.id).join(', ')
+    );
   }, [scenarios]);
 
   // Headless - UI 없이 로직만 처리

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { useCountAnimation } from "@/hooks/useCountAnimation";
+import { cn } from '@/lib/utils';
+import { useCountAnimation } from '@/hooks/useCountAnimation';
 
 interface AnimatedHorizontalBarProps {
   value: number;
@@ -16,9 +16,9 @@ export function AnimatedHorizontalBar({
   maxValue,
   label,
   subLabel,
-  unit = "",
+  unit = '',
   isActive,
-  className
+  className,
 }: AnimatedHorizontalBarProps) {
   const animatedValue = useCountAnimation(value, isActive);
   const widthPercentage = Math.min((animatedValue / maxValue) * 100, 100);
@@ -34,7 +34,7 @@ export function AnimatedHorizontalBar({
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <p className="text-lg font-semibold text-foreground">{label}</p>
@@ -42,7 +42,8 @@ export function AnimatedHorizontalBar({
         </div>
         <div className="text-right">
           <p className="text-3xl font-bold text-foreground">
-            {formatValue(animatedValue)}{unit}
+            {formatValue(animatedValue)}
+            {unit}
           </p>
         </div>
       </div>

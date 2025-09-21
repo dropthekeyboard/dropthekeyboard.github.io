@@ -14,7 +14,6 @@ export function DemoPanel({
   panel,
   isActive,
   progress,
-  agentStyle,
   demoType = 'full',
 }: DemoPanelProps) {
   // In storytelling mode, progress is managed by useScrollProgress hook
@@ -62,8 +61,8 @@ export function DemoPanel({
             className="w-full h-full flex items-center justify-center"
           >
             {demoType === 'customer' && <CustomerSection />}
-            {demoType === 'agent' && <AgentSection agentStyle={agentStyle} />}
-            {demoType === 'server' && <ServerSection agentStyle={agentStyle} />}
+            {demoType === 'agent' && <AgentSection />}
+            {demoType === 'server' && <ServerSection />}
           </motion.div>
         </div>
 
@@ -164,10 +163,10 @@ export function DemoPanel({
             <CustomerSection />
           </div>
           <div className="flex-[0_0_30%] flex flex-col">
-            <AgentSection agentStyle={agentStyle} />
+            <AgentSection />
           </div>
           <div className="flex-[0_0_30%] flex flex-col">
-            <ServerSection agentStyle={agentStyle} />
+            <ServerSection />
           </div>
         </div>
 

@@ -78,6 +78,7 @@ body {
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 /* Demo View specific styles */
@@ -167,7 +168,107 @@ body {
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
-/* Responsive design */
+/* DemoView Layout System - Higher specificity to override legacy styles */
+#demoview.demo-view-layout {
+  display: grid !important;
+  width: 100% !important;
+  height: 100% !important;
+  gap: 1rem;
+  align-items: center;
+  justify-items: center;
+  /* Override any legacy flex layouts */
+  flex-direction: unset !important;
+}
+
+/* Landscape Layout (Desktop) - 3 columns */
+@media (min-width: 769px) {
+  #demoview.demo-view-layout {
+    grid-template-columns: 1fr 35vw 25vw auto 1fr !important;
+    grid-template-areas: '. customer agent server .' !important;
+    align-items: stretch; /* Make all sections same height */
+    gap: 1rem;
+  }
+
+  #demoview .demo-customer-section {
+    grid-area: customer;
+    width: 35vw !important;
+    min-width: 0; /* Prevent grid overflow */
+    min-height: 60vh; /* Match TerminalSection minimum height */
+    height: 100%; /* Allow growth */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #demoview .demo-agent-section {
+    grid-area: agent;
+    width: 25vw !important;
+    min-width: 0; /* Prevent grid overflow */
+    aspect-ratio: 4 / 6; /* 4:6 aspect ratio */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #demoview .demo-server-section {
+    grid-area: server;
+    width: 25vw !important; /* Default for TerminalSection/ReasoningAgentSection */
+    min-width: 0; /* Prevent grid overflow */
+    min-height: 60vh; /* Match TerminalSection minimum height */
+    height: 100%; /* Allow growth */
+    aspect-ratio: 4 / 6; /* Default 4:6 aspect ratio */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Server section adjustment for PhoneSection */
+  #demoview .demo-server-section[data-contains-phone='true'] {
+    width: 35vw !important;
+  }
+}
+
+/* Portrait Layout (Mobile) - 2 col top, 1 col bottom */
+@media (max-width: 48rem) {
+  #demoview.demo-view-layout {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas:
+      'customer server'
+      'agent agent' !important;
+    gap: 0.125rem;
+    padding: 1rem;
+  }
+
+  #demoview .demo-customer-section {
+    grid-area: customer;
+    width: 40vw !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #demoview .demo-server-section {
+    grid-area: server;
+    width: 40vw !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #demoview .demo-agent-section {
+    grid-area: agent;
+    width: 40vw !important;
+    aspect-ratio: 4 / 6; /* 4:6 aspect ratio */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    justify-self: center; /* Center the agent section in the bottom row */
+    max-height: 40vh; /* Limit height in portrait mode */
+  }
+}
+
+/* Legacy responsive design - keeping for backward compatibility */
 @media (max-width: 1024px) {
   .horizontal-sections {
     gap: 0.5rem;

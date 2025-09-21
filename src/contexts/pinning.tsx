@@ -1,5 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  type ReactNode,
+} from 'react';
 
 // 개별 섹션의 Pinning 상태
 export interface SectionPinningState {
@@ -11,7 +17,10 @@ export interface SectionPinningState {
 // 전체 Pinning 관리 Context
 export interface PinningContextType {
   states: SectionPinningState[];
-  updateSectionState: (index: number, state: Partial<SectionPinningState>) => void;
+  updateSectionState: (
+    index: number,
+    state: Partial<SectionPinningState>
+  ) => void;
   getSectionState: (index: number) => SectionPinningState;
   initializeSections: (count: number) => void;
 }
@@ -41,13 +50,16 @@ export function usePinning() {
 // Hook for accessing specific section's pinning state
 export function useSectionPinning(sectionIndex: number) {
   const { getSectionState, updateSectionState } = usePinning();
-  
+
   const state = getSectionState(sectionIndex);
-  
-  const updateState = useCallback((partialState: Partial<SectionPinningState>) => {
-    updateSectionState(sectionIndex, partialState);
-  }, [sectionIndex, updateSectionState]);
-  
+
+  const updateState = useCallback(
+    (partialState: Partial<SectionPinningState>) => {
+      updateSectionState(sectionIndex, partialState);
+    },
+    [sectionIndex, updateSectionState]
+  );
+
   return { state, updateState };
 }
 
@@ -57,28 +69,43 @@ interface PinningProviderProps {
   initialSectionCount?: number;
 }
 
-export function PinningProvider({ children, initialSectionCount = 0 }: PinningProviderProps) {
+export function PinningProvider({
+  children,
+  initialSectionCount = 0,
+}: PinningProviderProps) {
   const [states, setStates] = useState<SectionPinningState[]>(
-    Array(initialSectionCount).fill(null).map(() => ({ ...defaultState }))
+    Array(initialSectionCount)
+      .fill(null)
+      .map(() => ({ ...defaultState }))
   );
 
-  const updateSectionState = useCallback((index: number, partialState: Partial<SectionPinningState>) => {
-    setStates(prev => {
-      if (index < 0 || index >= prev.length) return prev;
-      
-      const newStates = [...prev];
-      newStates[index] = { ...newStates[index], ...partialState };
-      return newStates;
-    });
-  }, []);
+  const updateSectionState = useCallback(
+    (index: number, partialState: Partial<SectionPinningState>) => {
+      setStates((prev) => {
+        if (index < 0 || index >= prev.length) return prev;
 
-  const getSectionState = useCallback((index: number): SectionPinningState => {
-    if (index < 0 || index >= states.length) return defaultState;
-    return states[index];
-  }, [states]);
+        const newStates = [...prev];
+        newStates[index] = { ...newStates[index], ...partialState };
+        return newStates;
+      });
+    },
+    []
+  );
+
+  const getSectionState = useCallback(
+    (index: number): SectionPinningState => {
+      if (index < 0 || index >= states.length) return defaultState;
+      return states[index];
+    },
+    [states]
+  );
 
   const initializeSections = useCallback((count: number) => {
-    setStates(Array(count).fill(null).map(() => ({ ...defaultState })));
+    setStates(
+      Array(count)
+        .fill(null)
+        .map(() => ({ ...defaultState }))
+    );
   }, []);
 
   const contextValue: PinningContextType = {

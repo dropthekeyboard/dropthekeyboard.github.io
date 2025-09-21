@@ -5,23 +5,33 @@ import { ServerSection } from './ServerSection';
 
 interface DemoViewProps {
   className?: string;
-  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
-export function DemoView({ className, agentStyle = 'reasoning' }: DemoViewProps) {
+export function DemoView({ className }: DemoViewProps) {
   return (
     <div
       id="demoview"
-      className={cn('flex gap-4 p-4 h-full items-center pt-10', className)}
+      className={cn(
+        'h-full items-center justify-center pt-2 grid gap-2',
+        'landscape:grid-cols-3 portrait:grid-cols-2 portrait:grid-rows-2',
+        'scrollbar-hide',
+        className
+      )}
+      style={{ pointerEvents: 'none' }}
     >
-      <div className="flex-[0_0_30%] flex flex-col">
+      {/* Customer Section */}
+      <div className="landscape:col-auto portrait:col-span-1">
         <CustomerSection />
       </div>
-      <div className="flex-[0_0_30%] flex flex-col">
-        <AgentSection agentStyle={agentStyle} />
+
+      {/* Agent Section */}
+      <div className="landscape:col-auto portrait:col-span-2 portrait:row-start-2 portrait:w-[30vw] portrait:mx-auto">
+        <AgentSection />
       </div>
-      <div className="flex-[0_0_30%] flex flex-col">
-        <ServerSection agentStyle={agentStyle} />
+
+      {/* Server Section */}
+      <div className="landscape:col-auto portrait:col-span-1 portrait:col-start-2">
+        <ServerSection />
       </div>
     </div>
   );

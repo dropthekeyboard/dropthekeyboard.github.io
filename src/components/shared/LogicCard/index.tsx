@@ -100,7 +100,13 @@ interface LogicCardProps extends VariantProps<typeof logicCardVariants> {
 }
 
 // Markdown 렌더링 컴포넌트
-function MarkdownContent({ content, className }: { content: string; className?: string }) {
+function MarkdownContent({
+  content,
+  className,
+}: {
+  content: string;
+  className?: string;
+}) {
   return (
     <ReactMarkdown
       className={cn('logic-card-markdown', className)}
@@ -304,9 +310,7 @@ export function LogicCard({
                 <MarkdownContent
                   content={getStepContent(card.step)}
                   className={cn(
-                    isOutgoing
-                      ? 'text-blue-300'
-                      : 'text-green-300'
+                    isOutgoing ? 'text-blue-300' : 'text-green-300'
                   )}
                 />
               )}

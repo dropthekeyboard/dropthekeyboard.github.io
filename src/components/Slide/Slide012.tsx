@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from '@/components/ui/card';
 
 // Slide 012: 통신 고유 채널인 전화 / 문자를 활용한 해법 - 가치 1. 신뢰성 확보
 function Slide012() {
@@ -27,7 +27,9 @@ function Slide012() {
                 <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1 bg-border rounded-full"></div>
                 <div className="flex-1 flex flex-col items-center justify-center space-y-4">
                   <div className="text-xs text-muted-foreground text-center">
-                    홍길동 AI<br />Agent
+                    홍길동 AI
+                    <br />
+                    Agent
                   </div>
                   <div className="flex space-x-4 mt-8">
                     <div className="w-12 h-12 bg-destructive rounded-full flex items-center justify-center text-white text-xl">
@@ -46,7 +48,8 @@ function Slide012() {
             <div className="flex-1">
               <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-6 rounded-2xl max-w-2xl">
                 <p className="text-xl font-bold">
-                  SK 텔레콤에서 인증한 AI Agent<br />
+                  SK 텔레콤에서 인증한 AI Agent
+                  <br />
                   전화입니다
                 </p>
               </div>
@@ -60,7 +63,9 @@ function Slide012() {
             당사 전화번호 자산과 가입자 인증 체계를 기반으로,
           </p>
           <p className="text-xl font-bold text-foreground">
-            <span className="text-primary">'SKT 인증 Agent 발신'</span> 같은 라벨을 부착해 업주가 안심할 수 있는 <span className="text-primary">신뢰 기반</span> 제공 가능
+            <span className="text-primary">'SKT 인증 Agent 발신'</span> 같은
+            라벨을 부착해 업주가 안심할 수 있는{' '}
+            <span className="text-primary">신뢰 기반</span> 제공 가능
           </p>
         </footer>
       </div>

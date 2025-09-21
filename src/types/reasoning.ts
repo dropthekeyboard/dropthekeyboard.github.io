@@ -54,28 +54,28 @@ export interface ReasoningStep {
 export const ACTION_TYPE_MAPPING = {
   'send-message': {
     type: 'SMS',
-    icon: '=ñ'
+    icon: '=ï¿½',
   },
   'make-call': {
     type: 'Call',
-    icon: '=Þ'
+    icon: '=ï¿½',
   },
   'accept-call': {
     type: 'Answer',
-    icon: ''
+    icon: '',
   },
   'finish-call': {
     type: 'Hangup',
-    icon: '=ô'
+    icon: '=ï¿½',
   },
   'api-call': {
     type: 'API',
-    icon: '='
+    icon: '=',
   },
   'api-response': {
     type: 'Response',
-    icon: '=Ê'
-  }
+    icon: '=ï¿½',
+  },
 } as const;
 
 /**
@@ -87,5 +87,5 @@ export const REASONING_TITLES = {
   'accept-call': 'Call Acceptance',
   'finish-call': 'Call Termination',
   'api-call': 'Data Request',
-  'api-response': 'Response Processing'
+  'api-response': 'Response Processing',
 } as const;
