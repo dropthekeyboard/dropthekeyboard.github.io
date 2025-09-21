@@ -17,6 +17,9 @@ import {
   Slide007, Slide008, Slide009, Slide010, Slide011, Slide012,
   Slide013, Slide014, Slide015, Slide016
 } from '../Slide';
+import {
+  Page01, Page02, Page03, Page04, Page05, Page06, Page07, Page08, Page09, Page10, Page11, Page12, Page13, Page14
+} from '../newslides';
 
 // GSAP 플러그인 등록
 if (typeof window !== 'undefined') {
@@ -45,6 +48,20 @@ function GSAPPinningDemoContent() {
 
   // Define slide components with pinning configuration - memoized to prevent re-renders
   const slideComponents = useMemo(() => [
+    { Component: Page01, pinned: false, title: "New Slide 1" },
+    { Component: Page02, pinned: false, title: "New Slide 2" },
+    { Component: Page03, pinned: false, title: "New Slide 3" },
+    { Component: Page04, pinned: false, title: "New Slide 4" },
+    { Component: Page05, pinned: false, title: "New Slide 5" },
+    { Component: Page06, pinned: false, title: "New Slide 6" },
+    { Component: Page07, pinned: false, title: "New Slide 7" },
+    { Component: Page08, pinned: false, title: "New Slide 8" },
+    { Component: Page09, pinned: false, title: "New Slide 9" },
+    { Component: Page10, pinned: false, title: "New Slide 10" },
+    { Component: Page11, pinned: false, title: "New Slide 11" },
+    { Component: Page12, pinned: false, title: "New Slide 12" },
+    { Component: Page13, pinned: false, title: "New Slide 13" },
+    { Component: Page14, pinned: false, title: "New Slide 14" },
     { 
       Component: Slide001, 
       pinned: false, 
