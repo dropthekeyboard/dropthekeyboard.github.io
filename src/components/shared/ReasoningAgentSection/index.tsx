@@ -310,7 +310,7 @@ export function ReasoningAgentSection({
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
         sectionClass,
-        'relative flex flex-col h-[60vh] w-[30vw] mx-auto'
+        'relative flex flex-col h-[60vh] w-[20vw] mx-auto'
       )}
     >
       {/* Header */}
@@ -351,7 +351,7 @@ export function ReasoningAgentSection({
       <div
         ref={scrollRef}
         className={cn(
-          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-[30vw] custom-scrollbar will-change-scroll',
+          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-[20vw] custom-scrollbar will-change-scroll',
           'rounded-lg shadow-lg scroll-smooth',
           isDark
             ? 'bg-gray-800/95 backdrop-blur-md shadow-purple-500/10 border border-purple-600/30'

@@ -8,7 +8,7 @@ interface DemoViewProps {
   agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
-export function DemoView({ className, agentStyle = 'hacker' }: DemoViewProps) {
+export function DemoView({ className, agentStyle = 'reasoning' }: DemoViewProps) {
   return (
     <div
       id="demoview"

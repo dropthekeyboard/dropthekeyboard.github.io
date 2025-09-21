@@ -29,7 +29,7 @@ function App() {
             <DemoView agentStyle={agentStyle} />
           ) : (
             // <StorytellingPage agentStyle={agentStyle} />
-            <GSAPPinningDemo />
+            <GSAPPinningDemo agentStyle={agentStyle} />
           )}
         </main>
       </ScenarioContextProvider>

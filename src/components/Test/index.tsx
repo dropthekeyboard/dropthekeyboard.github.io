@@ -41,11 +41,15 @@ interface SectionData {
   enableAnimation?: boolean; // 애니메이션 사용 여부
 }
 
+// GSAPPinningDemo props 타입 정의
+interface GSAPPinningDemoProps {
+  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
+}
+
 // 내부 데모 컴포넌트
-function GSAPPinningDemoContent() {
+function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoProps) {
   const sectionRefs = useRef<Array<HTMLDivElement | null>>([]);
   const { updateSectionState, initializeSections } = usePinning();
-
   // Define slide components with pinning configuration - memoized to prevent re-renders
   const slideComponents = useMemo(() => [
     { Component: Page01, pinned: false, title: "New Slide 1" },
@@ -216,8 +220,8 @@ function GSAPPinningDemoContent() {
         id: scenario.id,
         title: scenario.title,
         description: scenario.description,
-        pinEnd: '+400vh',
-        pinned: false,
+        pinEnd: '+500vh',
+        pinned: true,
       },
       // 시나리오 데모뷰 섹션 (pinning 적용)
       {
@@ -226,7 +230,7 @@ function GSAPPinningDemoContent() {
         title: scenario.title,
         description: scenario.description,
         pinned: true,
-        pinEnd: '+500vh'
+        pinEnd: '+600vh'
       },
     ]);
 
@@ -368,6 +372,7 @@ function GSAPPinningDemoContent() {
               sectionIndex={index}
               scenarioId={id!}
               title={title}
+              agentStyle={agentStyle}
               ref={(el: HTMLDivElement | null) => {
                 sectionRefs.current[index] = el;
               }}
@@ -398,10 +403,11 @@ interface ScenarioSectionContentProps {
   sectionIndex: number;
   scenarioId: string;
   title: string;
+  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
 const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionContentProps>(
-  ({ sectionIndex, scenarioId, title }, ref) => {
+  ({ sectionIndex, scenarioId, agentStyle = 'reasoning' }, ref) => {
     const { state } = useSectionPinning(sectionIndex);
 
     return (
@@ -410,20 +416,6 @@ const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionC
         className="h-screen overflow-hidden flex items-center justify-center bg-background w-full"
       >
         <div className="w-full max-w-7xl px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-foreground">
-              시나리오 체험: {title}
-            </h2>
-            <p className="mb-4 text-muted-foreground">
-              이 섹션이 고정됩니다 - 스크롤로 시나리오를 제어해보세요
-            </p>
-            <div className="text-sm text-muted-foreground">
-              상태: {state.isPinned ? '고정됨' : '해제됨'} | 
-              {state.isEntering && ' 진입중'} | 
-              {state.isLeaving && ' 퇴장중'}
-            </div>
-          </div>
-
           <div className="w-full">
             <ScenarioContextProvider>
               <div className="mb-4">
@@ -448,7 +440,7 @@ const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionC
                 ]}
                 autoScrollThreshold={50}
               />
-              <DemoView />
+              <DemoView agentStyle={agentStyle} />
             </ScenarioContextProvider>
           </div>
         </div>
@@ -459,11 +451,11 @@ const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionC
 
 ScenarioSectionContent.displayName = 'ScenarioSectionContent';
 
-export function GSAPPinningDemo() {
+export function GSAPPinningDemo({ agentStyle = 'reasoning' }: GSAPPinningDemoProps = {}) {
 
   return (
     <PinningProvider>
-      <GSAPPinningDemoContent />
+      <GSAPPinningDemoContent agentStyle={agentStyle} />
     </PinningProvider>
   );
 }
