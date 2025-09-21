@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card } from '@/components/ui/card';
 
 // Slide 008: 기존 A2A 시도에서 드러난 제약
 function Slide008() {
@@ -24,7 +24,9 @@ function Slide008() {
           <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-border">
             <div className="text-center space-y-4">
               <div className="text-6xl">🎥</div>
-              <p className="text-muted-foreground text-lg">Google Duplex 데모 영상</p>
+              <p className="text-muted-foreground text-lg">
+                Google Duplex 데모 영상
+              </p>
               <p className="text-sm text-muted-foreground">
                 (2018년 AI 음성 통화 시연 영상)
               </p>
@@ -38,7 +40,8 @@ function Slide008() {
             처음 공개 당시 사람처럼 자연스러운 대화로 큰 반향을 일으켰지만,
           </p>
           <p className="text-2xl font-bold text-foreground">
-            7 년이 지난 지금까지 <span className="text-destructive">대중적 확산은 부재</span>
+            7 년이 지난 지금까지{' '}
+            <span className="text-destructive">대중적 확산은 부재</span>
           </p>
         </footer>
       </div>

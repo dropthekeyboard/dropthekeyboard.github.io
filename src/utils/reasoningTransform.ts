@@ -1,18 +1,14 @@
 import type { AgenticStep } from '@/contexts/scenario';
-import type {
-  ReasoningStep,
-  ReasoningContent
-} from '@/types/reasoning';
-import {
-  ACTION_TYPE_MAPPING,
-  REASONING_TITLES
-} from '@/types/reasoning';
+import type { ReasoningStep, ReasoningContent } from '@/types/reasoning';
+import { ACTION_TYPE_MAPPING, REASONING_TITLES } from '@/types/reasoning';
 
 /**
  * Transform an array of AgenticSteps into ReasoningSteps for visualization
  * This creates a input→reasoning→output flow for each step that has reasoning
  */
-export function transformToReasoningSteps(steps: AgenticStep[]): ReasoningStep[] {
+export function transformToReasoningSteps(
+  steps: AgenticStep[]
+): ReasoningStep[] {
   const reasoningSteps: ReasoningStep[] = [];
 
   steps.forEach((step, index) => {
@@ -26,7 +22,7 @@ export function transformToReasoningSteps(steps: AgenticStep[]): ReasoningStep[]
         timestamp: baseTimestamp,
         actionType: getActionType(step),
         actionIcon: getActionIcon(step),
-        originalStep: step
+        originalStep: step,
       });
     }
 
@@ -39,7 +35,7 @@ export function transformToReasoningSteps(steps: AgenticStep[]): ReasoningStep[]
         timestamp: baseTimestamp + 1,
         title: generateReasoningTitle(step),
         reasoning: parseReasoningContent(reason),
-        originalStep: step
+        originalStep: step,
       });
     }
 
@@ -51,7 +47,7 @@ export function transformToReasoningSteps(steps: AgenticStep[]): ReasoningStep[]
         timestamp: baseTimestamp + 2,
         actionType: getActionType(step),
         actionIcon: getActionIcon(step),
-        originalStep: step
+        originalStep: step,
       });
     }
   });
@@ -150,7 +146,7 @@ function splitReasoningText(text: string): {
   const decisionPatterns = [
     /(.+?)(해야겠다|하겠다|드려야겠다|해보겠다)/,
     /(.+?)(위해|하기 위해|때문에)/,
-    /(.+?)(확인해|전달해|연결해|문의해)/
+    /(.+?)(확인해|전달해|연결해|문의해)/,
   ];
 
   // Look for decision patterns
@@ -164,11 +160,11 @@ function splitReasoningText(text: string): {
       if (beforeDecision && beforeDecision.length > 10) {
         return {
           situation: beforeDecision,
-          decision: decision
+          decision: decision,
         };
       } else {
         return {
-          strategy: decision
+          strategy: decision,
         };
       }
     }
@@ -182,7 +178,7 @@ function splitReasoningText(text: string): {
       if (parts.length === 2) {
         return {
           situation: parts[0].trim(),
-          strategy: `${conjunction} ${parts[1].trim()}`
+          strategy: `${conjunction} ${parts[1].trim()}`,
         };
       }
     }
@@ -190,7 +186,7 @@ function splitReasoningText(text: string): {
 
   // Default: return as strategy
   return {
-    strategy: text
+    strategy: text,
   };
 }
 
@@ -201,7 +197,7 @@ export function filterReasoningStepsByAgent(
   steps: ReasoningStep[],
   agentName: string
 ): ReasoningStep[] {
-  return steps.filter(step => {
+  return steps.filter((step) => {
     if (!step.originalStep) return false;
 
     const action = step.originalStep.action;
@@ -217,7 +213,7 @@ export function getActiveReasoningStep(
   currentTimestamp?: number
 ): ReasoningStep | null {
   const timestamp = currentTimestamp || Date.now();
-  const activeSteps = steps.filter(step => step.timestamp <= timestamp);
+  const activeSteps = steps.filter((step) => step.timestamp <= timestamp);
 
   if (activeSteps.length === 0) return null;
 

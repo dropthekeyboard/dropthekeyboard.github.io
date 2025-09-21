@@ -17,6 +17,8 @@ interface ThemeContextType extends ThemeState {
   isSystem: boolean;
 }
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined
+);
 
 export type { Theme, ThemeState, ThemeContextType };

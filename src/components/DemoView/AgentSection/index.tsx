@@ -13,7 +13,7 @@ export function AgentSection() {
 
   // Always use ReasoningAgentSection for AI agent
   return (
-    <div className='flex w-full h-full landscape:pt-20 items-center justify-center'>
+    <div className="flex w-full h-full landscape:pt-16 items-center justify-center">
       <ReasoningAgentSection
         entity={null}
         label={agent?.name || 'AI Agent'}

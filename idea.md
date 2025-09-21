@@ -8,7 +8,7 @@
   - AI Agent의 시나리오 시각화하는 곳으로 설정에 따라 TerminalSection / ReasoningAgentSection이 올 수 있음
 - Server Section
   - Service의 공급자, 사람 혹은 AI Agent로 설정에 따라 TerminalSection / ReasoningAgentSection / PhoneSection 모두 올 수 있음
-  
+
 ## Landscape의 Layout
 
 - 현재의 3 col layout 유지
@@ -20,10 +20,9 @@
 ## Portrait의 Layout
 
 - 2 Col / 1 Col Layout
-- 상단 2 Col은 Customer Section / Server Section이 각 40wv씩 차지  / 9:16 혹은 IPhone의 Aspect Ration를 Enforce
+- 상단 2 Col은 Customer Section / Server Section이 각 40wv씩 차지 / 9:16 혹은 IPhone의 Aspect Ration를 Enforce
 - 하단 1 col은 Agent Section이 40wv를 차지하도록 / 4:6 Aspect Ratio 강제
 
 ## PhoneSection / TerminalSection / ReasoningAgentSection의 하위 요소 관리
 
 - 위 최외각 Width 기준에 따라 하위 요소가 깨지지 않도록
-  

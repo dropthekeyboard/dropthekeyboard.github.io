@@ -32,13 +32,16 @@ const Page11 = () => {
         {/* Speech Bubble */}
         <div className="w-2/3 ml-8">
           <div className="bg-gradient-to-r from-primary to-secondary p-6 rounded-lg relative">
-            <p className="text-3xl font-bold text-center text-primary-foreground">SK텔레콤에서 인증한 AI Agent 전화입니다</p>
+            <p className="text-3xl font-bold text-center text-primary-foreground">
+              SK텔레콤에서 인증한 AI Agent 전화입니다
+            </p>
           </div>
         </div>
       </div>
 
       <p className="text-xl mt-10 max-w-4xl text-center text-muted-foreground">
-        당사 전화번호자산과 가입자 인증 체계를 기반으로, 'SKT 인증 Agent 발신' 같은 라벨을 부착해 업주가 안심할 수 있는 신뢰 기반 제공 기능
+        당사 전화번호자산과 가입자 인증 체계를 기반으로, 'SKT 인증 Agent 발신'
+        같은 라벨을 부착해 업주가 안심할 수 있는 신뢰 기반 제공 기능
       </p>
     </div>
   );

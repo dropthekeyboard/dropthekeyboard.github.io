@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card } from '@/components/ui/card';
 
 // Slide 014: 가치 3. 보편적 접근성
 function Slide014() {
@@ -17,7 +17,9 @@ function Slide014() {
           <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-border">
             <div className="text-center space-y-4">
               <div className="text-6xl">📞📱✨</div>
-              <p className="text-muted-foreground text-lg">보편적 접근성 데모</p>
+              <p className="text-muted-foreground text-lg">
+                보편적 접근성 데모
+              </p>
               <p className="text-sm text-muted-foreground">
                 (전화/문자 기반 A2A 시연)
               </p>
@@ -31,7 +33,8 @@ function Slide014() {
             전화 / 문자는 모든 소상공인이 이미 쓰고 있는 채널이므로,
           </p>
           <p className="text-2xl font-bold text-foreground leading-relaxed">
-            추가 앱 설치나 복잡한 세팅 없이 <span className="text-primary">즉시 사용 가능</span>
+            추가 앱 설치나 복잡한 세팅 없이{' '}
+            <span className="text-primary">즉시 사용 가능</span>
           </p>
         </footer>
       </div>

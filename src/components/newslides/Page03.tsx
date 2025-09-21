@@ -1,10 +1,11 @@
-
 const Page03 = () => {
   return (
     <div className="w-full h-full bg-background text-foreground flex flex-col items-center justify-center p-10">
       <div className="text-center">
         <h1 className="text-5xl font-bold">모두의 AI는 '전화/문자'에서 시작</h1>
-        <p className="text-2xl mt-4 text-muted-foreground">AI시대, 전화/문자는 왜 여전히 필요할까?</p>
+        <p className="text-2xl mt-4 text-muted-foreground">
+          AI시대, 전화/문자는 왜 여전히 필요할까?
+        </p>
       </div>
       <div className="flex justify-around w-full max-w-4xl mt-10">
         <div className="bg-card p-6 rounded-lg text-center w-1/3 mx-2">

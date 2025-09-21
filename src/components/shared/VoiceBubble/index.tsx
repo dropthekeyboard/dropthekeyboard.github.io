@@ -70,16 +70,16 @@ export function VoiceBubble({
   // Theme-based styling for better contrast
   const bubbleStyles = {
     light: {
-      background: 'bg-white/70 border border-white/80',
-      overlay: 'from-white/40 via-white/30 to-white/20',
-      text: 'text-gray-800',
-      mutedText: 'text-gray-600',
+      background: 'bg-white/20 border border-white/40',
+      overlay: 'from-white/15 via-white/12 to-white/8',
+      text: 'text-gray-900',
+      mutedText: 'text-gray-700',
     },
     dark: {
-      background: 'bg-gray-800/90 border border-gray-700/60',
-      overlay: 'from-gray-800/50 via-gray-800/40 to-gray-800/30',
-      text: 'text-gray-100',
-      mutedText: 'text-gray-300',
+      background: 'bg-gray-900/25 border border-gray-600/40',
+      overlay: 'from-gray-900/20 via-gray-900/15 to-gray-900/10',
+      text: 'text-gray-50',
+      mutedText: 'text-gray-200',
     },
   };
 
@@ -119,15 +119,12 @@ export function VoiceBubble({
             currentStyle.background,
             'max-w-[280px] min-w-[160px]',
             'relative overflow-hidden',
-            'backdrop-blur-ultra'
+            'backdrop-blur-sm'
           )}
         >
           {/* Ultra-strong glass effect overlay with extreme blur kernel */}
           <div
-            className={cn(
-              'absolute inset-0 backdrop-blur-extreme bg-gradient-to-br rounded-2xl',
-              currentStyle.overlay
-            )}
+            className={cn('absolute inset-0 rounded-2xl', currentStyle.overlay)}
           />
 
           {/* Voice visualization header */}

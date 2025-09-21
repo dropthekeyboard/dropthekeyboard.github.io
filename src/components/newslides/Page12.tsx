@@ -1,4 +1,3 @@
-
 const Page12 = () => {
   return (
     <div className="w-full h-full bg-background text-foreground flex flex-col items-center justify-center p-10">
@@ -25,7 +24,9 @@ const Page12 = () => {
       </div>
 
       <p className="text-2xl mt-16 max-w-4xl text-center">
-        전화/문자는 <span className="text-primary font-bold">휴대폰만 있으면</span>, 추가 앱 설치나 복잡한 세팅 없이 즉시 사용 가능
+        전화/문자는{' '}
+        <span className="text-primary font-bold">휴대폰만 있으면</span>, 추가 앱
+        설치나 복잡한 세팅 없이 즉시 사용 가능
       </p>
     </div>
   );

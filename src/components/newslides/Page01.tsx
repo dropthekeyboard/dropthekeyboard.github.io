@@ -11,10 +11,16 @@ const Page01 = () => {
 
       <div className="relative z-10">
         <h1 className="text-7xl font-extrabold tracking-tight">A2A Demo</h1>
-        <p className="text-3xl mt-4 text-muted-foreground">모두의 AI, '전화/문자'에서 시작</p>
+        <p className="text-3xl mt-4 text-muted-foreground">
+          모두의 AI, '전화/문자'에서 시작
+        </p>
       </div>
 
-      <img src={sktLogo} alt="SK Telecom Logo" className="absolute bottom-10 w-24" />
+      <img
+        src={sktLogo}
+        alt="SK Telecom Logo"
+        className="absolute bottom-10 w-24"
+      />
     </div>
   );
 };

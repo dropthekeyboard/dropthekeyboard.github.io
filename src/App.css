@@ -183,7 +183,7 @@ body {
 @media (min-width: 769px) {
   #demoview.demo-view-layout {
     grid-template-columns: 1fr 35vw 25vw auto 1fr !important;
-    grid-template-areas: ". customer agent server ." !important;
+    grid-template-areas: '. customer agent server .' !important;
     align-items: stretch; /* Make all sections same height */
     gap: 1rem;
   }
@@ -222,7 +222,7 @@ body {
   }
 
   /* Server section adjustment for PhoneSection */
-  #demoview .demo-server-section[data-contains-phone="true"] {
+  #demoview .demo-server-section[data-contains-phone='true'] {
     width: 35vw !important;
   }
 }
@@ -233,8 +233,8 @@ body {
     grid-template-columns: 1fr 1fr !important;
     grid-template-rows: auto auto !important;
     grid-template-areas:
-      "customer server"
-      "agent agent" !important;
+      'customer server'
+      'agent agent' !important;
     gap: 0.125rem;
     padding: 1rem;
   }

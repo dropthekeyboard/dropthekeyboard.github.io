@@ -7,7 +7,7 @@ export function CustomerSection() {
   } = useScenario();
 
   return (
-    <div className='flex w-full h-full pt-20 items-center justify-center'>
+    <div className="flex w-full h-full pt-16 items-center justify-center">
       <PhoneSection
         entity={customer}
         label="User Phone"

@@ -14,7 +14,7 @@ export function ServerSection() {
   // Human server - use PhoneSection
   if (server.type === 'human') {
     return (
-      <div className='flex w-full h-full pt-20 items-center justify-center'>
+      <div className="flex w-full h-full pt-16 items-center justify-center">
         <PhoneSection
           entity={server}
           label={server.name}
@@ -32,7 +32,7 @@ export function ServerSection() {
   // AI server - always use ReasoningAgentSection
   if (server.type === 'ai') {
     return (
-      <div className='flex w-full h-full pt-20 items-center justify-center'>
+      <div className="flex w-full h-full pt-16 items-center justify-center">
         <ReasoningAgentSection
           entity={server}
           label={server.name}

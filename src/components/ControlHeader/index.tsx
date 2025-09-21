@@ -12,7 +12,9 @@ import { ViewModeToggle } from './ViewModeToggle';
 
 interface ControlHeaderProps {
   onThemeToggle: () => void;
-  onAgentStyleChange?: (style: 'minimal' | 'formal' | 'hacker' | 'reasoning') => void;
+  onAgentStyleChange?: (
+    style: 'minimal' | 'formal' | 'hacker' | 'reasoning'
+  ) => void;
   onViewModeChange?: (mode: 'demo' | 'storytelling') => void;
   currentViewMode?: 'demo' | 'storytelling';
   playbackInterval?: number; // Auto-play interval in milliseconds
@@ -28,12 +30,14 @@ export function ControlHeader({
   className,
 }: ControlHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker' | 'reasoning'>(
-    'hacker'
-  );
+  const [agentStyle, setAgentStyle] = useState<
+    'minimal' | 'formal' | 'hacker' | 'reasoning'
+  >('hacker');
   const [autoPlayInterval, setAutoPlayInterval] = useState(playbackInterval);
 
-  const handleAgentStyleChange = (style: 'minimal' | 'formal' | 'hacker' | 'reasoning') => {
+  const handleAgentStyleChange = (
+    style: 'minimal' | 'formal' | 'hacker' | 'reasoning'
+  ) => {
     setAgentStyle(style);
     onAgentStyleChange?.(style);
   };

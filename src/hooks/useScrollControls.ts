@@ -45,7 +45,9 @@ export function useScrollControls({
       if (Math.abs(accumulatedScroll.current) >= threshold) {
         if (accumulatedScroll.current > 0) {
           // Scrolling down - progress next
-          console.log('useScrollControls: Scrolling down, calling progressNext');
+          console.log(
+            'useScrollControls: Scrolling down, calling progressNext'
+          );
           onProgressNext();
         } else {
           // Scrolling up - revert to previous
@@ -81,11 +83,15 @@ export function useScrollControls({
 
         if (accumulatedScroll.current > 0) {
           // Touch scrolling down - progress next
-          console.log('useScrollControls: Touch scrolling down, calling progressNext');
+          console.log(
+            'useScrollControls: Touch scrolling down, calling progressNext'
+          );
           onProgressNext();
         } else {
           // Touch scrolling up - revert to previous
-          console.log('useScrollControls: Touch scrolling up, calling revertToPrev');
+          console.log(
+            'useScrollControls: Touch scrolling up, calling revertToPrev'
+          );
           onRevertToPrev();
         }
 

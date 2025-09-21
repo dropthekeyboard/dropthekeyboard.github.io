@@ -33,14 +33,14 @@ export function ScrollControls({
   pinnedState,
 }: ScrollControlsProps) {
   const { progressNext, revertToPrev, reset, currentScenario } = useScenario();
-  
+
   // pinnedState가 전달되면 사용하고, 없으면 기본값 사용
-  const { isPinned, isEntering, isLeaving } = pinnedState || { 
-    isPinned: false, 
-    isEntering: false, 
-    isLeaving: false 
+  const { isPinned, isEntering, isLeaving } = pinnedState || {
+    isPinned: false,
+    isEntering: false,
+    isLeaving: false,
   };
-  
+
   const isInitialized = useRef(false);
 
   // Use the custom scroll controls hook
@@ -52,8 +52,7 @@ export function ScrollControls({
     onRevertToPrev: revertToPrev,
   });
 
-
-    // Reset on mount
+  // Reset on mount
   useEffect(() => {
     if (!isInitialized.current) {
       reset(currentScenario);

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { useCountAnimation } from "@/hooks/useCountAnimation";
+import { cn } from '@/lib/utils';
+import { useCountAnimation } from '@/hooks/useCountAnimation';
 
 interface AnimatedBarProps {
   value: number;
@@ -16,19 +16,22 @@ export function AnimatedBar({
   label,
   subLabel,
   isActive,
-  className
+  className,
 }: AnimatedBarProps) {
   const animatedValue = useCountAnimation(value, isActive);
   const heightPercentage = Math.min((animatedValue / maxValue) * 100, 100);
 
   return (
-    <div className={cn("flex flex-col items-center", className)}>
+    <div className={cn('flex flex-col items-center', className)}>
       <div className="relative flex flex-col items-center">
         <div
           className="w-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-lg absolute bottom-0 transition-all duration-100"
           style={{ height: `${heightPercentage * 2}px` }}
         />
-        <div className="w-20 bg-muted rounded-lg border-2 border-border" style={{ height: '200px' }} />
+        <div
+          className="w-20 bg-muted rounded-lg border-2 border-border"
+          style={{ height: '200px' }}
+        />
         <span className="absolute -top-16 left-1/2 -translate-x-1/2 text-4xl font-bold text-foreground">
           {animatedValue}%
         </span>

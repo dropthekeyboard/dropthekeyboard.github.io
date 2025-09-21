@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from '@/components/ui/card';
 
 // Slide 010: 한계 2. 낮은 Task 성공률
 function Slide010() {
@@ -8,7 +8,8 @@ function Slide010() {
         {/* 상단 제목 */}
         <header className="text-left">
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground tracking-tight">
-            한계 2. 낮은 Task <br />성공률
+            한계 2. 낮은 Task <br />
+            성공률
           </h1>
         </header>
 
@@ -32,9 +33,13 @@ function Slide010() {
               {/* 스팸 오인 */}
               <div className="flex flex-col items-center gap-3">
                 <div className="text-4xl">
-                  <span role="img" aria-label="confused person">🤷‍♂️</span>
+                  <span role="img" aria-label="confused person">
+                    🤷‍♂️
+                  </span>
                 </div>
-                <p className="text-lg font-semibold text-foreground">스팸 오인</p>
+                <p className="text-lg font-semibold text-foreground">
+                  스팸 오인
+                </p>
               </div>
 
               {/* 화살표 */}
@@ -43,7 +48,9 @@ function Slide010() {
               {/* 전화 미응답 */}
               <div className="flex flex-col items-center gap-3">
                 <div className="text-4xl text-destructive">📞❌</div>
-                <p className="text-lg font-semibold text-foreground">전화 미응답</p>
+                <p className="text-lg font-semibold text-foreground">
+                  전화 미응답
+                </p>
               </div>
 
               {/* 화살표 */}
@@ -52,7 +59,9 @@ function Slide010() {
               {/* Task 수행 실패 */}
               <div className="flex flex-col items-center gap-3">
                 <div className="text-4xl text-destructive">⚠️</div>
-                <p className="text-lg font-semibold text-destructive">Task 수행 실패</p>
+                <p className="text-lg font-semibold text-destructive">
+                  Task 수행 실패
+                </p>
               </div>
             </div>
           </CardContent>
@@ -64,7 +73,8 @@ function Slide010() {
             업주가 스팸으로 오해하거나 현장 상황으로 콜에 즉시 응대하지 못하면
           </p>
           <p className="text-2xl font-bold text-foreground">
-            <span className="text-destructive">Task 성공률이 급격히 저하</span>되는 구조적 한계 존재
+            <span className="text-destructive">Task 성공률이 급격히 저하</span>
+            되는 구조적 한계 존재
           </p>
         </footer>
       </div>

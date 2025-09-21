@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { ThemeContext, type Theme, type ThemeState, type ThemeContextType } from './themeContext';
+import {
+  ThemeContext,
+  type Theme,
+  type ThemeState,
+  type ThemeContextType,
+} from './themeContext';
 
 interface ThemeProviderProps {
   children: ReactNode;
@@ -70,19 +75,28 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       const custom = e as CustomEvent<Record<string, unknown>>;
       const detailTheme = custom?.detail?.theme as Theme | undefined;
       const stored = localStorage.getItem('theme') as Theme | null;
-      const savedTheme: Theme = (detailTheme as Theme) || (stored as Theme) || 'system';
+      const savedTheme: Theme =
+        (detailTheme as Theme) || (stored as Theme) || 'system';
 
       // Compute resolved theme (must be 'light' or 'dark')
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const systemPrefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
       const resolvedTheme: 'light' | 'dark' =
-        savedTheme === 'system' ? (systemPrefersDark ? 'dark' : 'light') : (savedTheme as 'light' | 'dark');
+        savedTheme === 'system'
+          ? systemPrefersDark
+            ? 'dark'
+            : 'light'
+          : (savedTheme as 'light' | 'dark');
 
       setThemeState((prev) => ({ ...prev, theme: savedTheme, resolvedTheme }));
     };
 
     const onStorage = (e: StorageEvent) => {
       if (e.key === 'theme') {
-        onThemeChange(new CustomEvent('theme-change', { detail: { theme: e.newValue } }));
+        onThemeChange(
+          new CustomEvent('theme-change', { detail: { theme: e.newValue } })
+        );
       }
     };
 
@@ -90,7 +104,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     window.addEventListener('storage', onStorage as EventListener);
 
     return () => {
-      window.removeEventListener('theme-change', onThemeChange as EventListener);
+      window.removeEventListener(
+        'theme-change',
+        onThemeChange as EventListener
+      );
       window.removeEventListener('storage', onStorage as EventListener);
     };
   }, []);
@@ -109,7 +126,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
     // Persist and notify other hook instances in the same window and other tabs
     localStorage.setItem('theme', newTheme);
-    window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: newTheme } }));
+    window.dispatchEvent(
+      new CustomEvent('theme-change', { detail: { theme: newTheme } })
+    );
   };
 
   const toggleTheme = () => {

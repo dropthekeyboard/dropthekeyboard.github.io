@@ -23,12 +23,14 @@ export function AnimatedBarChart({
   title,
   maxValue = 100,
   duration = 1.5,
-  stagger = 0.2
+  stagger = 0.2,
 }: AnimatedBarChartProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const barsRef = useRef<HTMLDivElement[]>([]);
   const numbersRef = useRef<HTMLSpanElement[]>([]);
-  const [displayValues, setDisplayValues] = useState<number[]>(data.map(() => 0));
+  const [displayValues, setDisplayValues] = useState<number[]>(
+    data.map(() => 0)
+  );
 
   useEffect(() => {
     if (!chartRef.current) return;
@@ -39,19 +41,19 @@ export function AnimatedBarChart({
         barsRef.current,
         {
           scaleY: 0,
-          transformOrigin: "bottom center"
+          transformOrigin: 'bottom center',
         },
         {
           scaleY: 1,
           duration: duration,
           stagger: stagger,
-          ease: "power2.out",
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: chartRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse"
-          }
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
         }
       );
 
@@ -61,9 +63,9 @@ export function AnimatedBarChart({
         gsap.to(obj, {
           value: item.value,
           duration: duration + stagger * index,
-          ease: "power2.out",
-          onUpdate: function() {
-            setDisplayValues(prev => {
+          ease: 'power2.out',
+          onUpdate: function () {
+            setDisplayValues((prev) => {
               const newValues = [...prev];
               newValues[index] = Math.round(obj.value);
               return newValues;
@@ -71,10 +73,10 @@ export function AnimatedBarChart({
           },
           scrollTrigger: {
             trigger: chartRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse"
-          }
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
         });
       });
     }, chartRef);
@@ -92,11 +94,16 @@ export function AnimatedBarChart({
 
       <div className="flex items-end justify-between gap-4 h-64">
         {data.map((item, index) => (
-          <div key={item.name} className="flex-1 flex flex-col items-center gap-2">
+          <div
+            key={item.name}
+            className="flex-1 flex flex-col items-center gap-2"
+          >
             {/* Value Display */}
             <div className="h-8 flex items-center justify-center">
               <span
-                ref={el => { if (el) numbersRef.current[index] = el; }}
+                ref={(el) => {
+                  if (el) numbersRef.current[index] = el;
+                }}
                 className="text-lg font-bold text-foreground"
               >
                 {displayValues[index]}%
@@ -106,11 +113,13 @@ export function AnimatedBarChart({
             {/* Bar */}
             <div className="w-full bg-muted rounded-t-md relative flex-1 flex items-end">
               <div
-                ref={el => { if (el) barsRef.current[index] = el; }}
+                ref={(el) => {
+                  if (el) barsRef.current[index] = el;
+                }}
                 className="w-full rounded-t-md transition-all duration-300"
                 style={{
                   backgroundColor: item.color,
-                  height: `${(item.value / maxValue) * 100}%`
+                  height: `${(item.value / maxValue) * 100}%`,
                 }}
               />
             </div>

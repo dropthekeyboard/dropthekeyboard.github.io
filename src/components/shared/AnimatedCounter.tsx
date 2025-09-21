@@ -21,7 +21,7 @@ export function AnimatedCounter({
   suffix = '',
   prefix = '',
   className = '',
-  decimals = 0
+  decimals = 0,
 }: AnimatedCounterProps) {
   const counterRef = useRef<HTMLSpanElement>(null);
   const valueRef = useRef({ value: from });
@@ -33,23 +33,24 @@ export function AnimatedCounter({
       gsap.to(valueRef.current, {
         value: to,
         duration: duration,
-        ease: "power2.out",
+        ease: 'power2.out',
         onUpdate: () => {
           if (counterRef.current) {
             const currentValue = valueRef.current.value;
-            const displayValue = decimals > 0
-              ? currentValue.toFixed(decimals)
-              : Math.round(currentValue).toLocaleString();
+            const displayValue =
+              decimals > 0
+                ? currentValue.toFixed(decimals)
+                : Math.round(currentValue).toLocaleString();
 
             counterRef.current.textContent = `${prefix}${displayValue}${suffix}`;
           }
         },
         scrollTrigger: {
           trigger: counterRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse"
-        }
+          start: 'top 80%',
+          end: 'bottom 20%',
+          toggleActions: 'play none none reverse',
+        },
       });
     }, counterRef);
 
@@ -58,7 +59,9 @@ export function AnimatedCounter({
 
   return (
     <span ref={counterRef} className={className}>
-      {prefix}{from.toLocaleString()}{suffix}
+      {prefix}
+      {from.toLocaleString()}
+      {suffix}
     </span>
   );
 }

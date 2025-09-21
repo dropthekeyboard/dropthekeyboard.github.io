@@ -191,12 +191,7 @@ export function VoiceScreen({
 
       {/* Voice Messages Overlay - iPhone style glass effect */}
       {displayMessages.length > 0 && (
-        <div
-          className={cn(
-            'absolute inset-0 z-20 pointer-events-none',
-            currentTheme.overlayBg
-          )}
-        >
+        <div className={cn('absolute inset-0 z-20 pointer-events-none')}>
           <div className="h-full flex flex-col">
             {/* Messages in top portion with subtle overlay */}
             <div
