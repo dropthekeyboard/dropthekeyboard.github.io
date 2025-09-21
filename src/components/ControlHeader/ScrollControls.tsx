@@ -1,5 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useScenario } from '@/hooks/useScenario';
+import { useScrollControls } from '@/hooks/useScrollControls';
 import type { SectionPinningState } from '@/contexts/pinning';
 
 interface ScrollControlsProps {
@@ -40,12 +41,19 @@ export function ScrollControls({
     isLeaving: false 
   };
   
-  const accumulatedScroll = useRef(0);
   const isInitialized = useRef(false);
-  const progressRef = useRef(0);
+
+  // Use the custom scroll controls hook
+  useScrollControls({
+    enabled,
+    threshold,
+    isPinned,
+    onProgressNext: progressNext,
+    onRevertToPrev: revertToPrev,
+  });
 
 
-  // Reset on mount
+    // Reset on mount
   useEffect(() => {
     if (!isInitialized.current) {
       reset(currentScenario);
@@ -63,53 +71,8 @@ export function ScrollControls({
     }
   }, [isEntering, isLeaving]);
 
-  // Scroll event handler
-  useEffect(() => {
-    if (!enabled || !isPinned) return;
-
-    const handleScroll = (event: WheelEvent) => {
-      const deltaY = event.deltaY;
-
-      // Validate deltaY to prevent NaN
-      if (isNaN(deltaY)) {
-        console.warn('ScrollControls: Received NaN deltaY, skipping');
-        return;
-      }
-
-
-      // Accumulate scroll distance
-      accumulatedScroll.current += deltaY;
-
-      // Safely update progress (prevent NaN accumulation)
-      const progressIncrement = deltaY / 50;
-      if (!isNaN(progressIncrement)) {
-        progressRef.current += progressIncrement;
-      }
-
-      // Only trigger if we've scrolled enough
-      if (Math.abs(accumulatedScroll.current) >= threshold) {
-        if (accumulatedScroll.current > 0) {
-          // Scrolling down - progress next
-          console.log('ScrollControls: Scrolling down, calling progressNext');
-          progressNext();
-        } else {
-          // Scrolling up - revert to previous
-          console.log('ScrollControls: Scrolling up, calling revertToPrev');
-          revertToPrev();
-        }
-
-        // Reset accumulated scroll
-        accumulatedScroll.current = 0;
-      }
-    };
-
-    // Add scroll event listener
-    window.addEventListener('wheel', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-    };
-  }, [enabled, isPinned, threshold, progressNext, revertToPrev]);
+  // Default headless behavior - no UI, just functionality
+  return null;
 
   // Default headless behavior - no UI, just functionality
   return null;
