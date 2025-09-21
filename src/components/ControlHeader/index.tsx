@@ -3,10 +3,12 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Bot, Monitor, Settings } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { PlayControls } from './PlayControls';
 import { RecordingControls } from './RecordingControls';
 import { ScenarioSelector } from './ScenarioSelector.tsx';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 import { ViewModeToggle } from './ViewModeToggle';
 
@@ -27,6 +29,7 @@ export function ControlHeader({
   playbackInterval = 3000, // Default 3 seconds
   className,
 }: ControlHeaderProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [agentStyle, setAgentStyle] = useState<'minimal' | 'formal' | 'hacker' | 'reasoning'>(
     'hacker'
@@ -68,10 +71,10 @@ export function ControlHeader({
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-foreground">
-                  A2A Demo Studio
+                  {t('A2A Demo Studio')}
                 </h1>
                 <p className="text-xs text-muted-foreground">
-                  Agent-to-Agent Communication Demo
+                  {t('Agent-to-Agent Communication Demo')}
                 </p>
               </div>
             </motion.div>
@@ -107,6 +110,7 @@ export function ControlHeader({
               onToggle={onViewModeChange}
             />
             <ThemeToggle onToggle={onThemeToggle} />
+            <LanguageSwitcher />
           </div>
         </div>
 
@@ -131,26 +135,26 @@ export function ControlHeader({
                 <Card className="p-3">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
                     <Settings className="w-4 h-4 mr-2" />
-                    Scenario Editor
+                    {t('Scenario Editor')}
                   </h3>
                 </Card>
 
                 <Card className="p-3">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
                     <Monitor className="w-4 h-4 mr-2" />
-                    Recording Settings
+                    {t('Recording Settings')}
                   </h3>
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <div className="flex justify-between">
-                      <span>Quality:</span>
+                      <span>{t('Quality')}:</span>
                       <span className="text-foreground">1080p 30fps</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Format:</span>
+                      <span>{t('Format')}:</span>
                       <span className="text-foreground">MP4 (H.264)</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Aspect Ratio:</span>
+                      <span>{t('Aspect Ratio')}:</span>
                       <span className="text-foreground">16:9</span>
                     </div>
                   </div>
@@ -158,11 +162,11 @@ export function ControlHeader({
 
                 <Card className="p-3">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
-                    ⏱️ Auto-play Interval
+                    ⏱️ {t('Auto-play Interval')}
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Interval:</span>
+                      <span className="text-muted-foreground">{t('Interval')}:</span>
                       <span className="text-foreground font-mono">
                         {(autoPlayInterval / 1000).toFixed(1)}s
                       </span>
@@ -188,7 +192,7 @@ export function ControlHeader({
 
                 <Card className="p-3">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
-                    🎨 Agent Terminal Style
+                    🎨 {t('Agent Terminal Style')}
                   </h3>
                   <div className="space-y-2">
                     <div className="grid grid-cols-2 gap-1">
@@ -201,7 +205,7 @@ export function ControlHeader({
                             : 'border-blue-500/30 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50'
                         )}
                       >
-                        Minimal
+                        {t('Minimal')}
                       </button>
                       <button
                         onClick={() => handleAgentStyleChange('formal')}
@@ -212,7 +216,7 @@ export function ControlHeader({
                             : 'border-slate-500/30 bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/50'
                         )}
                       >
-                        Formal
+                        {t('Formal')}
                       </button>
                       <button
                         onClick={() => handleAgentStyleChange('hacker')}
@@ -223,7 +227,7 @@ export function ControlHeader({
                             : 'border-green-500/30 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50'
                         )}
                       >
-                        Hacker
+                        {t('Hacker')}
                       </button>
                       <button
                         onClick={() => handleAgentStyleChange('reasoning')}
@@ -234,11 +238,11 @@ export function ControlHeader({
                             : 'border-purple-500/30 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50'
                         )}
                       >
-                        Reasoning
+                        {t('Reasoning')}
                       </button>
                     </div>
                     <div className="text-xs text-muted-foreground text-center">
-                      Current:{' '}
+                      {t('Current')}:{' '}
                       <span className="text-foreground font-mono capitalize">
                         {agentStyle}
                       </span>
@@ -251,15 +255,15 @@ export function ControlHeader({
               <div className="mt-3 flex items-center justify-center space-x-4 text-xs text-muted-foreground">
                 <div className="flex items-center space-x-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span>System Ready</span>
+                  <span>{t('System Ready')}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <span>MediaRecorder API</span>
+                  <span>{t('MediaRecorder API')}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                  <span>Framer Motion</span>
+                  <span>{t('Framer Motion')}</span>
                 </div>
               </div>
             </motion.div>
