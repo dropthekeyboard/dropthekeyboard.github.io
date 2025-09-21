@@ -13,6 +13,7 @@ export function DemoView({ className, agentStyle = 'hacker' }: DemoViewProps) {
     <div
       id="demoview"
       className={cn('flex gap-4 p-4 h-full items-center pt-10', className)}
+      style={{ pointerEvents: 'none' }}
     >
       <div className="flex-[0_0_30%] flex flex-col">
         <CustomerSection />
