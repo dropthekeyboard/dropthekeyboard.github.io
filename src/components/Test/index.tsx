@@ -1,21 +1,41 @@
-import React, { useRef, useMemo, useEffect, type ComponentType } from 'react';
+import React, { useRef, useMemo, useEffect, useCallback, type ComponentType } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DemoView } from '../DemoView';
 import { ScenarioContextProvider } from '@/contexts/scenario';
 import { ScenarioLoader } from '../ControlHeader/ScenarioLoader';
 import { ScrollControls } from '../ControlHeader/ScrollControls';
-import { PinningProvider, usePinning, useSectionPinning } from '@/contexts/pinning';
+import {
+  PinningProvider,
+  usePinning,
+  useSectionPinning,
+} from '@/contexts/pinning';
 import { AnimatedSlide } from '@/components/shared/AnimatedSlide';
+import { ScrollProgressTracker } from './ScrollProgressTracker';
+import { useTestScrollProgress } from './hooks/useTestScrollProgress';
 import scenariosData from '@/data/scenarios.json';
 import type { ScrollTrigger as ScrollTriggerType } from 'gsap/ScrollTrigger';
 import type { SlideProps } from '@/types/slide';
+import type { ProgressNode } from '@/types/test';
 
 // Import all slide components
 import {
-  Slide001, Slide002, Slide003, Slide004, Slide005, Slide006,
-  Slide007, Slide008, Slide009, Slide010, Slide011, Slide012,
-  Slide013, Slide014, Slide015, Slide016
+  Slide001,
+  Slide002,
+  Slide003,
+  Slide004,
+  Slide005,
+  Slide006,
+  Slide007,
+  Slide008,
+  Slide009,
+  Slide010,
+  Slide011,
+  Slide012,
+  Slide013,
+  Slide014,
+  Slide015,
+  Slide016,
 } from '../Slide';
 
 // GSAP 플러그인 등록
@@ -44,146 +64,158 @@ interface GSAPPinningDemoProps {
 }
 
 // 내부 데모 컴포넌트
-function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoProps) {
+function GSAPPinningDemoContent({
+  agentStyle = 'reasoning',
+}: GSAPPinningDemoProps) {
   const sectionRefs = useRef<Array<HTMLDivElement | null>>([]);
   const { updateSectionState, initializeSections } = usePinning();
   // Define slide components with pinning configuration - memoized to prevent re-renders
-  const slideComponents = useMemo(() => [
-    { 
-      Component: Slide001, 
-      pinned: false, 
-      title: "A2A 혁신의 시대가 시작됩니다",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.3
-    },
-    { 
-      Component: Slide002, 
-      pinned: false, 
-      title: "A2A가 뭔가요?",
-      enableAnimation: true,
-      animationType: 'slideUp' as const,
-      animationDelay: 0.2
-    },
-    { 
-      Component: Slide003, 
-      pinned: true, 
-      title: "A2A 확산 현황",
-      enableAnimation: true,
-      animationType: 'scale' as const,
-      animationDelay: 0.4
-    },
-    {
-      Component: Slide004,
-      pinned: true,
-      title: "A2A 확산이 어려운 구조적 요인",
-      enableAnimation: true,
-      animationType: 'slideDown' as const,
-      animationDelay: 0.1
-    },
-    { 
-      Component: Slide005, 
-      pinned: true, 
-      title: "디지털 네이티브 세대의 성장",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.5
-    },
-    { 
-      Component: Slide006, 
-      pinned: false, 
-      title: "첫 모바일 앱 출시 시기",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.2
-    },
-    { 
-      Component: Slide007, 
-      pinned: true, 
-      title: "앱 사용 현황",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.3
-    },
-    { 
-      Component: Slide008, 
-      pinned: true, 
-      title: "생성 AI의 급속한 성장",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.4
-    },
-    { 
-      Component: Slide009, 
-      pinned: false, 
-      title: "Agent 기술의 발전",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.2
-    },
-    { 
-      Component: Slide010, 
-      pinned: true, 
-      title: "A2A 도입 효과",
-      enableAnimation: true,
-      animationType: 'scale' as const,
-      animationDelay: 0.5
-    },
-    { 
-      Component: Slide011, 
-      pinned: false, 
-      title: "시니어 라이프 메이트 시나리오",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.3
-    },
-    { 
-      Component: Slide012, 
-      pinned: false, 
-      title: "은행 업무 자동화 시나리오",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.2
-    },
-    { 
-      Component: Slide013, 
-      pinned: false, 
-      title: "의료 예약 관리 시나리오",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.4
-    },
-    { 
-      Component: Slide014, 
-      pinned: false, 
-      title: "A2A 시나리오 종합",
-      enableAnimation: true,
-      animationType: 'scale' as const,
-      animationDelay: 0.1
-    },
-    { 
-      Component: Slide015, 
-      pinned: false, 
-      title: "모두의 가능 A2A",
-      enableAnimation: true,
-      animationType: 'fade' as const,
-      animationDelay: 0.3
-    },
-    { 
-      Component: Slide016, 
-      pinned: true, 
-      title: "3단계 로드맵",
-      enableAnimation: true,
-      animationType: 'slideUp' as const,
-      animationDelay: 0.4
-    }
-  ], []);
+  const slideComponents = useMemo(
+    () => [
+      {
+        Component: Slide001,
+        pinned: false,
+        title: 'A2A 혁신의 시대가 시작됩니다',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.3,
+      },
+      {
+        Component: Slide002,
+        pinned: false,
+        title: 'A2A가 뭔가요?',
+        enableAnimation: true,
+        animationType: 'slideUp' as const,
+        animationDelay: 0.2,
+      },
+      {
+        Component: Slide003,
+        pinned: true,
+        title: 'A2A 확산 현황',
+        enableAnimation: true,
+        animationType: 'scale' as const,
+        animationDelay: 0.4,
+      },
+      {
+        Component: Slide004,
+        pinned: true,
+        title: 'A2A 확산이 어려운 구조적 요인',
+        enableAnimation: true,
+        animationType: 'slideDown' as const,
+        animationDelay: 0.1,
+      },
+      {
+        Component: Slide005,
+        pinned: true,
+        title: '디지털 네이티브 세대의 성장',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.5,
+      },
+      {
+        Component: Slide006,
+        pinned: false,
+        title: '첫 모바일 앱 출시 시기',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.2,
+      },
+      {
+        Component: Slide007,
+        pinned: true,
+        title: '앱 사용 현황',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.3,
+      },
+      {
+        Component: Slide008,
+        pinned: true,
+        title: '생성 AI의 급속한 성장',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.4,
+      },
+      {
+        Component: Slide009,
+        pinned: false,
+        title: 'Agent 기술의 발전',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.2,
+      },
+      {
+        Component: Slide010,
+        pinned: true,
+        title: 'A2A 도입 효과',
+        enableAnimation: true,
+        animationType: 'scale' as const,
+        animationDelay: 0.5,
+      },
+      {
+        Component: Slide011,
+        pinned: false,
+        title: '시니어 라이프 메이트 시나리오',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.3,
+      },
+      {
+        Component: Slide012,
+        pinned: false,
+        title: '은행 업무 자동화 시나리오',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.2,
+      },
+      {
+        Component: Slide013,
+        pinned: false,
+        title: '의료 예약 관리 시나리오',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.4,
+      },
+      {
+        Component: Slide014,
+        pinned: false,
+        title: 'A2A 시나리오 종합',
+        enableAnimation: true,
+        animationType: 'scale' as const,
+        animationDelay: 0.1,
+      },
+      {
+        Component: Slide015,
+        pinned: false,
+        title: '모두의 가능 A2A',
+        enableAnimation: true,
+        animationType: 'fade' as const,
+        animationDelay: 0.3,
+      },
+      {
+        Component: Slide016,
+        pinned: true,
+        title: '3단계 로드맵',
+        enableAnimation: true,
+        animationType: 'slideUp' as const,
+        animationDelay: 0.4,
+      },
+    ],
+    []
+  );
 
   // 시나리오 데이터 로드 - ID 순서대로 단순 배열로 변환
   type BasicScenario = { id: string; title: string; description?: string };
   const scenarios: BasicScenario[] = useMemo(() => {
-    const raw = scenariosData as Record<string, { id: string; title: string; description?: string }>;
-    return Object.values(raw).map((s) => ({ id: s.id, title: s.title, description: s.description }));
+    const raw = scenariosData as Record<
+      string,
+      { id: string; title: string; description?: string }
+    >;
+    return Object.values(raw).map((s) => ({
+      id: s.id,
+      title: s.title,
+      description: s.description,
+    }));
   }, []);
 
   // 모든 섹션을 하나의 배열로 통합
@@ -213,7 +245,7 @@ function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoPro
         title: scenario.title,
         description: scenario.description,
         pinned: true,
-        pinEnd: '+600vh'
+        pinEnd: '+600vh',
       },
     ]);
 
@@ -224,6 +256,34 @@ function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoPro
   useEffect(() => {
     initializeSections(sections.length);
   }, [sections.length, initializeSections]);
+
+  // Progress tracking hook
+  const { updateProgressNodes } = useTestScrollProgress(sectionRefs, sections.length);
+
+  // Progress tracker를 위한 섹션 데이터 변환
+  const progressNodes = useMemo<ProgressNode[]>(() => {
+    const baseNodes = sections.map((section, index) => ({
+      id: section.type === 'slide' ? `slide-${index}` : `${section.type}-${section.id}-${index}`,
+      type: section.type,
+      title: section.title,
+      isActive: false,
+      isCompleted: false,
+      index,
+    }));
+
+    return updateProgressNodes(baseNodes);
+  }, [sections, updateProgressNodes]);
+
+  // 섹션 네비게이션 핸들러
+  const handleNodeClick = useCallback((sectionIndex: number) => {
+    const targetSection = sectionRefs.current[sectionIndex];
+    if (targetSection) {
+      targetSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, []);
 
   // 통합된 ScrollTrigger 설정
   useEffect(() => {
@@ -287,11 +347,23 @@ function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoPro
   }, [sections, updateSectionState]);
 
   return (
-    <div className="w-full">
+    <div className="w-full scrollbar-hide">
+      {/* Progress Tracker */}
+      <ScrollProgressTracker
+        sections={progressNodes}
+        onNodeClick={handleNodeClick}
+        position="right"
+      />
+
       {sections.map((section, index) => {
         // 슬라이드 섹션 렌더링
         if (section.type === 'slide') {
-          const { Component, enableAnimation = true, animationType = 'fade', animationDelay = 0.3 } = section;
+          const {
+            Component,
+            enableAnimation = true,
+            animationType = 'fade',
+            animationDelay = 0.3,
+          } = section;
           return (
             <section
               key={`slide-${index}`}
@@ -302,9 +374,9 @@ function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoPro
             >
               <div className="w-full max-w-7xl px-4">
                 {enableAnimation ? (
-                  <AnimatedSlide 
-                    sectionIndex={index} 
-                    animationType={animationType} 
+                  <AnimatedSlide
+                    sectionIndex={index}
+                    animationType={animationType}
                     delay={animationDelay}
                   >
                     {Component && <Component sectionIndex={index} />}
@@ -320,7 +392,7 @@ function GSAPPinningDemoContent({ agentStyle = 'reasoning' }: GSAPPinningDemoPro
         // 시나리오 설명 섹션 렌더링 (no pinning)
         if (section.type === 'scenario-intro') {
           const { id, title, description } = section;
-          const scenarioIndex = scenarios.findIndex(s => s.id === id);
+          const scenarioIndex = scenarios.findIndex((s) => s.id === id);
           return (
             <section
               key={`scenario-intro-${id}-${index}`}
@@ -389,53 +461,48 @@ interface ScenarioSectionContentProps {
   agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
 }
 
-const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionContentProps>(
-  ({ sectionIndex, scenarioId, agentStyle = 'reasoning' }, ref) => {
-    const { state } = useSectionPinning(sectionIndex);
+const ScenarioSectionContent = React.forwardRef<
+  HTMLDivElement,
+  ScenarioSectionContentProps
+>(({ sectionIndex, scenarioId }, ref) => {
+  const { state } = useSectionPinning(sectionIndex);
 
-    return (
-      <section
-        ref={ref}
-        className="h-screen overflow-hidden flex items-center justify-center bg-background w-full"
-      >
-        <div className="w-full max-w-7xl px-4">
-          <div className="w-full">
-            <ScenarioContextProvider>
-              <div className="mb-4">
-                <ScenarioLoader
-                  initialScenarioId={scenarioId}
-                  onScenarioLoaded={(id) => console.log(`Scenario ${id} loaded`)}
-                  onScenarioError={(error) => console.error(`Scenario load error: ${error}`)}
-                />
-              </div>
-              <ScrollControls
-                enabled={true}
-                threshold={30}
-                pinnedState={state}
-                excludeSelectors={[
-                  '.overflow-y-auto',
-                  '[class*="scrollbar"]',
-                  '.scrollbar-hide',
-                  '#demoview',
-                  '.message-container',
-                  '[class*="voice"]',
-                  '.voice-screen'
-                ]}
-                autoScrollThreshold={50}
+  return (
+    <section
+      ref={ref}
+      className="h-screen overflow-hidden flex items-center justify-center bg-background w-full"
+    >
+      <div className="w-full max-w-7xl px-4">
+        <div className="w-full">
+          <ScenarioContextProvider>
+            <div className="mb-4">
+              <ScenarioLoader
+                initialScenarioId={scenarioId}
+                onScenarioLoaded={(id) => console.log(`Scenario ${id} loaded`)}
+                onScenarioError={(error) =>
+                  console.error(`Scenario load error: ${error}`)
+                }
               />
-              <DemoView agentStyle={agentStyle} />
-            </ScenarioContextProvider>
-          </div>
+            </div>
+            <ScrollControls
+              enabled={true}
+              threshold={30}
+              pinnedState={state}
+              autoScrollThreshold={50}
+            />
+            <DemoView />
+          </ScenarioContextProvider>
         </div>
-      </section>
-    );
-  }
-);
+      </div>
+    </section>
+  );
+});
 
 ScenarioSectionContent.displayName = 'ScenarioSectionContent';
 
-export function GSAPPinningDemo({ agentStyle = 'reasoning' }: GSAPPinningDemoProps = {}) {
-
+export function GSAPPinningDemo({
+  agentStyle = 'reasoning',
+}: GSAPPinningDemoProps = {}) {
   return (
     <PinningProvider>
       <GSAPPinningDemoContent agentStyle={agentStyle} />

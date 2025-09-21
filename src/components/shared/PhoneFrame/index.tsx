@@ -29,7 +29,7 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="relative w-full max-w-[20vw] aspect-[9/19.5]"
+        className="relative w-full h-full max-w-none"
       >
         {/* iPhone-style outer bezel */}
         <div
@@ -54,7 +54,7 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-50/10 pointer-events-none"></div>
 
               {/* Content */}
-              <div ref={scrollRef} className="w-full h-full overflow-y-auto">
+              <div ref={scrollRef} className="w-full h-full overflow-hidden">
                 {children}
               </div>
             </div>

@@ -9,14 +9,15 @@ function Slide015() {
             초기에는 전화 / 문자 기반 A2H 로 신뢰와 수요를 형성하고,
           </p>
           <p className="text-xl sm:text-2xl text-muted-foreground leading-relaxed">
-            앱 기반 Agent 운영으로 확장해 완전한 A2A 자동화로 이어지는 단계적 로드맵을 통해
+            앱 기반 Agent 운영으로 확장해 완전한 A2A 자동화로 이어지는 단계적
+            로드맵을 통해
           </p>
         </div>
 
         {/* 메인 제목 */}
         <div className="text-center space-y-8">
           <h1 className="text-4xl sm:text-6xl font-bold text-foreground leading-relaxed">
-            누구나 바로 쓸 수 있는 채널에서 시작하는{" "}
+            누구나 바로 쓸 수 있는 채널에서 시작하는{' '}
             <span className="text-cyan-400">모두의</span>
           </h1>
           <h2 className="text-5xl sm:text-7xl font-bold leading-relaxed">

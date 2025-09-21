@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from '@/components/ui/card';
 
 // Slide 009: 한계 1. 신뢰도 이슈
 function Slide009() {
@@ -34,7 +34,9 @@ function Slide009() {
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               </div>
               <div className="bg-muted text-foreground px-6 py-3 rounded-2xl max-w-md">
-                <p className="text-lg">Hello, I'm the Google Assistant from ...</p>
+                <p className="text-lg">
+                  Hello, I'm the Google Assistant from ...
+                </p>
               </div>
             </div>
 
@@ -44,7 +46,9 @@ function Slide009() {
                 <p className="text-lg font-bold">스팸 전화 아니야 ?</p>
               </div>
               <div className="text-4xl">
-                <span role="img" aria-label="confused person">🤷‍♂️</span>
+                <span role="img" aria-label="confused person">
+                  🤷‍♂️
+                </span>
               </div>
             </div>
           </CardContent>
@@ -53,10 +57,13 @@ function Slide009() {
         {/* 하단 설명 */}
         <footer className="text-left space-y-4">
           <p className="text-xl text-muted-foreground">
-            업주는 발신자가 고객인지 Agent 인지 구분하지 못해 <span className="font-bold text-destructive">거부감</span>이 생기고,
+            업주는 발신자가 고객인지 Agent 인지 구분하지 못해{' '}
+            <span className="font-bold text-destructive">거부감</span>이 생기고,
           </p>
           <p className="text-xl text-muted-foreground">
-            사전 고지 시 <span className="font-bold text-destructive">스팸</span>으로 오인되는 이슈 탈레마 발생
+            사전 고지 시{' '}
+            <span className="font-bold text-destructive">스팸</span>으로
+            오인되는 이슈 탈레마 발생
           </p>
         </footer>
       </div>

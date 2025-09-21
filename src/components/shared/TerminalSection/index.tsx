@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Terminal, Cpu } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
+import { useOptionalTerminalVariant } from '@/hooks/useAgentDisplayVariants';
+import type { TerminalVariant } from '@/contexts/agentDisplayVariant';
 
 interface LogicCard {
   id: string;
@@ -22,7 +24,7 @@ interface TerminalSectionProps {
   steps?: AgenticStep[];
   entityName?: string;
   isActive?: boolean;
-  variant?: 'minimal' | 'formal' | 'hacker';
+  variant?: TerminalVariant;
 }
 
 export function TerminalSection({
@@ -33,9 +35,13 @@ export function TerminalSection({
   steps: externalSteps,
   entityName,
   isActive: externalIsActive = false,
-  variant = 'minimal',
+  variant: propVariant,
 }: TerminalSectionProps) {
   const { state: scenarioState } = useScenario();
+  
+  // Use variant from context if not provided as prop
+  const terminalContext = useOptionalTerminalVariant();
+  const variant = propVariant || terminalContext?.variant || 'minimal';
 
   // 외부에서 steps를 제공하면 그것을 사용, 아니면 scenario에서 가져옴
   const state = useMemo(
@@ -159,7 +165,7 @@ export function TerminalSection({
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
         sectionClass,
-        'relative flex flex-col h-[60vh] w-[20vw] mx-auto'
+        'relative flex flex-col h-[70vh] w-full mx-auto'
       )}
     >
       {/* Terminal Header */}
@@ -234,7 +240,7 @@ export function TerminalSection({
       <div
         ref={scrollRef}
         className={cn(
-          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-[20vw] custom-scrollbar will-change-scroll',
+          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-full scrollbar-hide will-change-scroll',
           'rounded-lg',
           'shadow-lg',
           'font-mono text-sm',

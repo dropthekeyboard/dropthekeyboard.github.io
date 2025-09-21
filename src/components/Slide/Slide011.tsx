@@ -9,8 +9,8 @@ function Slide011() {
             앱 이전에,
           </p>
           <h1 className="text-4xl sm:text-6xl font-bold text-foreground leading-relaxed">
-            이미 모두가 사용하고 있는{" "}
-            <span className="text-cyan-400">전화 / 문자</span>{" "}
+            이미 모두가 사용하고 있는{' '}
+            <span className="text-cyan-400">전화 / 문자</span>{' '}
             <span className="text-3xl sm:text-4xl text-muted-foreground block mt-4">
               에서
             </span>

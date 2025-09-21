@@ -37,7 +37,7 @@ export const allSlides = [
   'Slide013',
   'Slide014',
   'Slide015',
-  'Slide016'
+  'Slide016',
 ] as const;
 
-export type SlideNames = typeof allSlides[number];
+export type SlideNames = (typeof allSlides)[number];

@@ -16,7 +16,7 @@ function Slide003() {
     { name: '금융', value: 85, color: '#3b82f6' },
     { name: '통신', value: 65, color: '#10b981' },
     { name: '유통', value: 45, color: '#f59e0b' },
-    { name: '의료', value: 25, color: '#ef4444' }
+    { name: '의료', value: 25, color: '#ef4444' },
   ];
 
   useEffect(() => {
@@ -24,31 +24,33 @@ function Slide003() {
 
     const ctx = gsap.context(() => {
       // Title animation
-      gsap.fromTo(titleRef.current,
+      gsap.fromTo(
+        titleRef.current,
         {
           y: 100,
-          opacity: 0
+          opacity: 0,
         },
         {
           y: 0,
           opacity: 1,
           duration: 1,
-          ease: "power2.out",
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse"
-          }
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
         }
       );
 
       // Stats cards animation
-      gsap.fromTo(statsRef.current?.children || [],
+      gsap.fromTo(
+        statsRef.current?.children || [],
         {
           y: 50,
           opacity: 0,
-          scale: 0.9
+          scale: 0.9,
         },
         {
           y: 0,
@@ -56,13 +58,13 @@ function Slide003() {
           scale: 1,
           duration: 0.8,
           stagger: 0.2,
-          ease: "back.out(1.7)",
+          ease: 'back.out(1.7)',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 60%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse"
-          }
+            start: 'top 60%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
         }
       );
     }, containerRef);
@@ -71,11 +73,17 @@ function Slide003() {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div
+      ref={containerRef}
+      className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans"
+    >
       <div className="max-w-6xl w-full space-y-12">
         {/* 메인 제목 */}
         <div className="text-center">
-          <h1 ref={titleRef} className="text-4xl sm:text-6xl font-bold text-foreground tracking-tight leading-relaxed">
+          <h1
+            ref={titleRef}
+            className="text-4xl sm:text-6xl font-bold text-foreground tracking-tight leading-relaxed"
+          >
             A2A <span className="text-primary">확산 현황</span>
           </h1>
         </div>
@@ -92,7 +100,10 @@ function Slide003() {
         </div>
 
         {/* 통계 카드들 */}
-        <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        <div
+          ref={statsRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
+        >
           <div className="bg-card border border-border rounded-lg p-6 text-center">
             <AnimatedCounter
               from={0}

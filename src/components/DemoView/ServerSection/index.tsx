@@ -1,16 +1,16 @@
 import { PhoneSection } from '@/components/shared/PhoneSection';
-import { TerminalSection } from '@/components/shared/TerminalSection';
 import { ReasoningAgentSection } from '@/components/shared/ReasoningAgentSection';
+import { TerminalSection } from '@/components/shared/TerminalSection';
 import { useScenario } from '@/hooks/useScenario';
+import { useAgentDisplayVariants } from '@/hooks/useAgentDisplayVariants';
 
-interface ServerSectionProps {
-  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
-}
-
-export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
+export function ServerSection() {
   const {
     active: { server },
   } = useScenario();
+
+  // Get display type from context
+  const { value: displayType } = useAgentDisplayVariants();
 
   if (!server) {
     return null;
@@ -19,41 +19,43 @@ export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
   // Human server - use PhoneSection
   if (server.type === 'human') {
     return (
-      <PhoneSection
-        entity={server}
-        label={server.name}
-        labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-        animationDirection="right"
-        contactNumber="+1 (800) 555-0199"
-        from={server.name}
-        showAdditionalStatus={true}
-        location="server"
-      />
+      <div className="flex w-full h-full pt-16 items-center justify-center scrollbar-hide">
+        <PhoneSection
+          entity={server}
+          label={server.name}
+          labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+          animationDirection="right"
+          contactNumber="+1 (800) 555-0199"
+          from={server.name}
+          showAdditionalStatus={true}
+          location="server"
+        />
+      </div>
     );
   }
 
-  // AI server - use ReasoningAgentSection for 'reasoning' variant, TerminalSection otherwise
+  // AI server - use different components based on display type
   if (server.type === 'ai') {
-    if (agentStyle === 'reasoning') {
-      return (
-        <ReasoningAgentSection
-          entity={server}
-          label={server.name}
-          labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-          sectionClass=""
-          variant={agentStyle}
-        />
-      );
-    }
-
     return (
-      <TerminalSection
-        entity={server}
-        label={server.name}
-        labelColor="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-        sectionClass=""
-        variant={agentStyle}
-      />
+      <div className="flex w-full h-full pt-16 items-center justify-center scrollbar-hide">
+        {displayType.type === 'terminal' ? (
+          <TerminalSection
+            entity={server}
+            label={server.name}
+            labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+            sectionClass=""
+            variant={displayType.variants as 'minimal' | 'formal' | 'hacker'}
+          />
+        ) : (
+          <ReasoningAgentSection
+            entity={server}
+            label={server.name}
+            labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+            sectionClass=""
+            variant={displayType.variants}
+          />
+        )}
+      </div>
     );
   }
 
