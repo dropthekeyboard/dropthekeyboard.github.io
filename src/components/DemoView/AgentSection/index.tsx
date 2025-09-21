@@ -19,28 +19,32 @@ export function AgentSection({ agentStyle = 'reasoning' }: AgentSectionProps) {
   // Use ReasoningAgentSection for 'reasoning' variant
   if (agentStyle === 'reasoning') {
     return (
-      <ReasoningAgentSection
-        entity={null}
-        label={agent?.name || 'AI Agent'}
-        labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-        sectionClass="center-section"
-        steps={agentSteps}
-        entityName={agent?.name}
-        variant={agentStyle}
-      />
+      <div className='flex w-full h-full pt-20 items-center justify-center'>
+        <ReasoningAgentSection
+          entity={null}
+          label={agent?.name || 'AI Agent'}
+          labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+          sectionClass="center-section"
+          steps={agentSteps}
+          entityName={agent?.name}
+          variant={agentStyle}
+        />
+      </div>
     );
   }
 
   // Use TerminalSection for other variants
   return (
-    <TerminalSection
-      entity={null}
-      label={agent?.name || 'AI Agent'}
-      labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-      sectionClass="center-section"
-      steps={agentSteps}
-      entityName={agent?.name}
-      variant={agentStyle}
-    />
+    <div className='flex w-full h-full pt-20 items-center justify-center'>
+      <TerminalSection
+        entity={null}
+        label={agent?.name || 'AI Agent'}
+        labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+        sectionClass="center-section"
+        steps={agentSteps}
+        entityName={agent?.name}
+        variant={agentStyle}
+      />
+    </div>
   );
 }

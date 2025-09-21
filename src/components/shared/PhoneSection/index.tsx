@@ -68,7 +68,7 @@ export function PhoneSection({
       initial={{ opacity: 0, x: animationX }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={cn('relative')}
+      className={cn('relative landscape:w-[30vw] portrait:w-[40vw] aspect-[9/16]')}
     >
       <PhoneFrame>
         <AnimatePresence mode="wait">

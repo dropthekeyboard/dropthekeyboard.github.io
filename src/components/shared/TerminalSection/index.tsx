@@ -159,7 +159,7 @@ export function TerminalSection({
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
         sectionClass,
-        'relative flex flex-col h-[60vh] w-[20vw] mx-auto'
+        'relative flex flex-col h-[70vh] w-full mx-auto'
       )}
     >
       {/* Terminal Header */}
@@ -234,7 +234,7 @@ export function TerminalSection({
       <div
         ref={scrollRef}
         className={cn(
-          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-[20vw] custom-scrollbar will-change-scroll',
+          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-full custom-scrollbar will-change-scroll',
           'rounded-lg',
           'shadow-lg',
           'font-mono text-sm',

@@ -29,7 +29,7 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="relative w-full max-w-[20vw] aspect-[9/19.5]"
+        className="relative w-full h-full max-w-none"
       >
         {/* iPhone-style outer bezel */}
         <div

@@ -24,7 +24,7 @@ function App() {
           onViewModeChange={setViewMode}
           currentViewMode={viewMode}
         />
-        <main className="">
+        <main className="flex-1">
           {viewMode === 'demo' ? (
             <DemoView agentStyle={agentStyle} />
           ) : (

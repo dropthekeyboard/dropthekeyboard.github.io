@@ -50,36 +50,57 @@ export function ControlHeader({
       )}
     >
       <div className="container mx-auto">
-        <div className="flex flex-row justify-between">
-          {/* Top row - Logo & Title with Settings & Theme */}
-          <div className="flex items-center space-x-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center space-x-2"
-            >
-              <div className="relative">
-                <Bot className="w-6 h-6 text-primary" />
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
-                />
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-foreground">
-                  A2A Demo Studio
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  Agent-to-Agent Communication Demo
-                </p>
-              </div>
-            </motion.div>
+        <div className="flex flex-col space-y-3 py-2">
+          {/* Row 1: Logo & Title on left, Settings & Theme on right */}
+          <div className="flex justify-between items-center px-4">
+            <div className="flex items-center space-x-3">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center space-x-2"
+              >
+                <div className="relative">
+                  <Bot className="w-6 h-6 text-primary" />
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute -inset-1 bg-primary/20 rounded-full -z-10"
+                  />
+                </div>
+                <div className="hidden sm:block">
+                  <h1 className="text-lg font-bold text-foreground">
+                    A2A Demo Studio
+                  </h1>
+                  <p className="text-xs text-muted-foreground">
+                    Agent-to-Agent Communication Demo
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={cn(
+                  'p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors',
+                  'border border-border hover:border-primary/50'
+                )}
+              >
+                <Settings className="w-4 h-4" />
+              </motion.button>
+
+              <ViewModeToggle
+                currentMode={currentViewMode}
+                onToggle={onViewModeChange}
+              />
+              <ThemeToggle onToggle={onThemeToggle} />
+            </div>
           </div>
 
-          {/* Middle row - Phase indicator and Main controls */}
-          <div className="flex items-center justify-between">
-            {/* Center section - Main controls */}
+          {/* Row 2: Main controls centered */}
+          <div className="flex justify-center">
             <Card className="flex flex-row items-center p-1 bg-card/50">
               <ScenarioSelector />
               <Separator orientation="vertical" className="mx-1 h-6" />
@@ -87,26 +108,6 @@ export function ControlHeader({
               <Separator orientation="vertical" className="mx-1 h-6" />
               <RecordingControls />
             </Card>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsExpanded(!isExpanded)}
-              className={cn(
-                'p-1.5 rounded-md bg-muted/50 hover:bg-muted transition-colors',
-                'border border-border hover:border-primary/50'
-              )}
-            >
-              <Settings className="w-4 h-4" />
-            </motion.button>
-
-            <ViewModeToggle
-              currentMode={currentViewMode}
-              onToggle={onViewModeChange}
-            />
-            <ThemeToggle onToggle={onThemeToggle} />
           </div>
         </div>
 
