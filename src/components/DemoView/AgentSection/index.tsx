@@ -1,5 +1,6 @@
 import { ReasoningAgentSection } from '@/components/shared/ReasoningAgentSection';
 import { useScenario } from '@/hooks/useScenario';
+import { useReasoningVariantOnly } from '@/hooks/useAgentDisplayVariants';
 import { isRelevantAction } from '@/lib/utils';
 
 export function AgentSection() {
@@ -7,6 +8,9 @@ export function AgentSection() {
     state,
     active: { agent },
   } = useScenario();
+
+  // Get reasoning variant from context
+  const { variant } = useReasoningVariantOnly();
 
   // Agent 관련 steps만 필터링
   const agentSteps = state.steps.filter((s) => isRelevantAction(s, agent));
@@ -21,7 +25,7 @@ export function AgentSection() {
         sectionClass="center-section"
         steps={agentSteps}
         entityName={agent?.name}
-        variant="reasoning"
+        variant={variant}
       />
     </div>
   );

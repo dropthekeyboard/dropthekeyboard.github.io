@@ -13,6 +13,7 @@ export function transformToReasoningSteps(
 
   steps.forEach((step, index) => {
     const baseTimestamp = step.action.timestamp || Date.now() + index * 1000;
+    const nextStep = steps[index + 1];
 
     // 1. Create input step for incoming actions (not from agents)
     if (isInputAction(step)) {
@@ -26,29 +27,28 @@ export function transformToReasoningSteps(
       });
     }
 
-    // 2. Create reasoning step if the action has reasoning
-    const reason = 'reason' in step.action ? step.action.reason : undefined;
-    if (reason) {
-      reasoningSteps.push({
-        id: `reasoning-${baseTimestamp}`,
-        type: 'reasoning',
-        timestamp: baseTimestamp + 1,
-        title: generateReasoningTitle(step),
-        reasoning: parseReasoningContent(reason),
-        originalStep: step,
-      });
-    }
-
-    // 3. Create output step for agent actions
+    // 2. Create output step for agent actions (moved before reasoning)
     if (isOutputAction(step)) {
       reasoningSteps.push({
         id: `output-${baseTimestamp}`,
         type: 'output',
-        timestamp: baseTimestamp + 2,
+        timestamp: baseTimestamp + 1,
         actionType: getActionType(step),
         actionIcon: getActionIcon(step),
         originalStep: step,
       });
+
+      // 3. Create reasoning step only if next step has reasoning
+      if (nextStep && 'reason' in nextStep.action && nextStep.action.reason) {
+        reasoningSteps.push({
+          id: `reasoning-${baseTimestamp}`,
+          type: 'reasoning',
+          timestamp: baseTimestamp + 2, // Show processing after output
+          title: generateReasoningTitle(nextStep),
+          reasoning: parseReasoningContent(nextStep.action.reason),
+          originalStep: nextStep,
+        });
+      }
     }
   });
 

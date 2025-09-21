@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Terminal, Cpu } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
+import { useOptionalTerminalVariant } from '@/hooks/useAgentDisplayVariants';
 
 interface LogicCard {
   id: string;
@@ -33,9 +34,13 @@ export function TerminalSection({
   steps: externalSteps,
   entityName,
   isActive: externalIsActive = false,
-  variant = 'minimal',
+  variant: propVariant,
 }: TerminalSectionProps) {
   const { state: scenarioState } = useScenario();
+  
+  // Use variant from context if not provided as prop
+  const terminalContext = useOptionalTerminalVariant();
+  const variant = propVariant || terminalContext?.variant || 'minimal';
 
   // 외부에서 steps를 제공하면 그것을 사용, 아니면 scenario에서 가져옴
   const state = useMemo(

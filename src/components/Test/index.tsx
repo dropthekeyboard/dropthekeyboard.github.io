@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect, type ComponentType } from 'react';
+import React, { useRef, useMemo, useEffect, useCallback, type ComponentType } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DemoView } from '../DemoView';
@@ -11,9 +11,12 @@ import {
   useSectionPinning,
 } from '@/contexts/pinning';
 import { AnimatedSlide } from '@/components/shared/AnimatedSlide';
+import { ScrollProgressTracker } from './ScrollProgressTracker';
+import { useTestScrollProgress } from './hooks/useTestScrollProgress';
 import scenariosData from '@/data/scenarios.json';
 import type { ScrollTrigger as ScrollTriggerType } from 'gsap/ScrollTrigger';
 import type { SlideProps } from '@/types/slide';
+import type { ProgressNode } from '@/types/test';
 
 // Import all slide components
 import {
@@ -254,6 +257,34 @@ function GSAPPinningDemoContent({
     initializeSections(sections.length);
   }, [sections.length, initializeSections]);
 
+  // Progress tracking hook
+  const { updateProgressNodes } = useTestScrollProgress(sectionRefs, sections.length);
+
+  // Progress tracker를 위한 섹션 데이터 변환
+  const progressNodes = useMemo<ProgressNode[]>(() => {
+    const baseNodes = sections.map((section, index) => ({
+      id: section.type === 'slide' ? `slide-${index}` : `${section.type}-${section.id}-${index}`,
+      type: section.type,
+      title: section.title,
+      isActive: false,
+      isCompleted: false,
+      index,
+    }));
+
+    return updateProgressNodes(baseNodes);
+  }, [sections, updateProgressNodes]);
+
+  // 섹션 네비게이션 핸들러
+  const handleNodeClick = useCallback((sectionIndex: number) => {
+    const targetSection = sectionRefs.current[sectionIndex];
+    if (targetSection) {
+      targetSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, []);
+
   // 통합된 ScrollTrigger 설정
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -317,6 +348,13 @@ function GSAPPinningDemoContent({
 
   return (
     <div className="w-full">
+      {/* Progress Tracker */}
+      <ScrollProgressTracker
+        sections={progressNodes}
+        onNodeClick={handleNodeClick}
+        position="right"
+      />
+
       {sections.map((section, index) => {
         // 슬라이드 섹션 렌더링
         if (section.type === 'slide') {

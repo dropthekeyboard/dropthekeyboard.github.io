@@ -16,6 +16,7 @@ import {
   Target,
   Scale,
   CheckCircle,
+  Settings,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import {
@@ -32,20 +33,131 @@ interface ReasoningAgentSectionProps {
   steps?: AgenticStep[];
   entityName?: string;
   isActive?: boolean;
-  variant?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
+  variant?: 'minimal' | 'formal' | 'hacker' | 'reasoning' | 'compact';
 }
 
 // Reasoning Step Component
 interface ReasoningStepComponentProps {
   step: ReasoningStep;
   isActive: boolean;
+  variant?: 'minimal' | 'formal' | 'hacker' | 'reasoning' | 'compact';
 }
 
 function ReasoningStepComponent({
   step,
   isActive,
+  variant = 'reasoning',
 }: ReasoningStepComponentProps) {
   const { isDark } = useTheme();
+
+  // Compact mode - simplified display
+  if (variant === 'compact') {
+    return (
+      <motion.div
+        initial={{
+          opacity: 0,
+          x: step.type === 'input' ? -20 : step.type === 'output' ? 20 : 0,
+        }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{
+          opacity: 0,
+          x: step.type === 'input' ? -20 : step.type === 'output' ? 20 : 0,
+        }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className={cn(
+          'flex items-center p-3 rounded-lg border backdrop-blur-sm',
+          isDark
+            ? 'bg-gray-800/40 border-gray-600/30'
+            : 'bg-gray-50/60 border-gray-300/50',
+          step.type === 'input'
+            ? 'justify-start mr-auto'
+            : step.type === 'output'
+              ? 'justify-end ml-auto'
+              : 'justify-center',
+          isActive &&
+            step.type === 'reasoning' &&
+            (isDark
+              ? 'ring-2 ring-gray-400/60 animate-pulse'
+              : 'ring-2 ring-gray-500/60 animate-pulse')
+        )}
+      >
+        {step.type === 'input' && (
+          <div className="flex items-center space-x-2">
+            <Download className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+            <span
+              className={cn(
+                'text-sm font-medium',
+                isDark ? 'text-gray-300' : 'text-gray-700'
+              )}
+            >
+              {step.actionType
+                ? `${step.actionType} Received`
+                : 'Message Received'}
+            </span>
+          </div>
+        )}
+
+        {step.type === 'reasoning' && (
+          <div className="flex flex-col items-center space-y-1">
+            <div className="relative flex items-center">
+              <motion.div
+                animate={{
+                  y: [0, -3, 0],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                <Cpu className="w-5 h-5 text-purple-500 dark:text-purple-400" />
+              </motion.div>
+            </div>
+            {/* Gear rotation at bottom */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+              className="flex items-center justify-center"
+            >
+              <Settings className="w-3 h-3 text-purple-400 dark:text-purple-300 opacity-60" />
+            </motion.div>
+            <span
+              className={cn(
+                'text-sm font-medium',
+                isDark ? 'text-gray-300' : 'text-gray-700'
+              )}
+            >
+              Processing...
+            </span>
+          </div>
+        )}
+
+        {step.type === 'output' && (
+          <div className="flex items-center space-x-2">
+            <span
+              className={cn(
+                'text-sm font-medium',
+                isDark ? 'text-gray-300' : 'text-gray-700'
+              )}
+            >
+              {step.actionType ? `${step.actionType} Sent` : 'Message Sent'}
+            </span>
+            <Upload className="w-4 h-4 text-green-500 dark:text-green-400" />
+          </div>
+        )}
+
+        {isActive && step.type === 'reasoning' && (
+          <div className="ml-2">
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" />
+          </div>
+        )}
+      </motion.div>
+    );
+  }
   const getStepIcon = () => {
     switch (step.type) {
       case 'input':
@@ -260,6 +372,7 @@ export function ReasoningAgentSection({
   steps: externalSteps,
   entityName,
   isActive: externalIsActive = false,
+  variant = 'reasoning',
 }: ReasoningAgentSectionProps) {
   const { state: scenarioState } = useScenario();
   const { isDark } = useTheme();
@@ -353,21 +466,25 @@ export function ReasoningAgentSection({
                 isDark ? 'text-gray-300' : 'text-gray-700'
               )}
             >
-              AI_REASONING
+              {variant === 'compact' ? 'AI' : 'AI_REASONING'}
             </span>
           </div>
-          <Lightbulb className="w-5 h-5 text-yellow-500" />
+          {variant !== 'compact' && (
+            <Lightbulb className="w-5 h-5 text-yellow-500" />
+          )}
         </motion.div>
       </div>
 
       {/* Section label */}
-      <SectionLabel
-        label={label}
-        labelColor={labelColor}
-        position="top-high"
-        animation="fade"
-        delay={0.2}
-      />
+      {variant !== 'compact' && (
+        <SectionLabel
+          label={label}
+          labelColor={labelColor}
+          position="top-high"
+          animation="fade"
+          delay={0.2}
+        />
+      )}
 
       {/* Reasoning Flow Container */}
       <div
@@ -383,35 +500,37 @@ export function ReasoningAgentSection({
         )}
       >
         {/* Flow Header */}
-        <div
-          className={cn(
-            'mb-4 pb-2 border-b',
-            isDark
-              ? 'border-gray-400/30 text-gray-300'
-              : 'border-gray-500/30 text-gray-700'
-          )}
-        >
-          <div className="flex items-center space-x-2 mb-1">
-            <Brain
-              className={cn(
-                'w-4 h-4',
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              )}
-            />
-            <span className="font-mono text-sm">
-              reasoning_process --analyze
-            </span>
-          </div>
+        {variant !== 'compact' && (
           <div
             className={cn(
-              'text-xs',
-              isDark ? 'text-gray-400/70' : 'text-gray-600/70'
+              'mb-4 pb-2 border-b',
+              isDark
+                ? 'border-gray-400/30 text-gray-300'
+                : 'border-gray-500/30 text-gray-700'
             )}
           >
-            Visualizing AI decision-making process | Agent:{' '}
-            {entity?.name || 'AI Agent'}
+            <div className="flex items-center space-x-2 mb-1">
+              <Brain
+                className={cn(
+                  'w-4 h-4',
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                )}
+              />
+              <span className="font-mono text-sm">
+                reasoning_process --analyze
+              </span>
+            </div>
+            <div
+              className={cn(
+                'text-xs',
+                isDark ? 'text-gray-400/70' : 'text-gray-600/70'
+              )}
+            >
+              Visualizing AI decision-making process | Agent:{' '}
+              {entity?.name || 'AI Agent'}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Reasoning Steps */}
         <div className="space-y-4">
@@ -424,10 +543,11 @@ export function ReasoningAgentSection({
                 <ReasoningStepComponent
                   step={step}
                   isActive={isActive && index === reasoningSteps.length - 1}
+                  variant={variant}
                 />
 
                 {/* Connection line between steps */}
-                {index < reasoningSteps.length - 1 && (
+                {index < reasoningSteps.length - 1 && variant !== 'compact' && (
                   <div className="flex justify-center my-2">
                     <div className="w-px h-6 bg-gradient-to-b from-gray-300 to-gray-200 dark:from-gray-600 dark:to-gray-700" />
                   </div>
@@ -437,7 +557,7 @@ export function ReasoningAgentSection({
           </AnimatePresence>
 
           {/* Empty state */}
-          {reasoningSteps.length === 0 && (
+          {reasoningSteps.length === 0 && variant !== 'compact' && (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               <Brain className="w-8 h-8 mx-auto mb-2 text-gray-400 dark:text-gray-500" />
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -448,29 +568,31 @@ export function ReasoningAgentSection({
         </div>
 
         {/* Process Indicator */}
-        <div
-          className={cn(
-            'mt-4 pt-2 border-t',
-            isDark ? 'border-gray-400/30' : 'border-gray-500/30'
-          )}
-        >
+        {variant !== 'compact' && (
           <div
             className={cn(
-              'flex items-center space-x-2',
-              isDark ? 'text-gray-300' : 'text-gray-700'
+              'mt-4 pt-2 border-t',
+              isDark ? 'border-gray-400/30' : 'border-gray-500/30'
             )}
           >
-            <Brain
+            <div
               className={cn(
-                'w-4 h-4',
-                isDark ? 'text-gray-400' : 'text-gray-600'
+                'flex items-center space-x-2',
+                isDark ? 'text-gray-300' : 'text-gray-700'
               )}
-            />
-            <span className="animate-pulse text-sm font-mono">
-              {isActive ? 'Processing...' : 'Ready'}
-            </span>
+            >
+              <Brain
+                className={cn(
+                  'w-4 h-4',
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                )}
+              />
+              <span className="animate-pulse text-sm font-mono">
+                {isActive ? 'Processing...' : 'Ready'}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </motion.div>
   );
