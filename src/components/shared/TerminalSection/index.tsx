@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Terminal, Cpu } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { useOptionalTerminalVariant } from '@/hooks/useAgentDisplayVariants';
+import type { TerminalVariant } from '@/contexts/agentDisplayVariant';
 
 interface LogicCard {
   id: string;
@@ -23,7 +24,7 @@ interface TerminalSectionProps {
   steps?: AgenticStep[];
   entityName?: string;
   isActive?: boolean;
-  variant?: 'minimal' | 'formal' | 'hacker';
+  variant?: TerminalVariant;
 }
 
 export function TerminalSection({
@@ -239,7 +240,7 @@ export function TerminalSection({
       <div
         ref={scrollRef}
         className={cn(
-          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-full custom-scrollbar will-change-scroll',
+          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-full scrollbar-hide will-change-scroll',
           'rounded-lg',
           'shadow-lg',
           'font-mono text-sm',

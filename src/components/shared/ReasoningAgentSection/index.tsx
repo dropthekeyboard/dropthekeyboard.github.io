@@ -33,20 +33,20 @@ interface ReasoningAgentSectionProps {
   steps?: AgenticStep[];
   entityName?: string;
   isActive?: boolean;
-  variant?: 'minimal' | 'formal' | 'hacker' | 'reasoning' | 'compact';
+  variant?: 'normal' | 'compact';
 }
 
 // Reasoning Step Component
 interface ReasoningStepComponentProps {
   step: ReasoningStep;
   isActive: boolean;
-  variant?: 'minimal' | 'formal' | 'hacker' | 'reasoning' | 'compact';
+  variant?: 'normal' | 'compact';
 }
 
 function ReasoningStepComponent({
   step,
   isActive,
-  variant = 'reasoning',
+  variant = 'normal',
 }: ReasoningStepComponentProps) {
   const { isDark } = useTheme();
 
@@ -372,7 +372,7 @@ export function ReasoningAgentSection({
   steps: externalSteps,
   entityName,
   isActive: externalIsActive = false,
-  variant = 'reasoning',
+  variant = 'normal',
 }: ReasoningAgentSectionProps) {
   const { state: scenarioState } = useScenario();
   const { isDark } = useTheme();
@@ -490,7 +490,7 @@ export function ReasoningAgentSection({
       <div
         ref={scrollRef}
         className={cn(
-          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-full custom-scrollbar will-change-scroll',
+          'flex-1 overflow-y-auto px-4 py-3 min-h-[200px] w-full scrollbar-hide will-change-scroll',
           'rounded-lg shadow-lg scroll-smooth',
           isDark
             ? 'bg-gray-800/95 backdrop-blur-md shadow-gray-500/10 border border-gray-600/30'

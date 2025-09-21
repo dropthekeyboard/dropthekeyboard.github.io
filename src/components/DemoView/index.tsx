@@ -14,6 +14,7 @@ export function DemoView({ className }: DemoViewProps) {
       className={cn(
         'h-full items-center justify-center pt-2 grid gap-2',
         'landscape:grid-cols-3 portrait:grid-cols-2 portrait:grid-rows-2',
+        'scrollbar-hide',
         className
       )}
       style={{ pointerEvents: 'none' }}

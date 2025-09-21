@@ -347,7 +347,7 @@ function GSAPPinningDemoContent({
   }, [sections, updateSectionState]);
 
   return (
-    <div className="w-full">
+    <div className="w-full scrollbar-hide">
       {/* Progress Tracker */}
       <ScrollProgressTracker
         sections={progressNodes}

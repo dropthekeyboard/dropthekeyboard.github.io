@@ -77,7 +77,7 @@ export function ScrollProgressTracker({
   return (
     <div
       className={cn(
-        'fixed top-1/2 -translate-y-1/2 z-30',
+        'fixed top-1/2 -translate-y-1/2 z-30 scrollbar-hide',
         position === 'right' ? 'right-4' : 'left-4',
         'hidden lg:block', // Hidden on mobile
         className

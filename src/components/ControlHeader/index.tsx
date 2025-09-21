@@ -6,7 +6,7 @@ import { Bot, Monitor, Settings } from 'lucide-react';
 import { useState } from 'react';
 import { PlayControls } from './PlayControls';
 import { RecordingControls } from './RecordingControls';
-import { ReasoningVariantSelector } from './ReasoningVariantSelector';
+import { AgentDisplaySelector } from './AgentDisplaySelector';
 import { ScenarioSelector } from './ScenarioSelector.tsx';
 import { ThemeToggle } from './ThemeToggle';
 import { ViewModeToggle } from './ViewModeToggle';
@@ -178,7 +178,7 @@ export function ControlHeader({
                   </div>
                 </Card>
 
-                <ReasoningVariantSelector />
+                <AgentDisplaySelector />
               </div>
 
               {/* Performance indicators */}

@@ -2,16 +2,15 @@ import { PhoneSection } from '@/components/shared/PhoneSection';
 import { ReasoningAgentSection } from '@/components/shared/ReasoningAgentSection';
 import { TerminalSection } from '@/components/shared/TerminalSection';
 import { useScenario } from '@/hooks/useScenario';
-import { useReasoningVariantOnly, useOptionalTerminalVariant } from '@/hooks/useAgentDisplayVariants';
+import { useAgentDisplayVariants } from '@/hooks/useAgentDisplayVariants';
 
 export function ServerSection() {
   const {
     active: { server },
   } = useScenario();
 
-  // Get reasoning variant from context
-  const { variant: reasoningVariant } = useReasoningVariantOnly();
-  const terminalContext = useOptionalTerminalVariant();
+  // Get display type from context
+  const { value: displayType } = useAgentDisplayVariants();
 
   if (!server) {
     return null;
@@ -20,7 +19,7 @@ export function ServerSection() {
   // Human server - use PhoneSection
   if (server.type === 'human') {
     return (
-      <div className="flex w-full h-full pt-16 items-center justify-center">
+      <div className="flex w-full h-full pt-16 items-center justify-center scrollbar-hide">
         <PhoneSection
           entity={server}
           label={server.name}
@@ -35,27 +34,25 @@ export function ServerSection() {
     );
   }
 
-  // AI server - use different components based on terminal variant
+  // AI server - use different components based on display type
   if (server.type === 'ai') {
-    const terminalVariant = terminalContext?.variant || 'minimal';
-    
     return (
-      <div className="flex w-full h-full pt-16 items-center justify-center">
-        {terminalVariant === 'minimal' ? (
-          <ReasoningAgentSection
-            entity={server}
-            label={server.name}
-            labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-            sectionClass=""
-            variant={reasoningVariant}
-          />
-        ) : (
+      <div className="flex w-full h-full pt-16 items-center justify-center scrollbar-hide">
+        {displayType.type === 'terminal' ? (
           <TerminalSection
             entity={server}
             label={server.name}
             labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
             sectionClass=""
-            variant={terminalVariant}
+            variant={displayType.variants as 'minimal' | 'formal' | 'hacker'}
+          />
+        ) : (
+          <ReasoningAgentSection
+            entity={server}
+            label={server.name}
+            labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+            sectionClass=""
+            variant={displayType.variants}
           />
         )}
       </div>

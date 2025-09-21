@@ -54,7 +54,7 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-50/10 pointer-events-none"></div>
 
               {/* Content */}
-              <div ref={scrollRef} className="w-full h-full overflow-y-auto">
+              <div ref={scrollRef} className="w-full h-full overflow-hidden">
                 {children}
               </div>
             </div>
