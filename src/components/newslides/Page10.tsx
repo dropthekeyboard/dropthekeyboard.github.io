@@ -1,16 +1,15 @@
-import React from 'react';
 import { PhoneFrame } from '@/components/shared/PhoneFrame';
 import { MessageScreen } from '@/components/shared/MessageScreen';
-import type { Message } from '@/types/message';
+import type { Message } from '@/contexts/scenario';
 
 const Page10 = () => {
   const messages1: Message[] = [
-    { from: 'SK텔레콤 AI Agent', to: 'user', content: '이번주 화요일 7시에 5명 양식당 예약해줘', timestamp: 1, senderType: 'customer' },
+    { from: 'SK텔레콤 AI Agent', to: 'user', content: '이번주 화요일 7시에 5명 양식당 예약해줘', timestamp: 1, senderType: 'customer', type: 'text' },
   ];
 
   const messages2: Message[] = [
-    { from: 'SK텔레콤 AI Agent', to: 'user', content: '사장님, 오후 3시 30분에 예약 문의가 와서요. 임시로 예약 잡아드렸는데, 혹시 못 받으시면 알려주세요.', timestamp: 1, senderType: 'agent' },
-    { from: 'SK텔레콤 AI Agent', to: 'user', content: '* 고객 요청: 오늘 오후 7시, 4명 예약 가능 여부\n 1. 네, 예약 확정합니다.\n 2. 아니오, 예약 변경합니다.\n 3. 아니오, 예약 취소합니다.', timestamp: 2, senderType: 'agent' },
+    { from: 'SK텔레콤 AI Agent', to: 'user', content: '사장님, 오후 3시 30분에 예약 문의가 와서요. 임시로 예약 잡아드렸는데, 혹시 못 받으시면 알려주세요.', timestamp: 1, senderType: 'agent', type: 'text' },
+    { from: 'SK텔레콤 AI Agent', to: 'user', content: '* 고객 요청: 오늘 오후 7시, 4명 예약 가능 여부\n 1. 네, 예약 확정합니다.\n 2. 아니오, 예약 변경합니다.\n 3. 아니오, 예약 취소합니다.', timestamp: 2, senderType: 'agent', type: 'text' },
   ];
 
   return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import { AnimatedHorizontalBar } from '@/components/ui/animated-horizontal-bar';
 import { AnimatedBar } from '@/components/ui/animated-bar';
 

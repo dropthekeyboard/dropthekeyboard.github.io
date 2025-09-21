@@ -16,10 +16,6 @@ interface ScrollControlsProps {
    */
   pinnedState?: SectionPinningState;
   /**
-   * CSS selectors to exclude from scroll handling
-   */
-  excludeSelectors?: string[];
-  /**
    * Threshold for detecting auto-scroll patterns (in pixels)
    */
   autoScrollThreshold?: number;
@@ -34,8 +30,6 @@ export function ScrollControls({
   enabled = true,
   threshold = 30,
   pinnedState,
-  excludeSelectors = ['.overflow-y-auto', '[class*="scrollbar"]', '.scrollbar-hide'],
-  autoScrollThreshold = 50,
 }: ScrollControlsProps) {
   const { progressNext, revertToPrev, reset, currentScenario } = useScenario();
   
@@ -50,22 +44,6 @@ export function ScrollControls({
   const isInitialized = useRef(false);
   const progressRef = useRef(0);
 
-  // Scroll event filtering functions
-  const isInternalScrollTarget = useCallback((target: EventTarget | null): boolean => {
-    if (!target || !(target instanceof Element)) return false;
-    return excludeSelectors.some((selector) => {
-      try {
-        return target.closest(selector) !== null;
-      } catch {
-        return false;
-      }
-    });
-  }, [excludeSelectors]);
-
-  const isLikelyAutoScroll = useCallback((deltaY: number): boolean => {
-    // Auto-scroll typically has larger, more consistent deltaY values
-    return Math.abs(deltaY) > autoScrollThreshold;
-  }, [autoScrollThreshold]);
 
   // Reset on mount
   useEffect(() => {
@@ -98,17 +76,6 @@ export function ScrollControls({
         return;
       }
 
-      // Filter internal scroll targets
-      if (isInternalScrollTarget(event.target)) {
-        console.log('ScrollControls: Ignoring scroll from internal element');
-        return;
-      }
-
-      // Filter auto-scroll patterns
-      if (isLikelyAutoScroll(deltaY)) {
-        console.log('ScrollControls: Ignoring auto-scroll pattern, deltaY:', deltaY);
-        return;
-      }
 
       // Accumulate scroll distance
       accumulatedScroll.current += deltaY;
@@ -142,7 +109,7 @@ export function ScrollControls({
     return () => {
       window.removeEventListener('wheel', handleScroll);
     };
-  }, [enabled, isPinned, threshold, progressNext, revertToPrev, isInternalScrollTarget, isLikelyAutoScroll]);
+  }, [enabled, isPinned, threshold, progressNext, revertToPrev]);
 
   // Default headless behavior - no UI, just functionality
   return null;

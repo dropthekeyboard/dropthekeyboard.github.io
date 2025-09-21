@@ -1,4 +1,3 @@
-import React from 'react';
 import { PhoneFrame } from '@/components/shared/PhoneFrame';
 
 const Page14 = () => {

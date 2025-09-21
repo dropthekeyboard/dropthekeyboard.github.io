@@ -1,4 +1,3 @@
-import React from 'react';
 import sktLogo from '@/assets/skt_logo.jpg';
 
 const Page01 = () => {
