@@ -90,6 +90,7 @@ export function ControlHeader({
                 onToggle={onViewModeChange}
               />
               <ThemeToggle onToggle={onThemeToggle} />
+              <LanguageSwitcher />
             </div>
           </div>
 
