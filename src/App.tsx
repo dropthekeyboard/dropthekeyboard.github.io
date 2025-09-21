@@ -26,7 +26,7 @@ function App() {
         />
         <main className="flex-1">
           {viewMode === 'demo' ? (
-            <DemoView agentStyle={agentStyle} />
+            <DemoView />
           ) : (
             // <StorytellingPage agentStyle={agentStyle} />
             <GSAPPinningDemo agentStyle={agentStyle} />

@@ -1,13 +1,8 @@
 import { PhoneSection } from '@/components/shared/PhoneSection';
-import { TerminalSection } from '@/components/shared/TerminalSection';
 import { ReasoningAgentSection } from '@/components/shared/ReasoningAgentSection';
 import { useScenario } from '@/hooks/useScenario';
 
-interface ServerSectionProps {
-  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
-}
-
-export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
+export function ServerSection() {
   const {
     active: { server },
   } = useScenario();
@@ -34,30 +29,16 @@ export function ServerSection({ agentStyle = 'hacker' }: ServerSectionProps) {
     );
   }
 
-  // AI server - use ReasoningAgentSection for 'reasoning' variant, TerminalSection otherwise
+  // AI server - always use ReasoningAgentSection
   if (server.type === 'ai') {
-    if (agentStyle === 'reasoning') {
-      return (
-        <div className='flex w-full h-full pt-20 items-center justify-center'>
-          <ReasoningAgentSection
-            entity={server}
-            label={server.name}
-            labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-            sectionClass=""
-            variant={agentStyle}
-          />
-        </div>
-      );
-    }
-
     return (
-      <div className='w-full h-full pt-20'>
-        <TerminalSection
+      <div className='flex w-full h-full pt-20 items-center justify-center'>
+        <ReasoningAgentSection
           entity={server}
           label={server.name}
-          labelColor="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+          labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
           sectionClass=""
-          variant={agentStyle}
+          variant="reasoning"
         />
       </div>
     );

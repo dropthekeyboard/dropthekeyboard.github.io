@@ -390,7 +390,7 @@ interface ScenarioSectionContentProps {
 }
 
 const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionContentProps>(
-  ({ sectionIndex, scenarioId, agentStyle = 'reasoning' }, ref) => {
+  ({ sectionIndex, scenarioId }, ref) => {
     const { state } = useSectionPinning(sectionIndex);
 
     return (
@@ -414,7 +414,7 @@ const ScenarioSectionContent = React.forwardRef<HTMLDivElement, ScenarioSectionC
                 pinnedState={state}
                 autoScrollThreshold={50}
               />
-              <DemoView agentStyle={agentStyle} />
+              <DemoView />
             </ScenarioContextProvider>
           </div>
         </div>

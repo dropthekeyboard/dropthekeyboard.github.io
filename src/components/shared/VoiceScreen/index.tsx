@@ -201,7 +201,7 @@ export function VoiceScreen({
             {/* Messages in top portion with subtle overlay */}
             <div
               ref={messagesContainerRef}
-              className="flex-1 pt-8 pb-32 px-4 overflow-y-auto scrollbar-hide"
+              className="flex-1 pt-8 pb-24 px-4 overflow-y-auto scrollbar-hide"
             >
               <div className="space-y-2 w-full">
                 <AnimatePresence mode="popLayout">
@@ -232,7 +232,7 @@ export function VoiceScreen({
               </div>
             </div>
             {/* Spacer to push messages up and avoid keypad overlap */}
-            <div className="h-32 flex-shrink-0" />
+            <div className="h-24 flex-shrink-0" />
           </div>
         </div>
       )}
@@ -241,8 +241,8 @@ export function VoiceScreen({
       <div className="flex-1 min-h-0" />
 
       {/* Bottom Section - DTMF Numpad */}
-      <div className="flex-shrink-0 pb-4 pt-2">
-        <Numpad size="md" className="max-w-[80%] max-h-[40%]" />
+      <div className="flex-shrink-0 pb-2 pt-1">
+        <Numpad size="md" className="max-w-[80%] max-h-[30%]" />
       </div>
     </div>
   );

@@ -288,14 +288,10 @@ export function ReasoningAgentSection({
   const lastStepRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (reasoningSteps.length > 0) {
+    if (reasoningSteps.length > 0 && scrollRef.current) {
       const scrollToBottom = () => {
-        if (lastStepRef.current) {
-          lastStepRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'end',
-            inline: 'nearest',
-          });
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
       };
 

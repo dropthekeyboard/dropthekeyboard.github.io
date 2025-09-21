@@ -228,14 +228,14 @@ body {
 }
 
 /* Portrait Layout (Mobile) - 2 col top, 1 col bottom */
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
   #demoview.demo-view-layout {
     grid-template-columns: 1fr 1fr !important;
     grid-template-rows: auto auto !important;
     grid-template-areas:
       "customer server"
       "agent agent" !important;
-    gap: 1rem;
+    gap: 0.125rem;
     padding: 1rem;
   }
 
@@ -263,6 +263,7 @@ body {
     justify-content: center;
     align-items: center;
     justify-self: center; /* Center the agent section in the bottom row */
+    max-height: 40vh; /* Limit height in portrait mode */
   }
 }
 
