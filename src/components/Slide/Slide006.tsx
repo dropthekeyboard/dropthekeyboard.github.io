@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { SlideHeader } from '@/components/shared/SlideHeader';
 
 // 데이터 구조 정의 (명세서 기반)
 const page6Data = {
@@ -39,14 +40,13 @@ function Slide006() {
     <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-6xl w-full space-y-8 lg:space-y-12">
         {/* 상단 헤더 */}
-        <header className="text-left space-y-3 lg:space-y-4 max-w-5xl">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-foreground tracking-tight leading-relaxed">
-            {header.title}
-          </h2>
-          <p className="text-sm lg:text-base text-muted-foreground leading-relaxed">
-            {header.subtitle}
-          </p>
-        </header>
+        <SlideHeader
+          title={header.title}
+          subtitle={header.subtitle}
+          className="text-left max-w-5xl"
+          titleClassName="text-lg sm:text-xl lg:text-2xl font-semibold"
+          subtitleClassName="text-sm lg:text-base"
+        />
 
         {/* 메인 컨테이너 - 둥근 모서리의 큰 박스 */}
         <Card className="bg-card/30 border-border/50 backdrop-blur-sm relative overflow-hidden shadow-2xl">

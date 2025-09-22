@@ -1,4 +1,6 @@
 
+import { SlideHeader } from '@/components/shared/SlideHeader';
+
 // 개별 라벨 컴포넌트
 const ChartLabel = ({
   position,
@@ -25,10 +27,12 @@ const ChartLabel = ({
 // 메인 슬라이드 컴포넌트
 export default function Slide012() {
   return (
-    <div className="w-full min-h-screen bg-background text-white flex flex-col justify-center items-center p-5 box-border overflow-hidden">
-      <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-16">
-        가치 3. 보편적 접근성
-      </h2>
+    <div className="w-full min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-5 box-border overflow-hidden">
+      <SlideHeader
+        title="가치 3. 보편적 접근성"
+        className="text-center mb-16"
+        titleClassName="text-2xl sm:text-3xl font-semibold"
+      />
 
       {/* 도넛 차트 */}
       <div className="relative w-[400px] h-[400px] flex justify-center items-center sm:scale-100 scale-[0.65] xs:scale-[0.8]">

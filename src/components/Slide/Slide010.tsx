@@ -4,6 +4,7 @@ import { SMSPhoneView } from '@/components/shared/SMSPhoneView';
 import { PersonaIcon } from '@/components/shared/PersonaIcon';
 import { ArrowConnector } from '@/components/shared/ArrowConnector';
 import { LabeledArrow } from '@/components/shared/LabeledArrow';
+import { SlideHeader } from '@/components/shared/SlideHeader';
 
 // Slide 010: 가치 1. 성공률 보완
 function Slide010() {
@@ -15,22 +16,21 @@ function Slide010() {
     )}>
       <div className="max-w-7xl w-full mx-auto space-y-16">
         {/* Header Section */}
-        <header className="text-left space-y-6 px-4 lg:px-0">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-            {header.title}
-          </h1>
-          <p className="text-lg lg:text-xl text-gray-200 max-w-5xl leading-relaxed">
-            {header.subtitle.map((part, index) => (
-              part.highlight ? (
-                <strong key={index} className="text-white font-bold">
-                  {part.text}
-                </strong>
-              ) : (
-                <span key={index}>{part.text}</span>
-              )
-            ))}
-          </p>
-        </header>
+        <SlideHeader
+          title={header.title}
+          subtitle={header.subtitle.map((part, index) => (
+            part.highlight ? (
+              <strong key={index} className="font-bold text-foreground">
+                {part.text}
+              </strong>
+            ) : (
+              <span key={index}>{part.text}</span>
+            )
+          ))}
+          className="text-left px-4 lg:px-0"
+          titleClassName="text-4xl lg:text-5xl"
+          subtitleClassName="text-lg lg:text-xl max-w-5xl"
+        />
 
         {/* Flow Diagram - Horizontal Layout */}
         <div className="w-full overflow-x-auto pb-8">

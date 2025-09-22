@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { useSectionPinning } from '@/contexts/pinning';
 import { CylinderBar } from '@/components/shared/CylinderBar';
+import { SlideHeader } from '@/components/shared/SlideHeader';
 import type { SlideProps } from '@/types/slide';
 
 // 데이터 구조 정의
@@ -62,22 +63,19 @@ function Slide005({ sectionIndex = 0 }: SlideProps) {
     <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-6xl w-full space-y-8 lg:space-y-12">
         {/* 상단 헤더 */}
-        <header className="text-center space-y-4 lg:space-y-6 max-w-4xl mx-auto">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
-            {header.title}
-          </h1>
-          <p className="text-base lg:text-lg text-muted-foreground leading-relaxed">
-            {header.subtitle.map((part, index) =>
-              part.highlight ? (
-                <span key={index} className="font-bold text-primary">
-                  {part.text}
-                </span>
-              ) : (
-                <span key={index}>{part.text}</span>
-              )
-            )}
-          </p>
-        </header>
+        <SlideHeader
+          title={header.title}
+          subtitle={header.subtitle.map((part, index) =>
+            part.highlight ? (
+              <span key={index} className="font-bold text-primary">
+                {part.text}
+              </span>
+            ) : (
+              <span key={index}>{part.text}</span>
+            )
+          )}
+          className="text-center max-w-4xl mx-auto"
+        />
 
         {/* 2단 차트 레이아웃 */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8 xl:gap-12 items-start">
