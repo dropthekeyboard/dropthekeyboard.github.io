@@ -18,7 +18,7 @@ function Slide009() {
       {/* 텍스트 전체를 감싸는 컨테이너 */}
       <div className="flex flex-col items-center gap-3">
         {/* 첫 번째 라인 */}
-        <p className="text-xl lg:text-2xl text-white font-medium">
+        <p className="text-xl lg:text-2xl text-foreground font-medium">
           {line1}
         </p>
 
@@ -30,7 +30,7 @@ function Slide009() {
               className={
                 part.highlight
                   ? 'text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent'
-                  : 'text-2xl lg:text-3xl font-normal text-gray-400'
+                  : 'text-2xl lg:text-3xl font-normal text-muted-foreground'
               }
             >
               {part.text}
@@ -39,7 +39,7 @@ function Slide009() {
         </div>
 
         {/* 세 번째 라인 */}
-        <p className="text-2xl lg:text-3xl text-white font-medium">
+        <p className="text-2xl lg:text-3xl text-foreground font-medium">
           {line3}
         </p>
       </div>

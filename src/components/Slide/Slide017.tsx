@@ -26,12 +26,12 @@ const componentsData = [
 const ComponentBox = ({ label, title, description }: { label: string; title: string; description: string }) => (
   <div className="bg-card rounded-xl p-7 flex flex-col justify-between min-h-[220px] border border-border shadow-lg transition-transform hover:scale-105 duration-300">
     <div>
-      <p className="text-base text-gray-300 mb-6">{label}</p>
+      <p className="text-base text-muted-foreground mb-6">{label}</p>
       <h2 className="text-5xl font-bold bg-gradient-to-r from-[#AE90F4] to-[#86B3EF] text-transparent bg-clip-text leading-tight">
         {title}
       </h2>
     </div>
-    <p className="text-base text-gray-400 mt-4 leading-relaxed">{description}</p>
+    <p className="text-base text-muted-foreground mt-4 leading-relaxed">{description}</p>
   </div>
 );
 
@@ -58,7 +58,7 @@ export default function Slide017() {
         </main>
 
         <footer className="mt-6">
-          <p className="text-sm text-gray-400">* Communication Platform as a Service</p>
+          <p className="text-sm text-muted-foreground">* Communication Platform as a Service</p>
         </footer>
       </div>
     </div>

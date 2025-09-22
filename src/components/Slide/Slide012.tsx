@@ -30,7 +30,7 @@ export default function Slide012() {
     <div className="w-full min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-5 box-border overflow-hidden">
       <SlideHeader
         title="가치 3. 보편적 접근성"
-        className="text-center mb-16"
+        className="text-left mb-12 self-start"
         titleClassName="text-2xl sm:text-3xl font-semibold"
       />
 
@@ -69,9 +69,9 @@ export default function Slide012() {
         </div>
       </div>
 
-      <p className="text-lg sm:text-xl text-center mt-10 sm:mt-16 leading-relaxed max-w-xl text-gray-200">
-        전화/문자는 <strong className="font-bold text-white">휴대폰만 있으면,</strong> 추가 앱 설치나 복잡한 세팅 없이{' '}
-        <strong className="font-bold text-white">즉시 사용 가능</strong>
+      <p className="text-lg sm:text-xl text-center mt-10 sm:mt-16 leading-relaxed max-w-xl text-muted-foreground">
+        전화/문자는 <strong className="font-bold text-foreground">휴대폰만 있으면,</strong> 추가 앱 설치나 복잡한 세팅 없이{' '}
+        <strong className="font-bold text-foreground">즉시 사용 가능</strong>
       </p>
     </div>
   );
