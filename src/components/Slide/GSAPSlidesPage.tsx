@@ -1,5 +1,6 @@
 // no default React import needed with React 17+ JSX transform
 import {
+  ImageSlide,
   SlideGSAPSection,
   Slide001, Slide002, Slide003, Slide004, Slide005, Slide006, Slide007,
   Slide008, Slide009, Slide010, Slide011, Slide012, Slide013, Slide014,
@@ -109,6 +110,12 @@ export default function GSAPSlidesPage() {
       <SlideGSAPSection className="min-h-screen  flex items-center justify-center" variant="rotateIn">
         <div data-anim>
           <Slide017 />
+        </div>
+      </SlideGSAPSection>
+
+      <SlideGSAPSection className="min-h-screen flex items-center justify-center" variant="scaleIn">
+        <div data-anim>
+          <ImageSlide imageUrl="/assets/slide/seniors.png" />
         </div>
       </SlideGSAPSection>
 

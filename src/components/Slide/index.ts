@@ -18,6 +18,7 @@ export { default as Slide016 } from './Slide016';
 export { default as Slide017 } from './Slide017';
 
 // Export existing slides
+export { default as ImageSlide } from './ImageSlide';
 export { default as SlideGSAPSection } from './SlideGSAPSection';
 export { default as GSAPSlidesPage } from './GSAPSlidesPage';
 
