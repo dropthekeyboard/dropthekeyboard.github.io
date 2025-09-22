@@ -91,7 +91,9 @@ export default function SlideGSAPSection({
 
     const st: ScrollTrigger.Vars = {
       trigger: el,
-      start,
+      // Pinning 시에는 섹션의 top이 뷰포트 top에 닿을 때 시작하도록 조정
+      // (너무 이른 시작을 방지하고 섹션 진입 시점에 고정되도록)
+      start: pin ? "top top" : start,
       end: pin ? (end || (pinDistance ? "+=" + pinDistance : "+=1500")) : end,
       toggleActions: once ? "play none none none" : "play none none reverse",
       ...(scrub !== undefined ? { scrub } : {}),

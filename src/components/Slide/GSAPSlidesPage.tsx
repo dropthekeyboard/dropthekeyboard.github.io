@@ -10,13 +10,13 @@ export default function GSAPSlidesPage() {
   return (
     <div>
       {/* All Slides with different animations */}
-      <SlideGSAPSection pin pinDistance={1600} scrub={1} className="min-h-screen bg-neutral-900" variant="scaleIn" ease="back.out(1.7)">
+      <SlideGSAPSection className="min-h-screen bg-neutral-900" variant="scaleIn" ease="back.out(1.7)">
         <div data-anim className="relative w-full h-full">
           <Slide001 />
         </div>
       </SlideGSAPSection>
 
-      <SlideGSAPSection pin pinDistance={1600} scrub={1} className="min-h-screen bg-neutral-950 flex items-center justify-center" variant="slideLeft">
+      <SlideGSAPSection pin pinDistance={1600} scrub={1} className="min-h-screen bg-neutral-950" variant="slideLeft">
         <div data-anim>
           <Slide002 />
         </div>
