@@ -8,6 +8,7 @@ import { Terminal, Cpu } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { useOptionalTerminalVariant } from '@/hooks/useAgentDisplayVariants';
 import type { TerminalVariant } from '@/contexts/agentDisplayVariant';
+import { useTranslation } from 'react-i18next';
 
 interface LogicCard {
   id: string;
@@ -38,6 +39,7 @@ export function TerminalSection({
   variant: propVariant,
 }: TerminalSectionProps) {
   const { state: scenarioState } = useScenario();
+  const { t } = useTranslation();
   
   // Use variant from context if not provided as prop
   const terminalContext = useOptionalTerminalVariant();
@@ -220,7 +222,7 @@ export function TerminalSection({
                     : 'text-green-400'
               )}
             >
-              AI_AGENT
+              {t('terminal.aiAgent')}
             </span>
           </div>
           <Cpu
@@ -291,7 +293,7 @@ export function TerminalSection({
             >
               $
             </span>
-            <span>ai_agent_session --start</span>
+            <span>{t('terminal.sessionStart')}</span>
           </div>
           <div
             className={cn(
@@ -303,7 +305,10 @@ export function TerminalSection({
                   : 'text-green-300/70'
             )}
           >
-            Connected to {entity?.displayName || entity?.name || 'AI Agent'} | Status: ACTIVE
+            {t('terminal.connectedStatus', {
+              entity: entity?.displayName || entity?.name || t('terminal.defaultAgent'),
+              status: t('terminal.active')
+            })}
           </div>
         </div>
 

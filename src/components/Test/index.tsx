@@ -162,7 +162,7 @@ function GSAPPinningDemoContent({
       },
       {
         Component: Slide012,
-        pinned: false,
+        pinned: true,
         title: '은행 업무 자동화 시나리오',
         enableAnimation: true,
         animationType: 'fade' as const,
@@ -170,7 +170,7 @@ function GSAPPinningDemoContent({
       },
       {
         Component: Slide013,
-        pinned: false,
+        pinned: true,
         title: '의료 예약 관리 시나리오',
         enableAnimation: true,
         animationType: 'fade' as const,
@@ -178,7 +178,7 @@ function GSAPPinningDemoContent({
       },
       {
         Component: Slide014,
-        pinned: false,
+        pinned: true,
         title: 'A2A 시나리오 종합',
         enableAnimation: true,
         animationType: 'scale' as const,
@@ -186,7 +186,7 @@ function GSAPPinningDemoContent({
       },
       {
         Component: Slide015,
-        pinned: false,
+        pinned: true,
         title: '모두의 가능 A2A',
         enableAnimation: true,
         animationType: 'fade' as const,
@@ -292,48 +292,84 @@ function GSAPPinningDemoContent({
     const refsSnapshot = [...sectionRefs.current];
 
     sectionRefs.current.forEach((sectionRef, index) => {
-      if (!sectionRef || !sections[index] || !sections[index].pinned) return;
+      if (!sectionRef || !sections[index]) return;
 
-      // 시나리오 섹션은 더 긴 pinning 구간, 슬라이드는 기본값 사용
       const section = sections[index];
-      const pinEnd = section.type === 'scenario' ? '+=3000' : '+=2000'; // 슬라이드도 충분한 시간 제공
 
-      const trigger = ScrollTrigger.create({
-        trigger: sectionRef,
-        start: 'top top',
-        end: pinEnd,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        markers: process.env.NODE_ENV === 'development',
-        onToggle: (self) => {
-          // Clear previous timeout if exists
-          if (sectionRef.dataset.timeoutId) {
-            window.clearTimeout(parseInt(sectionRef.dataset.timeoutId));
-          }
+      if (section.pinned) {
+        // Pinned 섹션: 기존 로직 유지
+        const pinEnd = section.type === 'scenario' ? '+=3000' : '+=2000';
 
-          const isActive = self.isActive; // pinned 활성화 여부
-          const direction = self.direction; // 1: down, -1: up
+        const trigger = ScrollTrigger.create({
+          trigger: sectionRef,
+          start: 'top top',
+          end: pinEnd,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          markers: process.env.NODE_ENV === 'development',
+          onToggle: (self) => {
+            // Clear previous timeout if exists
+            if (sectionRef.dataset.timeoutId) {
+              window.clearTimeout(parseInt(sectionRef.dataset.timeoutId));
+            }
 
-          updateSectionState(index, {
-            isPinned: isActive,
-            isEntering: isActive && direction !== -1,
-            isLeaving: !isActive && direction !== 1,
-          });
+            const isActive = self.isActive; // pinned 활성화 여부
+            const direction = self.direction; // 1: down, -1: up
 
-          // Debounce enter/leave flags reset
-          const t = window.setTimeout(() => {
             updateSectionState(index, {
-              isEntering: false,
-              isLeaving: false,
+              isPinned: isActive,
+              isEntering: isActive && direction !== -1,
+              isLeaving: !isActive && direction !== 1,
             });
-          }, 250);
-          sectionRef.dataset.timeoutId = String(t);
-        },
-      });
 
-      triggers.push(trigger);
+            // Debounce enter/leave flags reset
+            const t = window.setTimeout(() => {
+              updateSectionState(index, {
+                isEntering: false,
+                isLeaving: false,
+              });
+            }, 250);
+            sectionRef.dataset.timeoutId = String(t);
+          },
+        });
+
+        triggers.push(trigger);
+      } else {
+        // Non-pinned 섹션: 기본 스크롤 트리거만 설정 (진행 상태 추적용)
+        const trigger = ScrollTrigger.create({
+          trigger: sectionRef,
+          start: 'top center',
+          end: 'bottom center',
+          invalidateOnRefresh: true,
+          markers: process.env.NODE_ENV === 'development',
+          onToggle: (self) => {
+            const isActive = self.isActive;
+            const direction = self.direction;
+
+            updateSectionState(index, {
+              isPinned: false, // 항상 false
+              isEntering: isActive && direction !== -1,
+              isLeaving: !isActive && direction !== 1,
+            });
+
+            // Debounce enter/leave flags reset
+            if (sectionRef.dataset.timeoutId) {
+              window.clearTimeout(parseInt(sectionRef.dataset.timeoutId));
+            }
+            const t = window.setTimeout(() => {
+              updateSectionState(index, {
+                isEntering: false,
+                isLeaving: false,
+              });
+            }, 250);
+            sectionRef.dataset.timeoutId = String(t);
+          },
+        });
+
+        triggers.push(trigger);
+      }
     });
 
     return () => {

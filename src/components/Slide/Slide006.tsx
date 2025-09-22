@@ -62,7 +62,7 @@ function Slide006() {
             {/* 2행 구조 */}
             <div className="relative z-10 space-y-10 lg:space-y-16">
               {painPoints.map((row) => (
-                <div key={row.id} className="flex items-center gap-6 lg:gap-12">
+                <div key={row.id} className="flex items-center justify-center gap-6 lg:gap-12">
                   {/* 인물 아이콘 */}
                   <div className="flex-shrink-0">
                     <span className="text-7xl lg:text-9xl" role="img" aria-label="person">
@@ -71,7 +71,7 @@ function Slide006() {
                   </div>
 
                   {/* 요소들 (말풍선 또는 태그들) */}
-                  <div className="flex flex-wrap items-center gap-4 lg:gap-6">
+                  <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-6">
                     {row.elements.map((element, index) => {
                       if (element.type === 'bubble') {
                         return (

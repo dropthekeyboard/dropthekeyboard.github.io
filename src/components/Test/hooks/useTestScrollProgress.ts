@@ -71,7 +71,10 @@ export function useTestScrollProgress(
       return nodes.map((node, index) => {
         // Use pinning state if available, otherwise fall back to intersection-based tracking
         const sectionState = states[index];
-        const isActive = sectionState?.isPinned || index === currentSectionIndex;
+
+        // For pinned sections, use isPinned state; for non-pinned, use intersection-based tracking
+        const isActive = sectionState?.isPinned ||
+          (!sectionState?.isPinned && index === currentSectionIndex);
 
         return {
           ...node,

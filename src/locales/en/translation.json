@@ -23,5 +23,35 @@
   "Current": "Current",
   "System Ready": "System Ready",
   "MediaRecorder API": "MediaRecorder API",
-  "Framer Motion": "Framer Motion"
+  "Framer Motion": "Framer Motion",
+  "terminal": {
+    "aiAgent": "AI_AGENT",
+    "sessionStart": "ai_agent_session --start",
+    "connectedStatus": "Connected to {{entity}} | Status: {{status}}",
+    "active": "ACTIVE",
+    "defaultAgent": "AI Agent"
+  },
+  "reasoning": {
+    "messageReceived": "Message Received",
+    "messageSent": "Message Sent",
+    "actionReceived": "{{actionType}} Received",
+    "actionSent": "{{actionType}} Sent",
+    "processing": "Processing...",
+    "aiReasoningProcess": "AI Reasoning Process",
+    "decisionInProgress": "Decision Making in Progress",
+    "situationAnalysis": "Situation Analysis",
+    "requiredInformation": "Required Information",
+    "strategy": "Strategy",
+    "evaluationCriteria": "Evaluation Criteria",
+    "finalDecision": "Final Decision",
+    "received": "Received",
+    "sent": "Sent",
+    "aiReasoning": "AI_REASONING",
+    "ai": "AI",
+    "processAnalyze": "reasoning_process --analyze",
+    "visualizingProcess": "Visualizing AI decision-making process",
+    "waitingProcess": "Waiting for AI reasoning process...",
+    "ready": "Ready",
+    "aiThinking": "AI Thinking"
+  }
 }

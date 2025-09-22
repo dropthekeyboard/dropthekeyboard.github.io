@@ -23,5 +23,35 @@
   "Current": "현재",
   "System Ready": "시스템 준비 완료",
   "MediaRecorder API": "MediaRecorder API",
-  "Framer Motion": "Framer Motion"
+  "Framer Motion": "Framer Motion",
+  "terminal": {
+    "aiAgent": "AI_에이전트",
+    "sessionStart": "ai_agent_session --start",
+    "connectedStatus": "{{entity}}에 연결됨 | 상태: {{status}}",
+    "active": "활성",
+    "defaultAgent": "AI 에이전트"
+  },
+  "reasoning": {
+    "messageReceived": "메시지 수신됨",
+    "messageSent": "메시지 전송됨",
+    "actionReceived": "{{actionType}} 수신됨",
+    "actionSent": "{{actionType}} 전송됨",
+    "processing": "처리 중...",
+    "aiReasoningProcess": "AI 추론 프로세스",
+    "decisionInProgress": "의사결정 진행 중",
+    "situationAnalysis": "상황 분석",
+    "requiredInformation": "필요한 정보",
+    "strategy": "전략",
+    "evaluationCriteria": "평가 기준",
+    "finalDecision": "최종 결정",
+    "received": "수신됨",
+    "sent": "전송됨",
+    "aiReasoning": "AI_추론",
+    "ai": "AI",
+    "processAnalyze": "reasoning_process --analyze",
+    "visualizingProcess": "AI 의사결정 과정 시각화",
+    "waitingProcess": "AI 추론 과정 대기 중...",
+    "ready": "준비",
+    "aiThinking": "AI 생각"
+  }
 }

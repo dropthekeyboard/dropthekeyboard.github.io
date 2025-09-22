@@ -682,3 +682,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .overflow-x-auto::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
 }
+
+/* Custom radial gradient for Slide009 */
+.bg-gradient-radial {
+  background: radial-gradient(circle, #333333, #212121);
+}

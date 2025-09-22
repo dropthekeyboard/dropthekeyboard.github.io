@@ -20,7 +20,7 @@ export function AgentSection() {
     <div className="flex w-full h-full landscape:pt-16 items-center justify-center scrollbar-hide">
       {displayType.type === 'terminal' ? (
         <TerminalSection
-          entity={agent}
+          entity={agent ?? null}
           label={agent?.displayName || agent?.name || 'AI Agent'}
           labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
           sectionClass="center-section"
