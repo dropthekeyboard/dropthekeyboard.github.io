@@ -22,7 +22,7 @@ export default function GSAPSlidesPage() {
         </div>
       </SlideGSAPSection>
 
-      <SlideGSAPSection className="min-h-screen bg-black flex items-center justify-center" variant="rotateIn">
+      <SlideGSAPSection pin pinDistance={1000} className="min-h-screen bg-black flex items-center justify-center" variant="rotateIn">
         <div data-anim>
           <Slide003 />
         </div>
