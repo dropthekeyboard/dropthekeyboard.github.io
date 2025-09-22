@@ -1,4 +1,6 @@
+# Slide 13
 
+```tsx
 // Slide 013: 가치 2. 성공률 보완
 function Slide013() {
   return (
@@ -20,3 +22,4 @@ function Slide013() {
 }
 
 export default Slide013;
+```

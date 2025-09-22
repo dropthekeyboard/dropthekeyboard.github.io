@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect, useCallback, type ComponentType } from 'react';
+import React, { useRef, useMemo, useEffect, useCallback, useLayoutEffect, type ComponentType } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DemoView } from '../DemoView';
@@ -286,10 +286,38 @@ function GSAPPinningDemoContent({
   }, []);
 
   // 통합된 ScrollTrigger 설정
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     const triggers: ScrollTriggerType[] = [];
     const refsSnapshot = [...sectionRefs.current];
+    const scrollerEl = document.getElementById('root') || undefined;
+
+    // Ensure all ScrollTriggers created after this use the proper scroller by default (affects slide-level triggers too)
+    if (scrollerEl) {
+      ScrollTrigger.defaults({ scroller: scrollerEl });
+    }
+
+    // Helper: resolve pinEnd supporting '+<number>vh' or '+=<px>'
+    const resolvePinEnd = (section: SectionData): string | number => {
+      const fallback = section.type === 'scenario' ? '+=3000' : '+=2000';
+      if (!section.pinEnd) return fallback;
+      const raw = section.pinEnd.trim();
+      // support e.g. '+500vh' or '+=500vh'
+      const vhMatch = raw.match(/^\+\+?=?\s*(\d+(?:\.\d+)?)vh$|^\+\s*(\d+(?:\.\d+)?)vh$/i) || raw.match(/^(\+?=?)\s*(\d+(?:\.\d+)?)vh$/i);
+      if (vhMatch) {
+        const numStr = (vhMatch[1] || vhMatch[2]) as string;
+        const vh = parseFloat(numStr);
+        const px = (window.innerHeight * vh) / 100;
+        return "+=" + px;
+      }
+      // support e.g. '+=3000' or '+3000'
+      const pxMatch = raw.match(/^\+=\s*(\d+(?:\.\d+)?)$/) || raw.match(/^\+(\d+(?:\.\d+)?)$/);
+      if (pxMatch) {
+        const numStr = pxMatch[1];
+        return "+=" + parseFloat(numStr);
+      }
+      return fallback;
+    };
 
     sectionRefs.current.forEach((sectionRef, index) => {
       if (!sectionRef || !sections[index]) return;
@@ -298,7 +326,7 @@ function GSAPPinningDemoContent({
 
       if (section.pinned) {
         // Pinned 섹션: 기존 로직 유지
-        const pinEnd = section.type === 'scenario' ? '+=3000' : '+=2000';
+        const pinEnd = resolvePinEnd(section);
 
         const trigger = ScrollTrigger.create({
           trigger: sectionRef,
@@ -308,6 +336,7 @@ function GSAPPinningDemoContent({
           pinSpacing: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          scroller: scrollerEl,
           markers: process.env.NODE_ENV === 'development',
           onToggle: (self) => {
             // Clear previous timeout if exists
@@ -343,6 +372,7 @@ function GSAPPinningDemoContent({
           start: 'top center',
           end: 'bottom center',
           invalidateOnRefresh: true,
+          scroller: scrollerEl,
           markers: process.env.NODE_ENV === 'development',
           onToggle: (self) => {
             const isActive = self.isActive;
@@ -381,6 +411,33 @@ function GSAPPinningDemoContent({
       });
     };
   }, [sections, updateSectionState]);
+
+  // 동적 컨텐츠/리사이즈에 따른 ScrollTrigger 재계산 보장
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const refresh = () => {
+      // 다음 프레임에서 실행하여 레이아웃 확정 후 계산
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+
+    // 초기 및 섹션 변경 직후 리프레시
+    refresh();
+
+    // 이미지/폰트 로드, 리사이즈, 방향 전환 시 리프레시
+    const onLoad = () => refresh();
+    const onResize = () => refresh();
+
+    window.addEventListener('load', onLoad);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+
+    return () => {
+      window.removeEventListener('load', onLoad);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+    };
+  }, [sections.length]);
 
   return (
     <div className="w-full scrollbar-hide">
@@ -514,7 +571,11 @@ const ScenarioSectionContent = React.forwardRef<
             <div className="mb-4">
               <ScenarioLoader
                 initialScenarioId={scenarioId}
-                onScenarioLoaded={(id) => console.log(`Scenario ${id} loaded`)}
+                onScenarioLoaded={(id) => {
+                  console.log(`Scenario ${id} loaded`);
+                  // 시나리오 로드로 DOM 높이가 바뀌었을 수 있으므로 재계산
+                  requestAnimationFrame(() => ScrollTrigger.refresh());
+                }}
                 onScenarioError={(error) =>
                   console.error(`Scenario load error: ${error}`)
                 }
