@@ -2,10 +2,10 @@ import { useState } from 'react';
 import './App.css';
 import { ControlHeader } from './components/ControlHeader';
 import { DemoView } from './components/DemoView';
-import { GSAPPinningDemo } from './components/Test';
-import { ScenarioContextProvider } from './contexts/scenario';
 import { AgentDisplayVariantProvider } from './contexts/agentDisplayVariant';
+import { ScenarioContextProvider } from './contexts/scenario';
 import { useTheme } from './hooks/useTheme';
+import { GSAPSlidesPage } from './components/Slide';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
@@ -26,8 +26,8 @@ function App() {
             {viewMode === 'demo' ? (
               <DemoView />
             ) : (
-              // <StorytellingPage agentStyle={agentStyle} />
-              <GSAPPinningDemo />
+              <GSAPSlidesPage />
+              // <GSAPPinningDemo />
             )}
           </main>
         </AgentDisplayVariantProvider>

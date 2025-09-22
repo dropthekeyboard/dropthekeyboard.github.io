@@ -15,10 +15,11 @@ export { default as Slide013 } from './Slide013';
 export { default as Slide014 } from './Slide014';
 export { default as Slide015 } from './Slide015';
 export { default as Slide016 } from './Slide016';
+export { default as Slide017 } from './Slide017';
 
 // Export existing slides
-export { default as A2ADigitalLevelSlide } from './A2ADigitalLevelSlide';
-export { default as A2AAppBarrierSlide } from './A2AAppBarrierSlide';
+export { default as SlideGSAPSection } from './SlideGSAPSection';
+export { default as GSAPSlidesPage } from './GSAPSlidesPage';
 
 // Array of all slides for easy iteration
 export const allSlides = [
