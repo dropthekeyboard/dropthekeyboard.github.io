@@ -86,7 +86,7 @@ export function IncomingCallOverlay({
                   Incoming Call
                 </motion.h2>
 
-                <motion.p className="text-gray-600 dark:text-gray-400 text-sm">
+                <motion.p className="text-gray-600 dark:text-gray-400 text-base">
                   {callerName}
                 </motion.p>
               </motion.div>
@@ -105,7 +105,7 @@ export function IncomingCallOverlay({
                   }}
                   className="relative"
                 >
-                  <Phone className="w-12 h-12 text-green-500" />
+                  <Phone className="w-16 h-16 text-green-500" />
 
                   {/* 링 효과 */}
                   <motion.div

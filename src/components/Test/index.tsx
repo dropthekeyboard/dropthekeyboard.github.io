@@ -114,7 +114,7 @@ function GSAPPinningDemoContent({
       },
       {
         Component: Slide006,
-        pinned: false,
+        pinned: true,
         title: '첫 모바일 앱 출시 시기',
         enableAnimation: true,
         animationType: 'fade' as const,

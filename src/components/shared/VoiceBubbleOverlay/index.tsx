@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { VoiceScreen } from '@/components/shared/VoiceScreen';
-import type { Message } from '@/contexts/scenario';
+import type { Message, Entity } from '@/contexts/scenario';
 
 interface VoiceBubbleOverlayProps {
   voiceMessages: Message[];
@@ -12,6 +12,7 @@ interface VoiceBubbleOverlayProps {
   maxMessages?: number;
   callDuration?: number;
   isMuted?: boolean;
+  entity?: Entity | null;
 }
 
 export function VoiceBubbleOverlay({
@@ -22,6 +23,7 @@ export function VoiceBubbleOverlay({
   className,
   maxMessages = 5,
   callDuration = 0,
+  entity,
 }: VoiceBubbleOverlayProps) {
   return (
     <motion.div
@@ -48,6 +50,7 @@ export function VoiceBubbleOverlay({
           maxMessages={maxMessages}
           callDuration={callDuration}
           className="bg-background/95"
+          entity={entity}
         />
       </div>
 

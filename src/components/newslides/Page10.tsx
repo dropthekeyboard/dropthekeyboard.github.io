@@ -65,6 +65,7 @@ const Page10 = () => {
               messages={messages1}
               ownerName="user"
               contactName="SK텔레콤 AI Agent"
+              entity={null}
             />
           </PhoneFrame>
         </div>
@@ -91,6 +92,7 @@ const Page10 = () => {
               messages={messages2}
               ownerName="user"
               contactName="SK텔레콤 AI Agent"
+              entity={null}
             />
           </PhoneFrame>
         </div>

@@ -1,22 +1,36 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { AnimatedBarChart } from '../shared/AnimatedBarChart';
-import { AnimatedCounter } from '../shared/AnimatedCounter';
+import { Users, Clock, Building2 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Slide 003: A2A 확산 현황 with animated charts
+// Slide 003: 모두의 AI는 전화/문자에서 시작
 function Slide003() {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLHeadingElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
 
-  const chartData = [
-    { name: '금융', value: 85, color: '#3b82f6' },
-    { name: '통신', value: 65, color: '#10b981' },
-    { name: '유통', value: 45, color: '#f59e0b' },
-    { name: '의료', value: 25, color: '#ef4444' },
+  const features = [
+    {
+      id: 1,
+      icon: Users,
+      title: '보편성',
+      description: '일반 국민 누구나',
+    },
+    {
+      id: 2,
+      icon: Clock,
+      title: '시급성',
+      description: '찾고 기다릴 필요 없이',
+    },
+    {
+      id: 3,
+      icon: Building2,
+      title: '확장성',
+      description: '작은 동네 상권까지도',
+    },
   ];
 
   useEffect(() => {
@@ -44,11 +58,33 @@ function Slide003() {
         }
       );
 
-      // Stats cards animation
+      // Subtitle animation
       gsap.fromTo(
-        statsRef.current?.children || [],
+        subtitleRef.current,
         {
           y: 50,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          delay: 0.3,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Feature cards animation
+      gsap.fromTo(
+        cardsRef.current?.children || [],
+        {
+          y: 80,
           opacity: 0,
           scale: 0.9,
         },
@@ -56,7 +92,7 @@ function Slide003() {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.8,
+          duration: 1,
           stagger: 0.2,
           ease: 'back.out(1.7)',
           scrollTrigger: {
@@ -75,67 +111,58 @@ function Slide003() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans"
+      className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
+      style={{
+        background: `radial-gradient(circle at center, #333, #212121)`,
+      }}
     >
-      <div className="max-w-6xl w-full space-y-12">
-        {/* 메인 제목 */}
-        <div className="text-center">
+      <div className="max-w-6xl w-full space-y-16 text-center">
+        {/* 메인 헤드라인 */}
+        <div className="space-y-6">
           <h1
             ref={titleRef}
-            className="text-4xl sm:text-6xl font-bold text-foreground tracking-tight leading-relaxed"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight"
           >
-            A2A <span className="text-primary">확산 현황</span>
+            모두의 AI는 전화/문자에서 시작
           </h1>
+          
+          <h2
+            ref={subtitleRef}
+            className="text-lg sm:text-xl lg:text-2xl text-white/80 font-light"
+          >
+            AI시대, 전화/문자는 왜 여전히 필요할까?
+          </h2>
         </div>
 
-        {/* 업계별 도입 현황 차트 */}
-        <div className="w-full">
-          <AnimatedBarChart
-            data={chartData}
-            title="업계별 A2A 도입률"
-            maxValue={100}
-            duration={1.5}
-            stagger={0.3}
-          />
-        </div>
-
-        {/* 통계 카드들 */}
+        {/* 특징 카드들 */}
         <div
-          ref={statsRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mt-20"
         >
-          <div className="bg-card border border-border rounded-lg p-6 text-center">
-            <AnimatedCounter
-              from={0}
-              to={127}
-              duration={2}
-              suffix="개"
-              className="text-3xl font-bold text-primary block mb-2"
-            />
-            <p className="text-muted-foreground">도입 완료 기업</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-6 text-center">
-            <AnimatedCounter
-              from={0}
-              to={89}
-              duration={2.2}
-              suffix="%"
-              className="text-3xl font-bold text-primary block mb-2"
-            />
-            <p className="text-muted-foreground">만족도</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-6 text-center">
-            <AnimatedCounter
-              from={0}
-              to={234}
-              duration={2.5}
-              suffix="억원"
-              className="text-3xl font-bold text-primary block mb-2"
-            />
-            <p className="text-muted-foreground">비용 절감 효과</p>
-          </div>
+          {features.map((feature) => {
+            const IconComponent = feature.icon;
+            return (
+              <div
+                key={feature.id}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 lg:p-10 flex flex-col items-center space-y-6 transition-all duration-300 hover:transform hover:scale-105 hover:bg-white/10"
+              >
+                {/* 아이콘 */}
+                <div className="w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center">
+                  <IconComponent className="w-full h-full text-gray-300 stroke-1" />
+                </div>
+                
+                {/* 제목 (그라데이션) */}
+                <h3 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent">
+                  {feature.title}
+                </h3>
+                
+                {/* 설명 */}
+                <p className="text-white/90 text-lg lg:text-xl font-medium">
+                  {feature.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

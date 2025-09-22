@@ -7,12 +7,16 @@
       {
         "type": "ai",
         "name": "customer_agent",
+        "displayName": "고객 에이전트",
+        "avatarUrl": "/assets/avatars/customer_agent.png",
         "steps": []
       }
     ],
     "customer": {
       "type": "human",
       "name": "customer",
+      "displayName": "이정윤 고객",
+      "avatarUrl": "/assets/avatars/customer.png",
       "state": "message",
       "messageBox": {}
     },
@@ -20,6 +24,8 @@
       {
         "type": "human",
         "name": "restaurant_owner",
+        "displayName": "명동키친 사장님",
+        "avatarUrl": "/assets/avatars/restaurant_owner.png",
         "state": "message",
         "messageBox": {}
       }
@@ -211,12 +217,16 @@
       {
         "type": "ai",
         "name": "lifemate_agent",
+        "displayName": "라이프메이트 에이전트",
+        "avatarUrl": "/assets/avatars/lifemate_agent.png",
         "steps": []
       }
     ],
     "customer": {
       "type": "human",
       "name": "elderly_person",
+      "displayName": "김미경 어르신",
+      "avatarUrl": "/assets/avatars/elderly_person.png",
       "state": "message",
       "messageBox": {}
     },
@@ -224,12 +234,16 @@
       {
         "type": "human",
         "name": "restaurant_1_staff",
+        "displayName": "신촌 닭한마리 직원",
+        "avatarUrl": "/assets/avatars/restaurant_1_staff.png",
         "state": "message",
         "messageBox": {}
       },
       {
         "type": "human",
         "name": "restaurant_2_staff",
+        "displayName": "병천 유황오리 직원",
+        "avatarUrl": "/assets/avatars/restaurant_2_staff.png",
         "state": "message",
         "messageBox": {}
       }
@@ -296,7 +310,8 @@
         "type": "accept-call",
         "action": {
           "from": "lifemate_agent",
-          "to": "restaurant_1_staff"
+          "to": "restaurant_1_staff",
+          "reason": "전화가 연결되었으니, 신촌 닭한마리 예약 가능 여부를 확인해야겠다."
         }
       },
       {
@@ -337,7 +352,8 @@
         "type": "accept-call",
         "action": {
           "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
+          "to": "restaurant_2_staff",
+          "reason": "전화가 연결되었으니, 병천 유황오리 예약 가능 여부를 확인해야겠다."
         }
       },
       {
@@ -397,7 +413,8 @@
         "type": "accept-call",
         "action": {
           "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
+          "to": "restaurant_2_staff",
+          "reason": "전화가 연결되었으니, 최종 예약 확정을 진행해야겠다."
         }
       },
       {

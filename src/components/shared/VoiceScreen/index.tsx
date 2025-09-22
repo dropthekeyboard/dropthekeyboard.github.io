@@ -3,8 +3,8 @@ import { AnimatePresence } from 'framer-motion';
 import { VoiceBubble } from '@/components/shared/VoiceBubble';
 import { Avatar } from '@/components/shared/Avatar';
 import { Numpad } from '@/components/shared/Numpad';
-import { getCallerAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
-import type { CallSession, Message, Scenario } from '@/contexts/scenario';
+import { getEntityAvatarProps, findEntityByName } from '@/components/shared/Avatar/avatarHelpers';
+import type { CallSession, Message, Scenario, Entity } from '@/contexts/scenario';
 import { useTheme } from '@/hooks/useTheme';
 import { useMemo, useEffect, useRef } from 'react';
 import { useScenario } from '@/hooks/useScenario';
@@ -16,6 +16,7 @@ interface VoiceScreenProps {
   className?: string;
   maxMessages?: number;
   callDuration?: number;
+  entity?: Entity | null;
 }
 
 function getRelevantSession(
@@ -35,6 +36,7 @@ export function VoiceScreen({
   contactName = 'Contact',
   className,
   callDuration = 0,
+  entity,
 }: VoiceScreenProps) {
   const { resolvedTheme } = useTheme();
   const { state } = useScenario();
@@ -142,10 +144,10 @@ export function VoiceScreen({
           {/* Contact avatar - using Avatar component with CallSession info */}
           <div className="mx-auto">
             <Avatar
-              {...getCallerAvatarProps(session?.callerType)}
+              {...getEntityAvatarProps(entity, getComponentSenderType(session?.callerType))}
               size="lg"
               className={cn(
-                'scale-125 shadow-2xl',
+                'scale-150 shadow-2xl',
                 currentTheme.avatarBg,
                 currentTheme.avatarBorder
               )}
@@ -218,6 +220,10 @@ export function VoiceScreen({
                             voiceMessage.senderType === 'agent' ||
                             voiceMessage.senderType === 'server'
                           }
+                          entity={entity}
+                          messageFrom={voiceMessage.from}
+                          ownerName={ownerName}
+                          messageFromEntity={findEntityByName(state, voiceMessage.from)}
                         />
                       </div>
                     ))}

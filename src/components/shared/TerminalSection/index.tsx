@@ -49,24 +49,33 @@ export function TerminalSection({
     [externalSteps, scenarioState]
   );
 
-  // Terminal logic cards state - filter steps related to this AI agent
+  // Terminal logic cards state - use external steps if provided, otherwise filter from scenario
   const logicCards = useMemo(
-    () =>
-      state.steps
-        .filter(
-          (s: AgenticStep) =>
-            s.action.from === (entityName || entity?.name) ||
-            s.action.to === (entityName || entity?.name)
-        )
-        .map(
-          (s: AgenticStep) =>
-            ({
-              id: `${s.action.timestamp}-${s.type}-${s.action.from}-${s.action.to}`, // 고유한 id 생성
-              step: s,
-              timestamp: new Date(s.action.timestamp),
-            }) satisfies LogicCard
-        ),
-    [state, entity, entityName]
+    () => {
+      const targetAgentName = entityName || entity?.name;
+      if (!targetAgentName) return [];
+
+      // Use external steps if provided (already filtered), otherwise filter from scenario
+      const stepsToUse = externalSteps && externalSteps.length > 0
+        ? externalSteps
+        : state.steps.filter(
+            (s: AgenticStep) => {
+              // Include steps where this agent is either the sender or receiver
+              const isAgentStep = s.action.from === targetAgentName || s.action.to === targetAgentName;
+              return isAgentStep;
+            }
+          );
+
+      return stepsToUse.map(
+        (s: AgenticStep) =>
+          ({
+            id: `${s.action.timestamp}-${s.type}-${s.action.from}-${s.action.to}`, // 고유한 id 생성
+            step: s,
+            timestamp: new Date(s.action.timestamp),
+          }) satisfies LogicCard
+      );
+    },
+    [state, entity, entityName, externalSteps]
   );
 
   // AI Agent의 동작 상태를 내부에서 계산
@@ -294,7 +303,7 @@ export function TerminalSection({
                   : 'text-green-300/70'
             )}
           >
-            Connected to {entity?.name || 'AI Agent'} | Status: ACTIVE
+            Connected to {entity?.displayName || entity?.name || 'AI Agent'} | Status: ACTIVE
           </div>
         </div>
 

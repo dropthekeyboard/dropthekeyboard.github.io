@@ -20,8 +20,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import {
-  transformToReasoningSteps,
-  filterReasoningStepsByAgent,
+  transformAndFilterByAgent,
 } from '@/utils/reasoningTransform';
 import type { ReasoningStep } from '@/types/reasoning';
 
@@ -65,14 +64,14 @@ function ReasoningStepComponent({
         }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
         className={cn(
-          'flex items-center p-3 rounded-lg border backdrop-blur-sm',
+          'flex items-center p-3 rounded-lg border backdrop-blur-sm w-full',
           isDark
             ? 'bg-gray-800/40 border-gray-600/30'
             : 'bg-gray-50/60 border-gray-300/50',
           step.type === 'input'
-            ? 'justify-start mr-auto'
+            ? 'justify-start mr-auto max-w-[75%]' // Input from others - align left
             : step.type === 'output'
-              ? 'justify-end ml-auto'
+              ? 'justify-end ml-auto max-w-[75%]'   // Output from agent - align right
               : 'justify-center',
           isActive &&
             step.type === 'reasoning' &&
@@ -317,7 +316,7 @@ function ReasoningStepComponent({
     );
   }
 
-  // Input/Output steps - simplified display
+  // Input/Output steps - simplified display with proper alignment
   return (
     <motion.div
       initial={{ opacity: 0, x: step.type === 'input' ? -20 : 20 }}
@@ -325,10 +324,12 @@ function ReasoningStepComponent({
       exit={{ opacity: 0, x: step.type === 'input' ? -20 : 20 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'flex items-center space-x-3 p-3 rounded-lg border backdrop-blur-sm',
+        'flex items-center p-3 rounded-lg border backdrop-blur-sm w-full',
         getBackgroundColor(),
         getBorderColor(),
-        step.type === 'input' ? 'justify-start' : 'justify-end'
+        step.type === 'input'
+          ? 'justify-start mr-auto max-w-[75%]' // Input from others - align left
+          : 'justify-end ml-auto max-w-[75%]'   // Output from agent - align right
       )}
     >
       {step.type === 'input' && (
@@ -385,17 +386,10 @@ export function ReasoningAgentSection({
 
   // Transform AgenticSteps to ReasoningSteps
   const reasoningSteps = useMemo(() => {
-    const agentSteps = state.steps.filter(
-      (s: AgenticStep) =>
-        s.action.from === (entityName || entity?.name) ||
-        s.action.to === (entityName || entity?.name)
-    );
+    const targetAgentName = entityName || entity?.name;
+    if (!targetAgentName) return [];
 
-    const transformedSteps = transformToReasoningSteps(agentSteps);
-    return filterReasoningStepsByAgent(
-      transformedSteps,
-      entityName || entity?.name || ''
-    );
+    return transformAndFilterByAgent(state.steps, targetAgentName);
   }, [state.steps, entity, entityName]);
 
   // Determine if the section is active
@@ -527,18 +521,19 @@ export function ReasoningAgentSection({
               )}
             >
               Visualizing AI decision-making process | Agent:{' '}
-              {entity?.name || 'AI Agent'}
+              {entity?.displayName || entity?.name || 'AI Agent'}
             </div>
           </div>
         )}
 
         {/* Reasoning Steps */}
-        <div className="space-y-4">
+        <div className="space-y-4 flex flex-col">
           <AnimatePresence mode="popLayout" initial={false}>
             {reasoningSteps.map((step, index) => (
               <div
                 key={step.id}
                 ref={index === reasoningSteps.length - 1 ? lastStepRef : null}
+                className="flex flex-col w-full"
               >
                 <ReasoningStepComponent
                   step={step}

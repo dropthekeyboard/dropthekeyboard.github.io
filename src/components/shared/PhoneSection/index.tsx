@@ -88,12 +88,13 @@ export function PhoneSection({
               className="absolute inset-0"
             >
               <CallScreen
-                contactName={entity?.name || contactName}
-                ownerName={entity?.name || 'Unknown'}
+                contactName={entity?.displayName || entity?.name || contactName}
+                ownerName={entity?.displayName || entity?.name || 'Unknown'}
                 contactNumber={contactNumber}
                 callDuration={0}
                 voiceMessages={voiceMessages}
                 from={from}
+                entity={entity}
               />
             </motion.div>
           ) : entity?.state === 'idle' ? (
@@ -128,6 +129,7 @@ export function PhoneSection({
                 isTyping={false}
                 ownerName={entity?.name || 'Unknown'}
                 contactName={entity?.name || contactName}
+                entity={entity}
               />
             </motion.div>
           )}

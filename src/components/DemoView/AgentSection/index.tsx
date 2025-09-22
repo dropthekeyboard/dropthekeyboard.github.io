@@ -20,16 +20,18 @@ export function AgentSection() {
     <div className="flex w-full h-full landscape:pt-16 items-center justify-center scrollbar-hide">
       {displayType.type === 'terminal' ? (
         <TerminalSection
-          entity={null}
-          label={agent?.name || 'AI Agent'}
+          entity={agent}
+          label={agent?.displayName || agent?.name || 'AI Agent'}
           labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
           sectionClass="center-section"
           variant={displayType.variants}
+          steps={agentSteps}
+          entityName={agent?.name}
         />
       ) : (
         <ReasoningAgentSection
           entity={null}
-          label={agent?.name || 'AI Agent'}
+          label={agent?.displayName || agent?.name || 'AI Agent'}
           labelColor="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
           sectionClass="center-section"
           steps={agentSteps}

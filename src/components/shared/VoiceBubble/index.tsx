@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Phone } from 'lucide-react';
 import { Avatar } from '@/components/shared/Avatar';
-import { getAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import { getEntityAvatarProps, getMessageAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 import { useTheme } from '@/hooks/useTheme';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -58,6 +58,10 @@ export function VoiceBubble({
     linkTarget: '_blank',
     enableGfm: true,
   },
+  entity,
+  messageFrom,
+  ownerName,
+  messageFromEntity,
 }: VoiceBubbleProps) {
   const isPlaying = true; // Voice messages are typically playable by default
   const { resolvedTheme } = useTheme();
@@ -108,8 +112,11 @@ export function VoiceBubble({
       >
         {/* Avatar */}
         <Avatar
-          {...getAvatarProps(senderType)}
-          size="md"
+          {...(messageFrom && ownerName
+            ? getMessageAvatarProps(messageFrom, ownerName, messageFromEntity, senderType)
+            : getEntityAvatarProps(entity, senderType) // fallback to existing logic
+          )}
+          size="lg"
           className="flex-shrink-0 shadow-md"
         />
 

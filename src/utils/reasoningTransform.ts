@@ -7,16 +7,16 @@ import { ACTION_TYPE_MAPPING, REASONING_TITLES } from '@/types/reasoning';
  * This creates a input→reasoning→output flow for each step that has reasoning
  */
 export function transformToReasoningSteps(
-  steps: AgenticStep[]
+  steps: AgenticStep[],
+  targetAgentName?: string
 ): ReasoningStep[] {
   const reasoningSteps: ReasoningStep[] = [];
 
   steps.forEach((step, index) => {
     const baseTimestamp = step.action.timestamp || Date.now() + index * 1000;
-    const nextStep = steps[index + 1];
 
-    // 1. Create input step for incoming actions (not from agents)
-    if (isInputAction(step)) {
+    // 1. Create input step for incoming actions (to this agent)
+    if (isInputAction(step, targetAgentName)) {
       reasoningSteps.push({
         id: `input-${baseTimestamp}`,
         type: 'input',
@@ -27,8 +27,8 @@ export function transformToReasoningSteps(
       });
     }
 
-    // 2. Create output step for agent actions (moved before reasoning)
-    if (isOutputAction(step)) {
+    // 2. Create output step for agent actions (from this agent)
+    if (isOutputAction(step, targetAgentName)) {
       reasoningSteps.push({
         id: `output-${baseTimestamp}`,
         type: 'output',
@@ -38,15 +38,15 @@ export function transformToReasoningSteps(
         originalStep: step,
       });
 
-      // 3. Create reasoning step only if next step has reasoning
-      if (nextStep && 'reason' in nextStep.action && nextStep.action.reason) {
+      // 3. Create reasoning step if this step has reasoning
+      if ('reason' in step.action && step.action.reason) {
         reasoningSteps.push({
           id: `reasoning-${baseTimestamp}`,
           type: 'reasoning',
           timestamp: baseTimestamp + 2, // Show processing after output
-          title: generateReasoningTitle(nextStep),
-          reasoning: parseReasoningContent(nextStep.action.reason),
-          originalStep: nextStep,
+          title: generateReasoningTitle(step),
+          reasoning: parseReasoningContent(step.action.reason),
+          originalStep: step,
         });
       }
     }
@@ -58,19 +58,21 @@ export function transformToReasoningSteps(
 /**
  * Determine if an action represents input to the agent
  */
-function isInputAction(step: AgenticStep): boolean {
-  // Input actions are typically from customer or external services to the agent
-  const from = step.action.from;
-  return from !== 'customer_agent' && from !== 'ai_agent';
+function isInputAction(step: AgenticStep, targetAgentName?: string): boolean {
+  if (!targetAgentName) return false;
+
+  // Input actions are those directed TO this agent (agent is the recipient)
+  return step.action.to === targetAgentName && step.action.from !== targetAgentName;
 }
 
 /**
  * Determine if an action represents output from the agent
  */
-function isOutputAction(step: AgenticStep): boolean {
-  // Output actions are from the agent to other entities
-  const from = step.action.from;
-  return from === 'customer_agent' || from === 'ai_agent';
+function isOutputAction(step: AgenticStep, targetAgentName?: string): boolean {
+  if (!targetAgentName) return false;
+
+  // Output actions are those initiated BY this agent (agent is the sender)
+  return step.action.from === targetAgentName;
 }
 
 /**
@@ -203,6 +205,23 @@ export function filterReasoningStepsByAgent(
     const action = step.originalStep.action;
     return action.from === agentName || action.to === agentName;
   });
+}
+
+/**
+ * Transform AgenticSteps to ReasoningSteps and filter by agent in one step
+ */
+export function transformAndFilterByAgent(
+  steps: AgenticStep[],
+  agentName: string
+): ReasoningStep[] {
+  // First filter relevant steps for this agent
+  const agentSteps = steps.filter(
+    (s: AgenticStep) =>
+      s.action.from === agentName || s.action.to === agentName
+  );
+
+  // Then transform with proper agent context
+  return transformToReasoningSteps(agentSteps, agentName);
 }
 
 /**

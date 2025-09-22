@@ -351,6 +351,10 @@ export interface Entity {
   type: 'human' | 'ai';
   /** Unique identifier name */
   name: string;
+  /** User-friendly display name (optional, falls back to name) */
+  displayName?: string;
+  /** Custom avatar image URL (optional, falls back to default avatar) */
+  avatarUrl?: string;
 }
 
 /**

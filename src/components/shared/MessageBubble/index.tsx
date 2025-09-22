@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { CheckCheck } from 'lucide-react';
 import { Avatar } from '@/components/shared/Avatar';
-import { getAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import { getEntityAvatarProps, getMessageAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { MessageBubbleProps } from '@/types/message';
@@ -20,6 +20,10 @@ export function MessageBubble({
     linkTarget: '_blank',
     enableGfm: true,
   },
+  entity,
+  messageFrom,
+  ownerName,
+  messageFromEntity,
 }: MessageBubbleProps) {
   return (
     <motion.div
@@ -47,7 +51,10 @@ export function MessageBubble({
       >
         {/* Avatar */}
         <Avatar
-          {...getAvatarProps(senderType)}
+          {...(messageFrom && ownerName
+            ? getMessageAvatarProps(messageFrom, ownerName, messageFromEntity, senderType)
+            : getEntityAvatarProps(entity, senderType) // fallback to existing logic
+          )}
           size="md"
           className="flex-shrink-0"
         />

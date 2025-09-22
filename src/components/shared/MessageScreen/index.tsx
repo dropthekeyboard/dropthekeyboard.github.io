@@ -2,7 +2,9 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Send, MessageCircle } from 'lucide-react';
 import { MessageBubble } from '@/components/shared/MessageBubble';
-import type { Message } from '@/contexts/scenario';
+import { findEntityByName } from '@/components/shared/Avatar/avatarHelpers';
+import type { Message, Entity } from '@/contexts/scenario';
+import { useScenario } from '@/hooks/useScenario';
 import { useEffect, useRef } from 'react';
 
 interface MessageScreenProps {
@@ -11,6 +13,7 @@ interface MessageScreenProps {
   ownerName: string;
   contactName?: string;
   className?: string;
+  entity?: Entity | null;
 }
 
 export function MessageScreen({
@@ -19,9 +22,11 @@ export function MessageScreen({
   contactName = 'Contact',
   ownerName,
   className,
+  entity,
 }: MessageScreenProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const { state } = useScenario();
 
   // Auto-scroll to bottom when messages change or typing state changes - with scroll isolation
   useEffect(() => {
@@ -88,26 +93,37 @@ export function MessageScreen({
             {/* Sort messages by timestamp to ensure chronological order */}
             {[...messages]
               .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
-              .map((msg, index) => (
-                <motion.div
-                  key={`${msg.timestamp}-${msg.content}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="w-full mb-3"
-                >
-                  <MessageBubble
-                    message={msg.content}
-                    isOwnMessage={msg.from === ownerName}
-                    senderType={getComponentSenderType(msg.senderType)}
-                    timestamp={msg.timestamp}
-                    isRead={msg.to === 'user'}
-                    enableMarkdown={
-                      msg.senderType === 'agent' || msg.senderType === 'server'
-                    }
-                  />
-                </motion.div>
-              ))}
+              .map((msg, index) => {
+                const messageFromEntity = findEntityByName(state, msg.from);
+                console.log(`📱 MessageScreen: Processing message from "${msg.from}" to "${msg.to}"`);
+                console.log(`📱 MessageScreen: ownerName="${ownerName}", isOwnMessage=${msg.from === ownerName}`);
+                console.log(`📱 MessageScreen: messageFromEntity=`, messageFromEntity);
+
+                return (
+                  <motion.div
+                    key={`${msg.timestamp}-${msg.content}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="w-full mb-3"
+                  >
+                    <MessageBubble
+                      message={msg.content}
+                      isOwnMessage={msg.from === ownerName}
+                      senderType={getComponentSenderType(msg.senderType)}
+                      timestamp={msg.timestamp}
+                      isRead={msg.to === 'user'}
+                      enableMarkdown={
+                        msg.senderType === 'agent' || msg.senderType === 'server'
+                      }
+                      entity={entity}
+                      messageFrom={msg.from}
+                      ownerName={ownerName}
+                      messageFromEntity={messageFromEntity}
+                    />
+                  </motion.div>
+                );
+              })}
 
             {/* Typing indicator */}
             {isTyping && (

@@ -1,146 +1,246 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { useSectionPinning } from '@/contexts/pinning';
-import { useCountAnimation } from '@/hooks/useCountAnimation';
-import type { SlideProps } from '@/types/slide';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Phone } from 'lucide-react';
 
-// Slide 004: A2A 확산이 어려운 구조적 요인
-function Slide004({ sectionIndex = 0 }: SlideProps) {
-  const { state } = useSectionPinning(sectionIndex);
-  const isPinned = state.isPinned;
+gsap.registerPlugin(ScrollTrigger);
 
-  // 숫자 애니메이션을 위한 hooks
-  const animatedSmallBusiness = useCountAnimation(500, isPinned, 1500);
-  const animatedLargeBusiness = useCountAnimation(33, isPinned, 1500);
+// Info Pill Component - 재사용 가능한 정보 박스
+function InfoPill({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="bg-white/8 border border-white/10 rounded-xl p-4 text-left">
+      <h4 className="text-lg font-bold text-white mb-1">{title}</h4>
+      <p className="text-sm text-gray-300">{subtitle}</p>
+    </div>
+  );
+}
+
+// Customer Column Component - 앱 사용자/비사용자 컬럼
+function CustomerColumn({
+  data,
+  className = '',
+}: {
+  data: {
+    title: string;
+    image: string;
+    pills: Array<{ id: string; title: string; subtitle: string }>;
+  };
+  className?: string;
+}) {
+  return (
+    <div className={`flex-1 max-w-sm space-y-6 ${className}`}>
+      {/* 이미지 */}
+      <div className="w-full h-56 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center overflow-hidden">
+        <img
+          src={data.image}
+          alt={data.title}
+          className="w-full h-full object-contain p-2"
+          onError={(e) => {
+            // 이미지 로드 실패시 아이콘으로 대체
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            const parent = target.parentElement;
+            if (parent) {
+              parent.innerHTML = `
+                <div class="flex flex-col items-center text-gray-400">
+                  <div class="w-16 h-16 mb-2">${data.title.includes('앱을') ? '<svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM7 4h10v16H7V4z"/></svg>' : '<svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'}</div>
+                  <span class="text-sm">${data.title}</span>
+                </div>
+              `;
+            }
+          }}
+        />
+      </div>
+
+      {/* 컬럼 제목 */}
+      <h3 className="text-xl font-bold text-white text-center">{data.title}</h3>
+
+      {/* Info Pills */}
+      <div className="space-y-4">
+        {data.pills.map((pill) => (
+          <InfoPill key={pill.id} title={pill.title} subtitle={pill.subtitle} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Bridge Column Component - 중앙 연결 브릿지
+function BridgeColumn() {
+  return (
+    <div className="flex-shrink-0 w-64 flex flex-col items-center space-y-8">
+      {/* 전화 레이블 */}
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-px bg-gradient-to-r from-transparent to-purple-400 hidden lg:block"></div>
+        <span className="text-lg font-semibold text-purple-300">전화</span>
+        <div className="w-8 h-px bg-gradient-to-l from-transparent to-purple-400 hidden lg:block"></div>
+      </div>
+
+      {/* 중앙 전화기 아이콘 */}
+      <div className="relative">
+        <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse">
+          <Phone className="w-12 h-12 text-white" />
+        </div>
+        
+        {/* 점선 연결 효과 - 데스크톱에서만 표시 */}
+        <div className="absolute -left-16 top-1/2 w-16 h-px border-t-2 border-dashed border-purple-400/60 hidden lg:block"></div>
+        <div className="absolute -right-16 top-1/2 w-16 h-px border-t-2 border-dashed border-purple-400/60 hidden lg:block"></div>
+        
+        {/* 모바일용 세로 점선 */}
+        <div className="absolute top-28 left-1/2 w-px h-16 border-l-2 border-dashed border-purple-400/60 lg:hidden"></div>
+        <div className="absolute -top-16 left-1/2 w-px h-16 border-l-2 border-dashed border-purple-400/60 lg:hidden"></div>
+      </div>
+
+      {/* 문자 레이블 */}
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-px bg-gradient-to-r from-transparent to-blue-400 hidden lg:block"></div>
+        <span className="text-lg font-semibold text-blue-300">문자</span>
+        <div className="w-8 h-px bg-gradient-to-l from-transparent to-blue-400 hidden lg:block"></div>
+      </div>
+
+      {/* 중앙 핵심 메시지 */}
+      <div className="text-center space-y-2 max-w-xs">
+        <p className="text-lg font-bold text-white leading-tight">
+          앱이 놓치는 영역을 보완하는
+        </p>
+        <p className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          가장 보편적인 커뮤니케이션 채널
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Slide 004: 모바일 앱의 범람에도 불구하고 전화/문자는 여전히 필수적
+function Slide004() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const flowContainerRef = useRef<HTMLDivElement>(null);
+
+  // 데이터 정의
+  const appUsersData = {
+    title: '앱을 사용하는 고객도',
+    image: '/assets/slide/app_screen.png',
+    pills: [
+      {
+        id: 'app1',
+        title: '실시간 요청',
+        subtitle: '예약/변경/결제오류/장애 등',
+      },
+      {
+        id: 'app2',
+        title: '개인화된 요청',
+        subtitle: '좌석 위치 지정/특정 메뉴 확인 등',
+      },
+    ],
+  };
+
+  const nonAppUsersData = {
+    title: '앱이 익숙하지 않은 고객도',
+    image: '/assets/slide/seniors.png',
+    pills: [
+      {
+        id: 'nonapp1',
+        title: '디지털 취약계층',
+        subtitle: '고령/중장년층',
+      },
+      {
+        id: 'nonapp2',
+        title: '신뢰 기반 거래',
+        subtitle: '단골 가게 연락 등',
+      },
+    ],
+  };
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Title animation
+      gsap.fromTo(
+        titleRef.current,
+        {
+          y: 100,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Flow container animation
+      gsap.fromTo(
+        flowContainerRef.current?.children || [],
+        {
+          y: 80,
+          opacity: 0,
+          scale: 0.9,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          stagger: 0.3,
+          ease: 'back.out(1.7)',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 60%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
-      <div className="max-w-6xl w-full space-y-12">
-        {/* 상단 헤더 */}
-        <header className="text-center space-y-6">
-          <h1 className="text-4xl sm:text-5xl font-bold text-foreground tracking-tight">
-            A2A 확산이 어려운 <span className="text-primary">구조적 요인</span>
+    <div
+      ref={containerRef}
+      className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
+      style={{
+        background: `radial-gradient(circle at center, #333, #212121)`,
+      }}
+    >
+      <div className="max-w-7xl w-full space-y-16">
+        {/* 상단 헤드라인 */}
+        <div className="text-center space-y-4">
+          <h1
+            ref={titleRef}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight"
+          >
+            모바일 앱의 범람에도 불구하고{' '}
+            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              전화/문자는 여전히 필수적
+            </span>
           </h1>
-          <p className="text-xl text-muted-foreground">
-            소비자가 일상적으로 이용하는 서비스의 절대다수를 차지하는{' '}
-            <span className="font-bold text-foreground">영세 소상공인</span>
-          </p>
-        </header>
+        </div>
 
-        {/* 데이터 시각화 카드 */}
-        <Card className="bg-card border-border p-8">
-          <CardContent className="p-0">
-            <div className="space-y-12">
-              {/* Log Scale을 사용한 비교 차트 */}
-              <div className="space-y-6">
-                <div className="text-center mb-8">
-                  <p className="text-lg font-semibold text-foreground mb-2">
-                    사업체 수 비교 (Log Scale)
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    실제 데이터의 비율을 유지하면서 시각적 비교가 가능하도록
-                    표시
-                  </p>
-                </div>
+        {/* 3단 플로우 컨테이너 */}
+        <div
+          ref={flowContainerRef}
+          className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 lg:gap-12"
+        >
+          {/* 왼쪽: 앱 사용자 */}
+          <CustomerColumn data={appUsersData} />
 
-                {/* 소상공인 바 */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <p className="text-lg font-semibold text-foreground">
-                        동네식당, 카페, 미용실, 세탁소 등
-                      </p>
-                      <p className="text-base text-muted-foreground">
-                        소상공인 사업체 수
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p
-                        className="text-3xl font-bold text-foreground"
-                        style={{
-                          opacity: isPinned ? 1 : 0,
-                          transition: 'opacity 0.5s ease-in-out',
-                        }}
-                      >
-                        약 {animatedSmallBusiness}만 개
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-full h-8 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1200"
-                      style={{ width: isPinned ? '100%' : '0%' }}
-                    />
-                  </div>
-                </div>
+          {/* 중앙: 연결 브릿지 */}
+          <BridgeColumn />
 
-                {/* 대기업 바 - 로그 스케일 기반 너비 */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <p className="text-lg font-semibold text-foreground">
-                        프렌차이즈, 유통 F&B 등
-                      </p>
-                      <p className="text-base text-muted-foreground">
-                        대기업 사업체 수
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p
-                        className="text-3xl font-bold text-foreground"
-                        style={{
-                          opacity: isPinned ? 1 : 0,
-                          transition: 'opacity 0.5s ease-in-out',
-                        }}
-                      >
-                        약 {animatedLargeBusiness}백 개
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-full h-8 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1200"
-                      style={{
-                        width: isPinned
-                          ? `${(Math.log10(3300) / Math.log10(5000000)) * 100}%`
-                          : '0%',
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="text-xs text-muted-foreground text-right"
-                    style={{
-                      opacity: isPinned ? 1 : 0,
-                      transition: 'opacity 0.8s ease-in-out',
-                    }}
-                  >
-                    비율: 약 0.066% (1/1,515)
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 출처 */}
-            <div className="mt-8 text-right">
-              <p className="text-sm text-muted-foreground">
-                *2023 년 생활밀착업종통계기준
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 하단 설명 */}
-        <footer className="text-center space-y-4">
-          <p className="text-lg text-muted-foreground">
-            생활 전반에서 제대로 작동하는{' '}
-            <span className="font-bold text-primary">'모두의 A2A'</span> 를
-            실현하기 위해서는
-          </p>
-          <p className="text-xl font-bold text-foreground">
-            <span className="text-primary">영세 업주의 참여</span>를 통한{' '}
-            <span className="text-primary">업종별 비식별 거래 데이터 확보</span>
-            가 필수적
-          </p>
-        </footer>
+          {/* 오른쪽: 앱 비사용자 */}
+          <CustomerColumn data={nonAppUsersData} />
+        </div>
       </div>
     </div>
   );

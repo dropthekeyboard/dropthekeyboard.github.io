@@ -12,7 +12,7 @@ import {
   User,
 } from 'lucide-react';
 import type { Entity } from '@/contexts/scenario';
-import { getAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import { getEntityAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 
 interface HomeScreenProps {
   className?: string;
@@ -25,7 +25,7 @@ export function HomeScreen({
   entity,
   location = 'customer',
 }: HomeScreenProps) {
-  const displayName = entity?.name || 'Contact';
+  const displayName = entity?.displayName || entity?.name || 'Contact';
 
   // Convert entity type to component sender type
   const getComponentSenderType = (
@@ -48,7 +48,7 @@ export function HomeScreen({
   };
 
   const senderType = getComponentSenderType(entity?.type, location);
-  const avatarProps = getAvatarProps(senderType);
+  const avatarProps = getEntityAvatarProps(entity, senderType);
 
   const apps = [
     { icon: Phone, label: 'Phone', color: 'text-green-500' },
@@ -73,20 +73,26 @@ export function HomeScreen({
       <div className="flex-1 p-6">
         {/* Contact Info */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg overflow-hidden">
-            {avatarProps.src ? (
+          <div className="w-28 h-28 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg overflow-hidden">
+            {entity?.avatarUrl ? (
+              <img
+                src={entity.avatarUrl}
+                alt={entity.displayName || entity.name || 'Avatar'}
+                className="w-full h-full object-cover"
+              />
+            ) : avatarProps.src ? (
               <img
                 src={avatarProps.src}
                 alt={avatarProps.alt}
                 className="w-full h-full object-cover"
               />
             ) : avatarProps.fallbackIcon ? (
-              <avatarProps.fallbackIcon className="w-8 h-8 text-white" />
+              <avatarProps.fallbackIcon className="w-14 h-14 text-white" />
             ) : (
-              <User className="w-8 h-8 text-white" />
+              <User className="w-14 h-14 text-white" />
             )}
           </div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-1">
             {displayName}
           </h2>
         </div>
