@@ -14,7 +14,7 @@ function Slide009() {
   const { line1, line2, line3 } = page9Data;
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex items-center justify-center font-sans overflow-hidden">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex items-center justify-center font-sans overflow-hidden">
       {/* 텍스트 전체를 감싸는 컨테이너 */}
       <div className="flex flex-col items-center gap-3">
         {/* 첫 번째 라인 */}

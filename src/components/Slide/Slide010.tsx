@@ -12,7 +12,7 @@ function Slide010() {
 
   return (
     <div className={cn(
-      'min-h-screen w-full bg-background text-foreground flex flex-col p-8 lg:p-16'
+      'min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col p-8 lg:p-16'
     )}>
       <div className="max-w-7xl w-full mx-auto space-y-16">
         {/* Header Section */}

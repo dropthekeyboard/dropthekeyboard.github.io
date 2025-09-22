@@ -38,7 +38,7 @@ const ComponentBox = ({ label, title, description }: { label: string; title: str
 // 메인 애플리케이션 컴포넌트입니다.
 export default function Slide017() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6 sm:p-10 font-sans text-foreground">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background flex items-center justify-center p-6 sm:p-10 font-sans text-foreground">
       <div className="w-full max-w-5xl mx-auto">
         <header className="mb-8">
           <h1 className="text-4xl font-bold">핵심 구성요소</h1>

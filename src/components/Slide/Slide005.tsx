@@ -60,7 +60,7 @@ function Slide005({ sectionIndex = 0 }: SlideProps) {
   const { header, barChartData, cylinderChartData, footnotes } = page5Data;
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-6xl w-full space-y-8 lg:space-y-12">
         {/* 상단 헤더 */}
         <SlideHeader

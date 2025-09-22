@@ -1,7 +1,7 @@
 // Slide 001: 어깝없이 찾는 그의 목소리 ㅋㅋ 하정우수석 어렸어요?
 function Slide001() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground font-sans relative overflow-hidden">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground font-sans relative overflow-hidden">
       {/* 전체 화면 비디오 - 가장 아래 레이어 */}
       <video
         className="absolute inset-0 w-full h-full object-cover z-0"

@@ -27,7 +27,7 @@ const ChartLabel = ({
 // 메인 슬라이드 컴포넌트
 export default function Slide012() {
   return (
-    <div className="w-full min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-5 box-border overflow-hidden">
+    <div className="w-full min-w-[80vw] min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-5 box-border overflow-hidden">
       <SlideHeader
         title="가치 3. 보편적 접근성"
         className="text-left mb-12 self-start"

@@ -112,7 +112,7 @@ function Slide003() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
+      className="min-h-screen w-full min-w-[80vw] text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
     >
       <div className="max-w-6xl w-full space-y-16 text-center">
         {/* 메인 헤드라인 */}

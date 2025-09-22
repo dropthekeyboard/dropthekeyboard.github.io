@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 // Slide 014: 가치 3. 보편적 접근성
 function Slide014() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-6xl w-full space-y-12">
         {/* 상단 제목 */}
         <header className="text-left">

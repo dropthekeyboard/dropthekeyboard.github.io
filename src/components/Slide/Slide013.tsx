@@ -2,7 +2,7 @@
 // Slide 013: 가치 2. 성공률 보완
 function Slide013() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="w-full max-w-6xl mx-auto rounded-lg p-16 min-h-[600px] flex flex-col justify-center">
         <div className="text-center space-y-8">
           <div className="text-lg text-muted-foreground leading-relaxed">
