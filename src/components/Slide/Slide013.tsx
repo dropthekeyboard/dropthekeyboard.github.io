@@ -2,7 +2,7 @@
 // Slide 013: 가치 2. 성공률 보완
 function Slide013() {
   return (
-    <div className="w-full max-w-6xl mx-auto bg-gray-800 rounded-lg p-16 text-white min-h-[600px] flex flex-col justify-center">
+    <div className="w-full max-w-6xl mx-auto bg-background rounded-lg p-16 text-foreground min-h-[600px] flex flex-col justify-center">
       <div className="text-center space-y-8">
         <div className="text-lg text-gray-300 leading-relaxed">
           전화/문자 기반 A2H로 시작해 수요를 형성하고,

@@ -208,10 +208,7 @@ function Slide004() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
-      style={{
-        background: `radial-gradient(circle at center, #333, #212121)`,
-      }}
+      className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
     >
       <div className="max-w-7xl w-full space-y-16">
         {/* 상단 헤드라인 */}

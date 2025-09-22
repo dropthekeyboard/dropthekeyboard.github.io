@@ -23,8 +23,8 @@ const componentsData = [
 ];
 
 // 개별 컴포넌트 박스를 렌더링하는 재사용 가능한 컴포넌트입니다.
-const ComponentBox = ({ label, title, description }) => (
-  <div className="bg-[#3C3C3C] rounded-xl p-7 flex flex-col justify-between min-h-[220px] border border-[#4A4A4A] shadow-lg transition-transform hover:scale-105 duration-300">
+const ComponentBox = ({ label, title, description }: { label: string; title: string; description: string }) => (
+  <div className="bg-card rounded-xl p-7 flex flex-col justify-between min-h-[220px] border border-border shadow-lg transition-transform hover:scale-105 duration-300">
     <div>
       <p className="text-base text-gray-300 mb-6">{label}</p>
       <h2 className="text-5xl font-bold bg-gradient-to-r from-[#AE90F4] to-[#86B3EF] text-transparent bg-clip-text leading-tight">
@@ -38,7 +38,7 @@ const ComponentBox = ({ label, title, description }) => (
 // 메인 애플리케이션 컴포넌트입니다.
 export default function Slide017() {
   return (
-    <div className="min-h-screen bg-[#282828] flex items-center justify-center p-6 sm:p-10 font-sans text-white">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6 sm:p-10 font-sans text-foreground">
       <div className="w-full max-w-5xl mx-auto">
         <header className="mb-8">
           <h1 className="text-4xl font-bold">핵심 구성요소</h1>
