@@ -55,6 +55,8 @@ export type SlideGSAPSectionProps = PropsWithChildren<{
   pinDistance?: number | string; // when pin is true and end not provided, use "+=<distance>"
   // Context integration
   sectionIndex?: number; // for PinningContext integration
+  // Mobile touch support
+  "data-slide-index"?: number; // for mobile touch navigation
 }>;
 
 const initialMap: Record<AnimationVariant, gsap.TweenVars> = {
@@ -93,6 +95,7 @@ export default function SlideGSAPSection({
   pinSpacing = true,
   pinDistance,
   sectionIndex,
+  "data-slide-index": slideIndex,
 }: SlideGSAPSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -102,16 +105,44 @@ export default function SlideGSAPSection({
     return window.innerWidth <= 768 || 'ontouchstart' in window;
   }, []);
 
-  // Optimize animation settings for mobile
-  const optimizedDuration = useMemo(() => {
-    return isMobile ? Math.max(duration * 0.7, 0.3) : duration;
-  }, [duration, isMobile]);
+  // Enhanced mobile optimization
+  const mobileOptimizations = useMemo(() => {
+    if (!isMobile) return {
+      duration,
+      scrub,
+      refreshPriority: sectionIndex != null ? -sectionIndex : -1,
+      fastScrollEnd: true
+    };
 
-  const optimizedScrub = useMemo(() => {
-    if (scrub === undefined) return undefined;
-    if (typeof scrub === 'boolean') return scrub;
-    return isMobile ? Math.min(scrub * 1.5, 3) : scrub;
-  }, [scrub, isMobile]);
+    return {
+      // Faster animations for mobile
+      duration: Math.max(duration * 0.6, 0.2),
+      // More responsive scrub values
+      scrub: scrub === undefined ? undefined :
+             typeof scrub === 'boolean' ? scrub :
+             Math.min(scrub * 1.2, 2),
+      // Higher refresh priority for smoother performance
+      refreshPriority: sectionIndex != null ? -sectionIndex - 100 : -100,
+      // Faster scroll end detection
+      fastScrollEnd: 0.3
+    };
+  }, [duration, scrub, isMobile, sectionIndex]);
+
+  // Touch event conflict prevention
+  const touchConflictPrevention = useMemo(() => {
+    if (!isMobile) return {};
+
+    return {
+      // Prevent passive event listeners for better touch control
+      passiveListeners: false,
+      // Reduce callback frequency on mobile
+      syncInterval: 200,
+      // Limit refresh events to prevent conflicts
+      autoRefreshEvents: "resize",
+      // Improve touch responsiveness
+      anticipatePin: pin ? 0.5 : 0
+    };
+  }, [isMobile, pin]);
 
   // Get PinningContext functions - use useContext directly to avoid conditional hook calls
   const pinningContext = useContext(PinningContext);
@@ -139,9 +170,15 @@ export default function SlideGSAPSection({
     const tweenVarsFrom = initialMap[variant];
     const tweenVarsTo = {
       ...targetMap[variant],
-      duration: optimizedDuration,
-      delay: isMobile ? delay * 0.5 : delay,
-      ease
+      duration: mobileOptimizations.duration,
+      delay: isMobile ? delay * 0.3 : delay,
+      ease: isMobile ? "power1.out" : ease, // Simpler easing for mobile performance
+      // Mobile-specific optimizations
+      ...(isMobile ? {
+        force3D: true,
+        transformOrigin: "center center",
+        will_change: "transform, opacity"
+      } : {})
     } as gsap.TweenVars;
 
     const st: ScrollTrigger.Vars = {
@@ -151,17 +188,19 @@ export default function SlideGSAPSection({
       start: pin ? "top top" : start,
       end: pin ? (end || (pinDistance ? "+=" + pinDistance : "+=1500")) : end,
       toggleActions: once ? "play none none none" : "play none none reverse",
-      ...(optimizedScrub !== undefined ? { scrub: optimizedScrub } : {}),
+      ...(mobileOptimizations.scrub !== undefined ? { scrub: mobileOptimizations.scrub } : {}),
       ...(pin ? {
         pin,
         pinSpacing,
-        anticipatePin: 1,
-        fastScrollEnd: true,
+        anticipatePin: touchConflictPrevention.anticipatePin || 1,
+        fastScrollEnd: mobileOptimizations.fastScrollEnd,
         preventOverlaps: true
       } : {}),
       // Enhanced ScrollTrigger configuration for smooth animations
       invalidateOnRefresh: true,
-      refreshPriority: sectionIndex != null ? -sectionIndex : -1,
+      refreshPriority: mobileOptimizations.refreshPriority,
+      // Mobile-specific touch conflict prevention
+      ...touchConflictPrevention,
       // Add onToggle callback for PinningContext integration - 안전성 강화
       ...(updateSectionState != null && sectionIndex != null ? {
         onToggle: (self) => {
@@ -190,7 +229,7 @@ export default function SlideGSAPSection({
         }
       },
       // Add onUpdate callback for smooth scrub animations with validation - 안전성 강화
-      ...(optimizedScrub !== undefined ? {
+      ...(mobileOptimizations.scrub !== undefined ? {
         onUpdate: (self) => {
           try {
             if (hasTargets(self.animation) && self.progress !== undefined) {
@@ -200,11 +239,6 @@ export default function SlideGSAPSection({
             console.warn('SlideGSAPSection onUpdate error:', error);
           }
         }
-      } : {}),
-      // Mobile optimization: reduce callbacks
-      ...(isMobile ? {
-        callbackScope: containerElement,
-        fastScrollEnd: 0.5
       } : {})
     };
 
@@ -251,16 +285,35 @@ export default function SlideGSAPSection({
     // No manual cleanup needed - useGSAP handles it automatically via gsap.context()
   }, {
     scope: containerRef,
-    dependencies: [variant, optimizedDuration, delay, ease, stagger, start, end, optimizedScrub, once, pin, pinSpacing, pinDistance, sectionIndex, updateSectionState, isMobile]
+    dependencies: [variant, mobileOptimizations, delay, ease, stagger, start, end, once, pin, pinSpacing, pinDistance, sectionIndex, updateSectionState, isMobile, touchConflictPrevention]
   });
 
   const pinStyle = useMemo(() => ({
     minHeight: pin ? "100vh" : undefined,
-  }) as React.CSSProperties, [pin]);
+    // Mobile touch optimizations
+    ...(isMobile ? {
+      touchAction: 'pan-y',
+      WebkitOverflowScrolling: 'touch',
+      overscrollBehavior: 'contain'
+    } : {})
+  }) as React.CSSProperties, [pin, isMobile]);
 
   return (
-    <section ref={containerRef} className={className} style={pinStyle}>
-      <div data-anim className="relative w-full h-full">
+    <section
+      ref={containerRef}
+      className={className}
+      style={pinStyle}
+      data-slide-index={slideIndex}
+    >
+      <div
+        data-anim
+        className="relative w-full h-full"
+        style={isMobile ? {
+          willChange: 'transform, opacity',
+          backfaceVisibility: 'hidden',
+          perspective: 1000
+        } : {}}
+      >
         {children}
       </div>
     </section>

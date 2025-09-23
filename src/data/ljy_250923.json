@@ -1,0 +1,192 @@
+{
+  "use_case_1_restaurant_reservation": {
+    "id": "use_case_1_restaurant_reservation",
+    "title": "식당 예약 (Use Case 1)",
+    "description": "Agent가 고객을 대신하여 식당 예약 및 와인 재고를 확인하고, API를 통해 와인 추천까지 제공하는 시나리오",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "customer_agent",
+        "displayName": "고객 에이전트",
+        "avatarUrl": "/assets/avatars/customer_agent.png",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "customer",
+      "displayName": "이정윤 고객",
+      "avatarUrl": "/assets/avatars/customer.png",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "human",
+        "name": "restaurant_owner",
+        "displayName": "명동키친 사장님",
+        "avatarUrl": "/assets/avatars/restaurant_owner.png",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "오늘 **저녁 7시쯤에 8명** 정도 와인동호회 모임할만한 이탈리안 식당 찾아서 예약해줘. 아마로네 와인 재고 있는지도 확인해줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "네, 주로 이용하시는 서울 2호선 라인의 와인이 유명한 이탈리안 식당 정보를 확인해볼게요.",
+          "type": "text",
+          "reason": "고객의 예약 요청에 따라, 프로필과 과거 선호도를 기반으로 자주 이용하시는 서울 2호선 라인의 레스토랑부터 검색을 시작하고 진행 상황을 알려드려야겠다."
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "reason": "적절한 식당을 찾았으니, 이제 8명 예약 가능 여부와 아마로네 와인 재고를 문의하기 위해 전화를 걸어야겠다."
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "## **[고객 예약 요청]**\n안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 **오늘 19시, 8명 단체 예약** 예정입니다. 예약 가능여부 및 아마로네 와인 재고 응답해주시면 전달드리겠습니다.",
+          "type": "voice",
+          "reason": "전화가 연결되었으니, SKT 인증 에이전트임을 밝히고 고객의 요청(저녁 7시 8명 예약, 아마로네 와인 재고 확인)을 명확하게 전달해야겠다."
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_owner",
+          "to": "customer_agent",
+          "content": "와인 재고는 충분히 있는데, 7시는 어렵고 8시/9시 타임 비어있어요.",
+          "type": "voice"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "정윤님, 요청하신 조건에 맞는 식당 두 곳의 실시간 확인을 마쳤습니다.\n어디로 예약해 드릴까요?\n\n---\n## **[예약 가능 식당 리스트]**\n### 1️⃣ 명동키친  \n**예약 가능 시간**: 19시 가능  \n**아마로네 재고**: 보유 ⭕  \n**식당 링크**: [바로가기](https://naver.me/xmxMt9Ix)  \n\n**추가 정보**  \n- 평점: ★★★★☆ (4.3/5)  \n- 콜키지: 30,000원 (병당)  \n- 주요 메뉴: 파스타, 안심스테이크, 리소토  \n- 주차: 건물 내 주차장(2시간 무료)  \n- 와인 특징: 이탈리아 레드 와인 위주, 아마로네 상시 구비  \n\n---\n\n### 2️⃣ 오스테리아 꼬또  \n**예약 가능 시간**: 저녁 8시 또는 9시 가능 (7시 불가)  \n**아마로네 재고**: 보유 ⭕  \n**식당 링크**: [바로가기](https://naver.me/FEUvX7cf)  \n\n**추가 정보**  \n- 평점: ★★★★☆ (4.5/5)  \n- 콜키지: 25,000원 (병당)  \n- 주요 메뉴: 트러플 파스타, 티본 스테이크, 라구 볼로네제  \n- 주차: 발렛 파킹 가능 (5,000원)  \n- 와인 특징: 이탈리아 토스카나 와인 중심, 프리미엄 와인 라인업  ",
+          "type": "text",
+          "reason": "확인된 식당 정보를 Markdown을 사용해 구조화하여 고객이 명확하게 비교하고 선택할 수 있도록 제시해야겠다."
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "명동키친으로. 아마로네 와인도 3병 미리 확보 해줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "## **[고객 예약 확정 요청] \n안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 오늘 19시, 8명 단체 예약 확정하려고 합니다. 고객님이 미리 아마로네 와인 3병 세팅 요청하셨습니다. 예약 가능할까요? \n\n---\n**[빠른 답변 선택]**\n1. 예약 확정\n2. 예약 불가\n3. 직접 통화 연결",
+          "type": "text",
+          "reason": "고객이 식당을 선택했고 와인 3병 확보를 요청했으니, 효율적인 예약을 위해 식당에 문자로 확정 요청을 보내고 간편한 응답 옵션을 제공해야겠다."
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_owner",
+          "to": "customer_agent",
+          "content": "1",
+          "type": "text"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "정윤님, ** 명동키친 / 9/23 19시 / 8명 ** 예약이 확정되었습니다.\n예약 시간 1시간 전에 알림 문자를 보내드릴게요.",
+          "type": "text",
+          "reason": "식당 예약이 확정되었으니, 고객에게 명확하게 알리고 예정된 리마인더에 대해 안내해야겠다."
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "🗓️ 일정을 구글 캘린더에 등록해 드릴까요?",
+          "type": "text",
+          "reason": "예약 확인 후, 고객의 편의를 위해 캘린더 등록이라는 추가적인 제안을 별도의 메시지로 보내 집중도를 높여야겠다."
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer",
+          "to": "customer_agent",
+          "content": "응. '와인 모임'으로 된 공유 캘린더에 등록해주고, 모임 멤버들한테도 1시간 전에 문자 알림 줘.",
+          "type": "text"
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "amazon_api",
+          "service": "amazon",
+          "request": "wine recommendations",
+          "reason": "고객의 요청(캘린더 등록, 멤버 알림)이 완료되었음을 명확히 보고해야겠다.\n고객 요청 처리를 완료한 후, 와인 추천 API를 통해 받은 정보를 Markdown으로 보기 좋게 가공하여 추가적인 가치를 제안해야겠다."
+        }
+      },
+      {
+        "type": "api-response",
+        "action": {
+          "from": "amazon_api",
+          "to": "customer_agent",
+          "service": "amazon",
+          "response": "요청하신 '와인 모임' 공유 캘린더에 일정을 등록했습니다.\n참석 멤버분들께도 예약 1시간 전에 알림을 보내드릴게요.\n\n---\n\n와인 모임을 위해 메뉴와 잘 어울릴만한 와인들도 추가 준비해보시는 건 어떤가요? \n\n---\n\n## **[🍷 오늘의 추천 와인 ]\n**### <span style=\"color:#8B0000\">피노 그리지오</span>  \n![피노 그리지오](https://upload.wikimedia.org/wikipedia/commons/4/48/Pinot_Grigio.jpg)  \n*해산물 파스타와 잘 어울려요, 산뜻한 맛*  \n👉 [아마존에서 보기](https://amazon.com/wine/pinot-grigio)  \n\n---\n\n### <span style=\"color:#8B0000\">모스카토 다스티</span>  \n![모스카토 다스티](https://upload.wikimedia.org/wikipedia/commons/3/36/Moscato_d%27Asti.jpg)  \n*고르곤졸라 피자에 추천해요, 단맛이 있는 와인*  \n👉 [아마존에서 보기](https://amazon.com/wine/moscato)  \n\n---\n\n### <span style=\"color:#8B0000\">바롤로</span>  \n![바롤로](https://upload.wikimedia.org/wikipedia/commons/2/24/Barolo_bottle.jpg)  \n*양고기 로스트와 잘 어울려요. 높은 산도와 묵직함이 특징*  \n👉 [아마존에서 보기](https://amazon.com/wine/barolo)  "
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "## **[리마인더] \n정윤님, **명동키친 방문 1시간 전**이에요! 방문 장소까지 최소 시간이 소요되는 대중교통 경로를 제공해드릴까요?",
+          "type": "text",
+          "reason": "예약 시간까지 한 시간 남았으니, 예정대로 고객에게 리마인더를 보내고 식당까지의 길 안내를 제안해야겠다."
+        }
+      }
+    ]
+  }
+}

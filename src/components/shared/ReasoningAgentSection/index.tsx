@@ -64,14 +64,14 @@ function ReasoningStepComponent({
         }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
         className={cn(
-          'flex items-center p-3 rounded-lg border backdrop-blur-sm w-full',
+          'flex items-center p-2 sm:p-3 rounded-lg border backdrop-blur-sm w-full',
           isDark
             ? 'bg-gray-800/40 border-gray-600/30'
             : 'bg-gray-50/60 border-gray-300/50',
           step.type === 'input'
-            ? 'justify-start mr-auto max-w-[75%]' // Input from others - align left
+            ? 'justify-start mr-auto max-w-[85%] sm:max-w-[75%]' // Input from others - align left
             : step.type === 'output'
-              ? 'justify-end ml-auto max-w-[75%]'   // Output from agent - align right
+              ? 'justify-end ml-auto max-w-[85%] sm:max-w-[75%]'   // Output from agent - align right
               : 'justify-center',
           isActive &&
             step.type === 'reasoning' &&
@@ -81,11 +81,11 @@ function ReasoningStepComponent({
         )}
       >
         {step.type === 'input' && (
-          <div className="flex items-center space-x-2">
-            <Download className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+          <div className="flex items-center space-x-3">
+            <Download className="w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0" />
             <span
               className={cn(
-                'text-sm font-medium',
+                'text-sm font-medium truncate',
                 isDark ? 'text-gray-300' : 'text-gray-700'
               )}
             >
@@ -136,16 +136,16 @@ function ReasoningStepComponent({
         )}
 
         {step.type === 'output' && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <span
               className={cn(
-                'text-sm font-medium',
+                'text-sm font-medium truncate',
                 isDark ? 'text-gray-300' : 'text-gray-700'
               )}
             >
               {step.actionType ? `${step.actionType} Sent` : 'Message Sent'}
             </span>
-            <Upload className="w-4 h-4 text-green-500 dark:text-green-400" />
+            <Upload className="w-4 h-4 text-green-500 dark:text-green-400 flex-shrink-0" />
           </div>
         )}
 
@@ -324,41 +324,41 @@ function ReasoningStepComponent({
       exit={{ opacity: 0, x: step.type === 'input' ? -20 : 20 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'flex items-center p-3 rounded-lg border backdrop-blur-sm w-full',
+        'flex items-center p-2 sm:p-3 rounded-lg border backdrop-blur-sm w-full',
         getBackgroundColor(),
         getBorderColor(),
         step.type === 'input'
-          ? 'justify-start mr-auto max-w-[75%]' // Input from others - align left
-          : 'justify-end ml-auto max-w-[75%]'   // Output from agent - align right
+          ? 'justify-start mr-auto max-w-[85%] sm:max-w-[75%]' // Input from others - align left
+          : 'justify-end ml-auto max-w-[85%] sm:max-w-[75%]'   // Output from agent - align right
       )}
     >
       {step.type === 'input' && (
         <>
-          <Download className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          <div className="flex-1">
+          <Download className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+          <div className="flex-1 ml-3 min-w-0">
             <div className="flex items-center space-x-2">
-              <span className={cn('text-sm font-medium', getStepColor())}>
+              <span className={cn('text-sm font-medium truncate', getStepColor())}>
                 {step.actionType || 'Input'}
               </span>
-              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Received</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Received</p>
           </div>
         </>
       )}
 
       {step.type === 'output' && (
         <>
-          <div className="flex-1 text-right">
+          <div className="flex-1 mr-3 text-right min-w-0">
             <div className="flex items-center justify-end space-x-2">
-              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-              <span className={cn('text-sm font-medium', getStepColor())}>
+              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+              <span className={cn('text-sm font-medium truncate', getStepColor())}>
                 {step.actionType || 'Output'}
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Sent</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Sent</p>
           </div>
-          <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
         </>
       )}
     </motion.div>

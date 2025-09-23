@@ -1,4 +1,4 @@
-import type { Entity } from '@/contexts/scenario';
+import type { Entity, Message } from '@/contexts/scenario';
 
 export interface MessageContent {
   text: string;
@@ -12,7 +12,7 @@ export interface MarkdownOptions {
 }
 
 export interface MessageBubbleProps {
-  message: string;
+  message: Message;
   isOwnMessage: boolean;
   senderType?: 'user' | 'ai' | 'agent' | 'server-human';
   isTyping?: boolean;

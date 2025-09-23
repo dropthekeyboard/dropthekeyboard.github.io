@@ -96,95 +96,108 @@ export function MessageBubble({
                   isOwnMessage ? 'text-right' : 'text-left'
                 )}
               >
-                <ReactMarkdown
-                  remarkPlugins={markdownOptions.enableGfm ? [remarkGfm] : []}
-                  components={{
-                    a: ({ href, children, ...props }) => (
-                      <a
-                        href={href}
-                        target={markdownOptions.linkTarget}
-                        rel="noopener noreferrer"
-                        className="text-inherit hover:opacity-80 underline decoration-1 underline-offset-2 transition-opacity duration-200"
-                        {...props}
-                      >
-                        {children}
-                      </a>
-                    ),
-                    hr: ({ ...props }) => (
-                      <hr className="border-current/20 my-2" {...props} />
-                    ),
-                    h1: ({ children, ...props }) => (
-                      <h1
-                        className="text-base font-semibold mb-1 mt-2 first:mt-0"
-                        {...props}
-                      >
-                        {children}
-                      </h1>
-                    ),
-                    h2: ({ children, ...props }) => (
-                      <h2
-                        className="text-sm font-semibold mb-1 mt-2 first:mt-0"
-                        {...props}
-                      >
-                        {children}
-                      </h2>
-                    ),
-                    h3: ({ children, ...props }) => (
-                      <h3
-                        className="text-sm font-medium mb-1 mt-1 first:mt-0"
-                        {...props}
-                      >
-                        {children}
-                      </h3>
-                    ),
-                    p: ({ children, ...props }) => (
-                      <p className="mb-1 last:mb-0" {...props}>
-                        {children}
-                      </p>
-                    ),
-                    ul: ({ children, ...props }) => (
-                      <ul
-                        className="mb-1 last:mb-0 pl-4 space-y-0.5"
-                        {...props}
-                      >
-                        {children}
-                      </ul>
-                    ),
-                    ol: ({ children, ...props }) => (
-                      <ol
-                        className="mb-1 last:mb-0 pl-4 space-y-0.5"
-                        {...props}
-                      >
-                        {children}
-                      </ol>
-                    ),
-                    li: ({ children, ...props }) => (
-                      <li className="text-sm" {...props}>
-                        {children}
-                      </li>
-                    ),
-                    strong: ({ children, ...props }) => (
-                      <strong className="font-semibold" {...props}>
-                        {children}
-                      </strong>
-                    ),
-                    blockquote: ({ children, ...props }) => (
-                      <blockquote
-                        className="border-l-2 border-current/30 pl-2 italic text-current/80 my-1"
-                        {...props}
-                      >
-                        {children}
-                      </blockquote>
-                    ),
-                  }}
-                  disallowedElements={
-                    markdownOptions.allowHtml
-                      ? []
-                      : ['script', 'iframe', 'object', 'embed']
-                  }
-                >
-                  {message}
-                </ReactMarkdown>
+                {message.type === 'image' && message.imageUrl ? (
+                  <div className="space-y-2">
+                    <img
+                      src={message.imageUrl}
+                      alt={message.content || '이미지'}
+                      className="max-w-xs max-h-60 rounded-lg object-cover"
+                    />
+                    {message.content && (
+                      <div className="text-sm text-muted-foreground">{message.content}</div>
+                    )}
+                  </div>
+                ) : (
+                  <ReactMarkdown
+                    remarkPlugins={markdownOptions.enableGfm ? [remarkGfm] : []}
+                    components={{
+                      a: ({ href, children, ...props }) => (
+                        <a
+                          href={href}
+                          target={markdownOptions.linkTarget}
+                          rel="noopener noreferrer"
+                          className="text-inherit hover:opacity-80 underline decoration-1 underline-offset-2 transition-opacity duration-200"
+                          {...props}
+                        >
+                          {children}
+                        </a>
+                      ),
+                      hr: ({ ...props }) => (
+                        <hr className="border-current/20 my-2" {...props} />
+                      ),
+                      h1: ({ children, ...props }) => (
+                        <h1
+                          className="text-base font-semibold mb-1 mt-2 first:mt-0"
+                          {...props}
+                        >
+                          {children}
+                        </h1>
+                      ),
+                      h2: ({ children, ...props }) => (
+                        <h2
+                          className="text-sm font-semibold mb-1 mt-2 first:mt-0"
+                          {...props}
+                        >
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children, ...props }) => (
+                        <h3
+                          className="text-sm font-medium mb-1 mt-1 first:mt-0"
+                          {...props}
+                        >
+                          {children}
+                        </h3>
+                      ),
+                      p: ({ children, ...props }) => (
+                        <p className="mb-1 last:mb-0" {...props}>
+                          {children}
+                        </p>
+                      ),
+                      ul: ({ children, ...props }) => (
+                        <ul
+                          className="mb-1 last:mb-0 pl-4 space-y-0.5"
+                          {...props}
+                        >
+                          {children}
+                        </ul>
+                      ),
+                      ol: ({ children, ...props }) => (
+                        <ol
+                          className="mb-1 last:mb-0 pl-4 space-y-0.5"
+                          {...props}
+                        >
+                          {children}
+                        </ol>
+                      ),
+                      li: ({ children, ...props }) => (
+                        <li className="text-sm" {...props}>
+                          {children}
+                        </li>
+                      ),
+                      strong: ({ children, ...props }) => (
+                        <strong className="font-semibold" {...props}>
+                          {children}
+                        </strong>
+                      ),
+                      blockquote: ({ children, ...props }) => (
+                        <blockquote
+                          className="border-l-2 border-current/30 pl-2 italic text-current/80 my-1"
+                          {...props}
+                        >
+                          {children}
+                        </blockquote>
+                      ),
+                    }}
+                    disallowedElements={
+                      markdownOptions.allowHtml
+                        ? []
+                        : ['script', 'iframe', 'object', 'embed']
+                    }
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                )}
               </motion.div>
             ) : (
               <motion.span
@@ -196,7 +209,20 @@ export function MessageBubble({
                   isOwnMessage ? 'text-right' : 'text-left'
                 )}
               >
-                {message}
+                {message.type === 'image' && message.imageUrl ? (
+                  <div className="space-y-2">
+                    <img
+                      src={message.imageUrl}
+                      alt={message.content || '이미지'}
+                      className="max-w-xs max-h-60 rounded-lg object-cover"
+                    />
+                    {message.content && (
+                      <div className="text-sm text-muted-foreground">{message.content}</div>
+                    )}
+                  </div>
+                ) : (
+                  message.content
+                )}
               </motion.span>
             )}
           </div>

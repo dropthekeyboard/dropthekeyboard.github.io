@@ -108,7 +108,7 @@ export function MessageScreen({
                     className="w-full mb-3"
                   >
                     <MessageBubble
-                      message={msg.content}
+                      message={msg}
                       isOwnMessage={msg.from === ownerName}
                       senderType={getComponentSenderType(msg.senderType)}
                       timestamp={msg.timestamp}
@@ -134,7 +134,15 @@ export function MessageScreen({
                 className="w-full mb-3"
               >
                 <MessageBubble
-                  message=""
+                  message={{
+                    id: 'typing',
+                    from: contactName,
+                    to: ownerName,
+                    content: '',
+                    type: 'text',
+                    senderType: 'agent',
+                    timestamp: Date.now(),
+                  }}
                   isOwnMessage={false}
                   isTyping={true}
                 />

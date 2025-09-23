@@ -33,10 +33,19 @@ export function SMSPhoneView({ title, content, className }: SMSPhoneViewProps) {
               {content.messages.map((message, index) => (
                 <MessageBubble
                   key={index}
-                  message={message.text}
+                  message={{
+                    id: `sms-${index}`,
+                    from: message.from,
+                    to: message.from === 'owner' ? 'customer' : 'owner',
+                    content: message.text,
+                    type: 'text',
+                    senderType: message.from === 'system' ? 'agent' : 'customer',
+                    timestamp: message.timestamp ? new Date(message.timestamp).getTime() : Date.now(),
+                  }}
                   isOwnMessage={message.from === 'owner'}
                   senderType={message.from === 'system' ? 'agent' : 'user'}
-                  timestamp={message.timestamp ? Date.now() : undefined}
+                  timestamp={message.timestamp ? new Date(message.timestamp).getTime() : undefined}
+                  enableMarkdown={message.from === 'system'}
                   entity={{
                     type: 'human',
                     name: message.from === 'customer' ? '고객' : 
