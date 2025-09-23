@@ -7,9 +7,10 @@ import { useEffect, useRef } from 'react';
 interface PhoneFrameProps {
   children: React.ReactNode;
   className?: string;
+  statusBarVariant?: 'default' | 'program';
 }
 
-export function PhoneFrame({ children, className }: PhoneFrameProps) {
+export function PhoneFrame({ children, className, statusBarVariant = 'default' }: PhoneFrameProps) {
   const { isDark } = useTheme();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +51,7 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
           )}>
             {/* Status Bar */}
             <div className="relative z-10">
-              <StatusBar />
+              <StatusBar variant={statusBarVariant} />
             </div>
 
             {/* Screen Content */}

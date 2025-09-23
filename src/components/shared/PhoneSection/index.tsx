@@ -20,6 +20,7 @@ interface PhoneSectionProps {
   from?: string;
   showAdditionalStatus?: boolean;
   location?: 'customer' | 'server';
+  statusBarVariant?: 'default' | 'program';
 }
 
 export function PhoneSection({
@@ -32,6 +33,7 @@ export function PhoneSection({
   from,
   showAdditionalStatus: _showAdditionalStatus = false, // eslint-disable-line @typescript-eslint/no-unused-vars
   location = 'customer',
+  statusBarVariant = 'default',
 }: PhoneSectionProps) {
   const { state } = useScenario();
 
@@ -82,7 +84,7 @@ export function PhoneSection({
           'relative landscape:w-[30vw] portrait:w-[40vw] aspect-[9/16]'
         )}
       >
-        <PhoneFrame>
+        <PhoneFrame statusBarVariant={statusBarVariant}>
           <AnimatePresence mode="wait">
             {entity?.state === 'call' ? (
               <motion.div
