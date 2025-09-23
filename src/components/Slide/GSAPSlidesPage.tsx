@@ -2,7 +2,7 @@
 import { ScenarioSection } from "@/components/Test/ScenarioSection";
 import { PinningProvider } from "@/contexts/pinning";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
+import { useLayoutEffect, useRef, useEffect } from "react";
 import {
   ImageSlide,
   Slide001,
@@ -14,140 +14,9 @@ import {
 } from ".";
 
 export default function GSAPSlidesPage() {
-  // Touch gesture state
   const containerRef = useRef<HTMLDivElement>(null);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isSwipeActive, setIsSwipeActive] = useState(false);
 
-  // Total number of slides
-  const totalSlides = 18; // 0-17 (18 slides total)
 
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth <= 768 || 'ontouchstart' in window;
-      setIsMobile(mobile);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Touch gesture handlers
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (!isMobile) return;
-
-    const touch = e.touches[0];
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: Date.now()
-    };
-    setIsSwipeActive(true);
-  }, [isMobile]);
-
-  const handleTouchEnd = useCallback((e: TouchEvent) => {
-    if (!isMobile || !touchStartRef.current) return;
-
-    const touch = e.changedTouches[0];
-    const touchEnd = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: Date.now()
-    };
-
-    const deltaX = touchEnd.x - touchStartRef.current.x;
-    const deltaY = touchEnd.y - touchStartRef.current.y;
-    const deltaTime = touchEnd.time - touchStartRef.current.time;
-
-    // Swipe detection criteria
-    const minSwipeDistance = 50;
-    const maxSwipeTime = 500;
-    const maxVerticalDistance = 100;
-
-    // Check if it's a valid horizontal swipe
-    if (Math.abs(deltaX) > minSwipeDistance &&
-        Math.abs(deltaY) < maxVerticalDistance &&
-        deltaTime < maxSwipeTime) {
-
-      if (deltaX > 0) {
-        // Swipe right - go to previous slide
-        navigateToSlide(Math.max(0, currentSlideIndex - 1));
-      } else {
-        // Swipe left - go to next slide
-        navigateToSlide(Math.min(totalSlides - 1, currentSlideIndex + 1));
-      }
-    }
-
-    touchStartRef.current = null;
-    setIsSwipeActive(false);
-  }, [isMobile, currentSlideIndex, totalSlides]);
-
-  // Navigate to specific slide
-  const navigateToSlide = useCallback((slideIndex: number) => {
-    if (slideIndex < 0 || slideIndex >= totalSlides) return;
-
-    const slideElement = document.querySelector(`[data-slide-index="${slideIndex}"]`);
-    if (slideElement) {
-      slideElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-      setCurrentSlideIndex(slideIndex);
-    }
-  }, [totalSlides]);
-
-  // Add touch event listeners and scroll tracking
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !isMobile) return;
-
-    // Touch event listeners
-    container.addEventListener('touchstart', handleTouchStart, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-    // Scroll tracking for current slide indicator
-    const handleScroll = () => {
-      const slides = container.querySelectorAll('[data-slide-index]');
-      const viewportHeight = window.innerHeight;
-
-      let closestSlideIndex = 0;
-      let closestDistance = Infinity;
-
-      slides.forEach((slide, index) => {
-        const rect = slide.getBoundingClientRect();
-        const slideCenter = rect.top + rect.height / 2;
-        const viewportCenter = viewportHeight / 2;
-        const distance = Math.abs(slideCenter - viewportCenter);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestSlideIndex = index;
-        }
-      });
-
-      setCurrentSlideIndex(closestSlideIndex);
-    };
-
-    // Throttled scroll handler for performance
-    let scrollTimeout: NodeJS.Timeout;
-    const throttledScrollHandler = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(handleScroll, 100);
-    };
-
-    window.addEventListener('scroll', throttledScrollHandler, { passive: true });
-
-    return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('scroll', throttledScrollHandler);
-      clearTimeout(scrollTimeout);
-    };
-  }, [handleTouchStart, handleTouchEnd, isMobile]);
 
   // Global ScrollTrigger management
   useLayoutEffect(() => {
@@ -219,29 +88,7 @@ export default function GSAPSlidesPage() {
       <div
         ref={containerRef}
         className="overflow-x-hidden"
-        style={{ touchAction: isMobile ? 'pan-y' : 'auto' }}
       >
-        {/* Mobile Navigation Indicator */}
-        {isMobile && (
-          <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1 transition-all duration-200 ${
-            isSwipeActive ? 'scale-110 bg-black/30' : 'scale-100'
-          }`}>
-            <div className="flex space-x-1">
-              {Array.from({ length: totalSlides }, (_, i) => (
-                <div
-                  key={i}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    i === currentSlideIndex ? 'bg-white scale-125' : 'bg-white/40'
-                  } ${isSwipeActive ? 'animate-pulse' : ''}`}
-                />
-              ))}
-            </div>
-            {/* Swipe Guide */}
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 text-xs whitespace-nowrap">
-              ← 스와이프하여 탐색 →
-            </div>
-          </div>
-        )}
 
         {/* All Slides with different animations */}
         <SlideGSAPSection
