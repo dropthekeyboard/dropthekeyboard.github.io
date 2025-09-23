@@ -1,9 +1,10 @@
 import { PhoneFrame } from '@/components/shared/PhoneFrame';
 import { MessageScreen } from '@/components/shared/MessageScreen';
-import { CallScreen } from '@/components/shared/CallScreen';
+import { VoiceScreen } from '@/components/shared/VoiceScreen';
 import { HomeScreen } from '@/components/shared/HomeScreen';
 import { SectionLabel } from '@/components/shared/SectionLabel';
 import { IncomingCallOverlay } from '@/components/shared/CallScreen/IncomingCallOverlay';
+import { OutgoingCallOverlay } from '@/components/shared/CallScreen/OutgoingCallOverlay';
 import { ThemeOverride } from '@/contexts/theme';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,9 +17,6 @@ interface PhoneSectionProps {
   labelColor: string;
   animationDirection: 'left' | 'right';
   contactName?: string;
-  contactNumber: string;
-  from?: string;
-  showAdditionalStatus?: boolean;
   location?: 'customer' | 'server';
   statusBarVariant?: 'default' | 'program';
   voiceBubbleVariant?: 'default' | 'program';
@@ -30,9 +28,6 @@ export function PhoneSection({
   labelColor,
   animationDirection,
   contactName = 'Contact',
-  contactNumber,
-  from,
-  showAdditionalStatus: _showAdditionalStatus = false, // eslint-disable-line @typescript-eslint/no-unused-vars
   location = 'customer',
   statusBarVariant = 'default',
   voiceBubbleVariant = 'default',
@@ -90,7 +85,7 @@ export function PhoneSection({
           <AnimatePresence mode="wait">
             {entity?.state === 'call' ? (
               <motion.div
-                key="call-screen"
+                key="voice-screen"
                 initial={{ opacity: 0, x: 300, scale: 0.95 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: -300, scale: 0.95 }}
@@ -101,13 +96,10 @@ export function PhoneSection({
                 }}
                 className="absolute inset-0"
               >
-                <CallScreen
-                  contactName={entity?.displayName || entity?.name || contactName}
-                  ownerName={entity?.name || 'Unknown'}
-                  contactNumber={contactNumber}
-                  callDuration={0}
+                <VoiceScreen
                   voiceMessages={voiceMessages}
-                  from={from}
+                  ownerName={entity?.name || 'Unknown'}
+                  contactName={entity?.displayName || entity?.name || contactName}
                   entity={entity}
                   variant={voiceBubbleVariant}
                 />
@@ -115,6 +107,20 @@ export function PhoneSection({
             ) : entity?.state === 'idle' ? (
               <motion.div
                 key="home-screen"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
+                }}
+                className="absolute inset-0"
+              >
+                <HomeScreen entity={entity} location={location} />
+              </motion.div>
+            ) : entity?.state === 'ring' ? (
+              <motion.div
+                key="home-screen-with-overlay"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -160,13 +166,22 @@ export function PhoneSection({
           delay={0.3}
         />
 
-        {/* Call state indicator */}
+        {/* Call state overlays */}
         {entity && (
-          <IncomingCallOverlay 
-            state={entity.state} 
-            callerName={callerName}
-            callerEntity={callerEntity}
-          />
+          <>
+            <IncomingCallOverlay 
+              state={entity.state} 
+              callerName={callerName}
+              callerEntity={callerEntity}
+              ownerName={entity.name || 'Unknown'}
+            />
+            <OutgoingCallOverlay 
+              state={entity.state} 
+              calleeName={callerName}
+              calleeEntity={callerEntity}
+              ownerName={entity.name || 'Unknown'}
+            />
+          </>
         )}
       </motion.div>
     </ThemeOverride>
