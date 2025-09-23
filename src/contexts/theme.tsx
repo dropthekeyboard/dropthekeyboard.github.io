@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import {
   ThemeContext,
@@ -160,6 +160,37 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     isDark: themeState.resolvedTheme === 'dark',
     isSystem: themeState.theme === 'system',
   };
+
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+interface ThemeOverrideProviderProps extends ThemeProviderProps {
+  theme: Theme;
+}
+
+
+export function ThemeOverride({children, theme}: ThemeOverrideProviderProps) {
+  const resolvedTheme = theme === 'system' 
+    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    : theme;
+
+  const contextValue: ThemeContextType = useMemo(() => {
+    return {
+      theme,
+      resolvedTheme,
+      setTheme: () => {}, // No-op for overridden theme
+      toggleTheme: () => {}, // No-op for overridden theme
+      cycleTheme: () => {}, // No-op for overridden theme
+      getSystemTheme: () => window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+      isLight: resolvedTheme === 'light',
+      isDark: resolvedTheme === 'dark',
+      isSystem: theme === 'system',
+    };
+  }, [theme, resolvedTheme]);
 
   return (
     <ThemeContext.Provider value={contextValue}>
