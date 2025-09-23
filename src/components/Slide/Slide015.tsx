@@ -1,7 +1,7 @@
 // Slide 015: 누구나 바로 쓸 수 있는 채널에서 시작하는 모두의 가능 A2A
 function Slide015() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-6xl w-full space-y-12">
         {/* 상단 설명 */}
         <div className="text-center space-y-6">

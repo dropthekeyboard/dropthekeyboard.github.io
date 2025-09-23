@@ -1,4 +1,4 @@
-import type { Entity } from '@/contexts/scenario';
+import type { Entity, Message } from '@/contexts/scenario';
 
 export interface MessageContent {
   text: string;
@@ -12,7 +12,7 @@ export interface MarkdownOptions {
 }
 
 export interface MessageBubbleProps {
-  message: string;
+  message: Message;
   isOwnMessage: boolean;
   senderType?: 'user' | 'ai' | 'agent' | 'server-human';
   isTyping?: boolean;
@@ -38,6 +38,7 @@ export interface VoiceBubbleProps {
   messageFrom?: string; // Message sender identifier for avatar selection
   ownerName?: string; // Phone owner name for avatar comparison
   messageFromEntity?: Entity | null; // Message sender's entity for avatar
+  variant?: 'default' | 'program';
 }
 
 export type SenderType = 'user' | 'ai' | 'agent' | 'server-human';

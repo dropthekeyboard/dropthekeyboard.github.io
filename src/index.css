@@ -687,3 +687,13 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .bg-gradient-radial {
   background: radial-gradient(circle, #333333, #212121);
 }
+
+/* GSAP Slides Page scrollbar hide */
+.gsap-slides-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.gsap-slides-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}

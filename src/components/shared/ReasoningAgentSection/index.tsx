@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Brain,
-  Lightbulb,
   ArrowRight,
   Download,
   Cpu,
@@ -15,7 +14,6 @@ import {
   ClipboardList,
   Target,
   Scale,
-  CheckCircle,
   Settings,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
@@ -64,14 +62,14 @@ function ReasoningStepComponent({
         }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
         className={cn(
-          'flex items-center p-3 rounded-lg border backdrop-blur-sm w-full',
+          'flex items-center p-2 sm:p-3 rounded-lg border backdrop-blur-sm w-full',
           isDark
             ? 'bg-gray-800/40 border-gray-600/30'
             : 'bg-gray-50/60 border-gray-300/50',
           step.type === 'input'
-            ? 'justify-start mr-auto max-w-[75%]' // Input from others - align left
+            ? 'justify-start mr-auto max-w-[85%] sm:max-w-[75%]' // Input from others - align left
             : step.type === 'output'
-              ? 'justify-end ml-auto max-w-[75%]'   // Output from agent - align right
+              ? 'justify-end ml-auto max-w-[85%] sm:max-w-[75%]'   // Output from agent - align right
               : 'justify-center',
           isActive &&
             step.type === 'reasoning' &&
@@ -81,11 +79,11 @@ function ReasoningStepComponent({
         )}
       >
         {step.type === 'input' && (
-          <div className="flex items-center space-x-2">
-            <Download className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+          <div className="flex items-center space-x-3">
+            <Download className="w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0" />
             <span
               className={cn(
-                'text-sm font-medium',
+                'text-sm font-medium truncate',
                 isDark ? 'text-gray-300' : 'text-gray-700'
               )}
             >
@@ -136,16 +134,16 @@ function ReasoningStepComponent({
         )}
 
         {step.type === 'output' && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <span
               className={cn(
-                'text-sm font-medium',
+                'text-sm font-medium truncate',
                 isDark ? 'text-gray-300' : 'text-gray-700'
               )}
             >
               {step.actionType ? `${step.actionType} Sent` : 'Message Sent'}
             </span>
-            <Upload className="w-4 h-4 text-green-500 dark:text-green-400" />
+            <Upload className="w-4 h-4 text-green-500 dark:text-green-400 flex-shrink-0" />
           </div>
         )}
 
@@ -218,20 +216,6 @@ function ReasoningStepComponent({
         {/* Reasoning Content */}
         {step.reasoning && (
           <div className="space-y-3">
-            {step.reasoning.situation && (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <Lightbulb className="w-4 h-4 text-yellow-500" />
-                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    Situation Analysis
-                  </span>
-                </div>
-                <p className="text-sm text-gray-800 dark:text-gray-200 pl-6 leading-relaxed">
-                  {step.reasoning.situation}
-                </p>
-              </div>
-            )}
-
             {step.reasoning.requiredInfo &&
               step.reasoning.requiredInfo.length > 0 && (
                 <div className="space-y-1">
@@ -291,16 +275,21 @@ function ReasoningStepComponent({
               )}
 
             {step.reasoning.decision && (
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <Brain className="w-4 h-4 text-purple-500 dark:text-purple-400 flex-shrink-0" />
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    Final Decision
+                    AI 생각중
                   </span>
                 </div>
-                <p className="text-sm text-gray-800 dark:text-gray-200 pl-6 leading-relaxed font-medium">
-                  {step.reasoning.decision}
-                </p>
+                <div className="pl-6">
+                  <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700/30">
+                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-purple-700 dark:text-purple-300 font-medium">
+                      {step.reasoning.decision}
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -324,41 +313,41 @@ function ReasoningStepComponent({
       exit={{ opacity: 0, x: step.type === 'input' ? -20 : 20 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'flex items-center p-3 rounded-lg border backdrop-blur-sm w-full',
+        'flex items-center p-2 sm:p-3 rounded-lg border backdrop-blur-sm w-full',
         getBackgroundColor(),
         getBorderColor(),
         step.type === 'input'
-          ? 'justify-start mr-auto max-w-[75%]' // Input from others - align left
-          : 'justify-end ml-auto max-w-[75%]'   // Output from agent - align right
+          ? 'justify-start mr-auto max-w-[85%] sm:max-w-[75%]' // Input from others - align left
+          : 'justify-end ml-auto max-w-[85%] sm:max-w-[75%]'   // Output from agent - align right
       )}
     >
       {step.type === 'input' && (
         <>
-          <Download className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          <div className="flex-1">
+          <Download className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+          <div className="flex-1 ml-3 min-w-0">
             <div className="flex items-center space-x-2">
-              <span className={cn('text-sm font-medium', getStepColor())}>
+              <span className={cn('text-sm font-medium truncate', getStepColor())}>
                 {step.actionType || 'Input'}
               </span>
-              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Received</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Received</p>
           </div>
         </>
       )}
 
       {step.type === 'output' && (
         <>
-          <div className="flex-1 text-right">
+          <div className="flex-1 mr-3 text-right min-w-0">
             <div className="flex items-center justify-end space-x-2">
-              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-              <span className={cn('text-sm font-medium', getStepColor())}>
+              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+              <span className={cn('text-sm font-medium truncate', getStepColor())}>
                 {step.actionType || 'Output'}
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Sent</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Sent</p>
           </div>
-          <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
         </>
       )}
     </motion.div>
@@ -464,7 +453,7 @@ export function ReasoningAgentSection({
             </span>
           </div>
           {variant !== 'compact' && (
-            <Lightbulb className="w-5 h-5 text-yellow-500" />
+            <Brain className="w-5 h-5 text-purple-500" />
           )}
         </motion.div>
       </div>

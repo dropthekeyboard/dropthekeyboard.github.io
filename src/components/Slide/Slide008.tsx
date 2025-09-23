@@ -43,7 +43,7 @@ function Slide008() {
   );
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col p-8 font-sans">
       <div className="max-w-7xl w-full space-y-10">
         {/* 메인 제목 */}
         <header className="text-left">

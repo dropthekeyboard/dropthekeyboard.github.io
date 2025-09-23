@@ -1,22 +1,64 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, PhoneOff } from 'lucide-react';
+import { Clock, MessageCircle } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
+import { cn } from '@/lib/utils';
 import logo from '@/assets/skt_logo.jpg';
-import type { PhoneState } from '@/contexts/scenario';
+import type { PhoneState, HumanState } from '@/contexts/scenario';
 
 interface IncomingCallOverlayProps {
   state: PhoneState;
   callerName?: string;
+  callerEntity?: HumanState | null;
 }
+
+// 액션 버튼 컴포넌트
+interface ActionButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  bgColor: string;
+  textColor?: string;
+  onClick?: () => void;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({ 
+  icon, 
+  label, 
+  bgColor, 
+  textColor = 'text-white', 
+  onClick 
+}) => (
+  <motion.div 
+    className="flex flex-col items-center space-y-2"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    <motion.button
+      onClick={onClick}
+      className={`w-16 h-16 rounded-full flex items-center justify-center transition-transform transform active:scale-90 ${bgColor}`}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      {icon}
+    </motion.button>
+    <span className={`text-xs ${textColor}`}>{label}</span>
+  </motion.div>
+);
 
 export function IncomingCallOverlay({
   state,
   callerName = 'Service Provider',
+  callerEntity,
 }: IncomingCallOverlayProps) {
+  const { isDark } = useTheme();
+  
   if (state === 'message') {
     return null;
   }
 
   const isRinging = state === 'ring';
+  
+  // caller entity의 displayName 또는 name을 우선 사용
+  const displayName = callerEntity?.displayName || callerEntity?.name || callerName;
 
   return (
     <AnimatePresence>
@@ -25,21 +67,17 @@ export function IncomingCallOverlay({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 z-50"
+          className={cn(
+            "absolute inset-0 z-[100] rounded-3xl overflow-hidden",
+            isDark ? "bg-black" : "bg-white"
+          )}
         >
-          {/* 배경 블러 효과 */}
-          <motion.div
-            initial={{ backdropFilter: 'blur(0px)' }}
-            animate={{ backdropFilter: 'blur(8px)' }}
-            className="absolute inset-0 bg-black/60"
-          />
-
           {/* 진동 효과를 위한 컨테이너 */}
           <motion.div
             animate={
               isRinging
                 ? {
-                    x: [0, -2, 2, -1, 1, 0],
+                    x: [0, -1, 1, -1, 1, 0],
                     y: [0, 1, -1, 1, -1, 0],
                   }
                 : {}
@@ -49,128 +87,149 @@ export function IncomingCallOverlay({
               repeat: isRinging ? Infinity : 0,
               repeatType: 'loop',
             }}
-            className="relative h-full flex items-center justify-center"
+            className="relative h-full w-full flex flex-col"
           >
-            {/* 메인 전화 인터페이스 */}
+            {/* iPhone 스타일 전화 수신 화면 */}
             <motion.div
-              initial={{ scale: 0.8, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-              className="bg-white dark:bg-gray-900 rounded-3xl p-8 mx-4 max-w-sm w-full shadow-2xl border border-gray-200 dark:border-gray-700"
+              className={cn(
+                "w-full h-full flex flex-col justify-center items-center p-8 font-sans",
+                isDark ? "text-white" : "text-gray-900"
+              )}
             >
-              {/* 프로필 영역 */}
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center mb-6"
+              {/* 발신자 정보 */}
+              <motion.div 
+                className="text-center flex-1 flex flex-col justify-center"
+                initial={{ y: -30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
               >
-                <motion.div
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="w-30 h-30 bg-white/10 dark:bg-gray-800/50 rounded-full flex items-center justify-center mb-4 shadow-xl overflow-hidden backdrop-blur-sm"
+                <motion.img 
+                  src={logo} 
+                  alt={displayName} 
+                  className={cn(
+                    "w-24 h-24 rounded-full mx-auto mb-4 border-2 object-contain backdrop-blur-sm",
+                    isDark 
+                      ? "border-white/50 bg-white/10" 
+                      : "border-gray-300/50 bg-gray-100/50"
+                  )}
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                    rotate: [0, 2, -2, 0] 
+                  }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <motion.h1 
+                  className="text-4xl font-light tracking-wide"
+                  animate={{ opacity: [0.9, 1, 0.9] }}
+                  transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <motion.img
-                    src={logo}
-                    alt="Logo"
-                    className="w-24 h-24 object-contain"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                </motion.div>
-
-                <motion.h2
-                  animate={{ scale: [1, 1.02, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="text-xl font-semibold text-gray-900 dark:text-white mb-1"
+                  {displayName}
+                </motion.h1>
+                <motion.p 
+                  className={cn(
+                    "text-lg mt-2",
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  )}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
                 >
-                  Incoming Call
-                </motion.h2>
-
-                <motion.p className="text-gray-600 dark:text-gray-400 text-base">
-                  {callerName}
+                  iPhone
                 </motion.p>
               </motion.div>
 
-              {/* 전화벨 애니메이션 */}
-              <motion.div className="flex justify-center mb-8">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.7, 1, 0.7],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                  className="relative"
-                >
-                  <Phone className="w-16 h-16 text-green-500" />
-
-                  {/* 링 효과 */}
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.5, 1],
-                      opacity: [0.6, 0, 0.6],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: 'easeOut',
-                    }}
-                    className="absolute inset-0 border-2 border-green-400 rounded-full"
-                  />
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.8, 1],
-                      opacity: [0.4, 0, 0.4],
-                    }}
-                    transition={{
-                      duration: 2,
-                      delay: 0.5,
-                      repeat: Infinity,
-                      ease: 'easeOut',
-                    }}
-                    className="absolute inset-0 border border-green-300 rounded-full"
-                  />
-                </motion.div>
-              </motion.div>
-
-              {/* 액션 버튼들 */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+              {/* 하단 액션 버튼 영역 */}
+              <motion.div 
+                className="w-full flex flex-col items-center space-y-12"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="flex justify-center space-x-8"
               >
-                {/* 거절 버튼 */}
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg transition-colors"
-                >
-                  <PhoneOff className="w-8 h-8 text-white" />
-                </motion.button>
-
-                {/* 수락 버튼 */}
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg transition-colors"
-                >
-                  <Phone className="w-8 h-8 text-white" />
-                </motion.button>
-              </motion.div>
-
-              {/* 상태 텍스트 */}
-              <motion.div
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="text-center mt-4"
-              >
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Slide to answer
-                </p>
+                {/* 미리 알림 / 메시지 버튼 */}
+                <div className="w-full flex justify-between px-4">
+                  <motion.div 
+                    className="flex flex-col items-center space-y-1"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <Clock className="h-6 w-6" />
+                    </div>
+                    <span className="text-xs">Remind Me</span>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="flex flex-col items-center space-y-1"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <MessageCircle className="h-6 w-6" />
+                    </div>
+                    <span className="text-xs">Message</span>
+                  </motion.div>
+                </div>
+                
+                {/* 거절 / 수락 버튼 */}
+                <div className="w-full flex justify-between px-4">
+                  <ActionButton 
+                    label="Decline"
+                    bgColor="bg-red-500"
+                    icon={
+                      <motion.svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-8 w-8" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor" 
+                        strokeWidth={2}
+                        animate={{ rotate: [0, -5, 5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" 
+                          transform="rotate(135 12 12)" 
+                        />
+                      </motion.svg>
+                    }
+                  />
+                  
+                  <ActionButton 
+                    label="Accept"
+                    bgColor="bg-green-500"
+                    icon={
+                      <motion.svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-8 w-8" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor" 
+                        strokeWidth={2}
+                        animate={{ 
+                          scale: [1, 1.1, 1],
+                          rotate: [0, 3, -3, 0]
+                        }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" 
+                        />
+                      </motion.svg>
+                    }
+                  />
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>

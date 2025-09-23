@@ -1,8 +1,9 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { Send, MessageCircle } from 'lucide-react';
+import { Send, MessageCircle, ChevronLeft, Video } from 'lucide-react';
 import { MessageBubble } from '@/components/shared/MessageBubble';
-import { findEntityByName } from '@/components/shared/Avatar/avatarHelpers';
+import { findEntityByName, getEntityAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import { useTheme } from '@/hooks/useTheme';
 import type { Message, Entity } from '@/contexts/scenario';
 import { useScenario } from '@/hooks/useScenario';
 import { useEffect, useRef } from 'react';
@@ -24,6 +25,7 @@ export function MessageScreen({
   className,
   entity,
 }: MessageScreenProps) {
+  const { isDark } = useTheme();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { state } = useScenario();
@@ -64,20 +66,59 @@ export function MessageScreen({
         return 'user';
     }
   };
+
+  // Find the sender of received messages for header avatar
+  const receivedMessage = messages.find(msg => msg.from !== ownerName);
+  const senderEntity = receivedMessage ? findEntityByName(state, receivedMessage.from) : null;
+  const senderType = receivedMessage ? getComponentSenderType(receivedMessage.senderType) : undefined;
+  const headerAvatarProps = getEntityAvatarProps(senderEntity, senderType);
+
   return (
     <div className={cn('w-full h-full bg-background flex flex-col', className)}>
-      {/* Message header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border/50">
-        <div className="flex items-center space-x-3">
-          {/* Contact avatar */}
-          <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-            <MessageCircle className="h-4 w-4 text-primary" />
-          </div>
+      {/* iPhone-style Message Header */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 sticky top-0 bg-white/90 backdrop-blur-md">
+        {/* Back button */}
+        <div className="w-8">
+          <ChevronLeft className="h-7 w-7 text-blue-500 cursor-pointer" strokeWidth={3} />
+        </div>
 
-          {/* Contact info */}
-          <div>
-            <h3 className="font-medium text-sm">{contactName}</h3>
+        {/* Contact info */}
+        <div className="flex flex-col items-center cursor-pointer">
+          {senderEntity?.avatarUrl ? (
+            <img 
+              src={senderEntity.avatarUrl} 
+              alt={senderEntity.displayName || senderEntity.name || contactName} 
+              className="w-10 h-10 rounded-full" 
+            />
+          ) : headerAvatarProps.src ? (
+            <img 
+              src={headerAvatarProps.src} 
+              alt={headerAvatarProps.alt} 
+              className="w-10 h-10 rounded-full" 
+            />
+          ) : headerAvatarProps.fallbackIcon ? (
+            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+              <headerAvatarProps.fallbackIcon className="h-6 w-6 text-primary" />
+            </div>
+          ) : (
+            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+              <MessageCircle className="h-4 w-4 text-primary" />
+            </div>
+          )}
+          <div className="flex items-center mt-1">
+            <p className={cn(
+              "font-semibold text-base",
+              isDark ? "text-white" : "text-gray-900"
+            )}>
+              {senderEntity?.displayName || senderEntity?.name || contactName}
+            </p>
+            <ChevronLeft className="h-4 w-4 text-gray-400 ml-0.5 rotate-180" strokeWidth={2.5} />
           </div>
+        </div>
+
+        {/* Video call button */}
+        <div className="w-8">
+          <Video className="h-7 w-7 text-blue-500 cursor-pointer" strokeWidth={2} />
         </div>
       </div>
 
@@ -108,7 +149,7 @@ export function MessageScreen({
                     className="w-full mb-3"
                   >
                     <MessageBubble
-                      message={msg.content}
+                      message={msg}
                       isOwnMessage={msg.from === ownerName}
                       senderType={getComponentSenderType(msg.senderType)}
                       timestamp={msg.timestamp}
@@ -134,7 +175,15 @@ export function MessageScreen({
                 className="w-full mb-3"
               >
                 <MessageBubble
-                  message=""
+                  message={{
+                    id: 'typing',
+                    from: contactName,
+                    to: ownerName,
+                    content: '',
+                    type: 'text',
+                    senderType: 'agent',
+                    timestamp: Date.now(),
+                  }}
                   isOwnMessage={false}
                   isTyping={true}
                 />

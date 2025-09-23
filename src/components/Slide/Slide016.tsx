@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 // Slide 016: 3단계 로드맵 - Phase 1, 2, 3
 function Slide016() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-7xl w-full">
         {/* 3단계 로드맵 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 h-96">

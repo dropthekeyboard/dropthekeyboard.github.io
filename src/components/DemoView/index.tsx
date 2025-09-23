@@ -12,25 +12,28 @@ export function DemoView({ className }: DemoViewProps) {
     <div
       id="demoview"
       className={cn(
-        'h-full items-center justify-center pt-2 grid gap-2',
-        'landscape:grid-cols-3 portrait:grid-cols-2 portrait:grid-rows-2',
+        'h-full items-center justify-center pt-2 grid',
+        'landscape:grid-cols-[1fr_auto_1fr] portrait:grid-cols-2 portrait:grid-rows-2',
         'scrollbar-hide',
         className
       )}
-      style={{ pointerEvents: 'none' }}
+      style={{ 
+        pointerEvents: 'none',
+        gap: '5vw'
+      }}
     >
       {/* Customer Section */}
-      <div className="landscape:col-auto portrait:col-span-1">
+      <div className="portrait:col-span-1 pl-[3vw]">
         <CustomerSection />
       </div>
 
       {/* Agent Section */}
-      <div className="landscape:col-auto portrait:col-span-2 portrait:row-start-2 portrait:w-[30vw] portrait:mx-auto">
+      <div className="landscape:justify-self-center portrait:col-span-2 portrait:row-start-2 portrait:w-[30vw] portrait:mx-auto">
         <AgentSection />
       </div>
 
       {/* Server Section */}
-      <div className="landscape:col-auto portrait:col-span-1 portrait:col-start-2">
+      <div className="portrait:col-span-1 portrait:col-start-2 pr-[3vw]">
         <ServerSection />
       </div>
     </div>

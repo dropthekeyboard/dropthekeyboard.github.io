@@ -1,4 +1,5 @@
 import { PhoneSection } from '@/components/shared/PhoneSection';
+import { ThemeOverride } from '@/contexts/theme';
 import { useScenario } from '@/hooks/useScenario';
 
 export function CustomerSection() {
@@ -8,6 +9,7 @@ export function CustomerSection() {
 
   return (
     <div className="flex w-full h-full pt-16 items-center justify-center scrollbar-hide">
+      <ThemeOverride theme='light'>
       <PhoneSection
         entity={customer}
         label={`${customer?.displayName || customer?.name || 'Customer'}'s Phone`}
@@ -16,6 +18,7 @@ export function CustomerSection() {
         contactNumber="+1 (555) 123-4567"
         from={customer?.displayName || customer?.name || 'Customer'}
       />
+      </ThemeOverride>
     </div>
   );
 }

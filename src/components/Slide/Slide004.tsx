@@ -1,9 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import { Phone } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Info Pill Component - 재사용 가능한 정보 박스
 function InfoPill({ title, subtitle }: { title: string; subtitle: string }) {
@@ -30,7 +26,7 @@ function CustomerColumn({
   return (
     <div className={`flex-1 max-w-sm space-y-6 ${className}`}>
       {/* 이미지 */}
-      <div className="w-full h-56 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center overflow-hidden">
+      <div className="w-full h-56  border border-white/10 rounded-xl flex items-center justify-center overflow-hidden">
         <img
           src={data.image}
           alt={data.title}
@@ -152,73 +148,18 @@ function Slide004() {
     ],
   };
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const ctx = gsap.context(() => {
-      // Title animation
-      gsap.fromTo(
-        titleRef.current,
-        {
-          y: 100,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
-      // Flow container animation
-      gsap.fromTo(
-        flowContainerRef.current?.children || [],
-        {
-          y: 80,
-          opacity: 0,
-          scale: 0.9,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.2,
-          stagger: 0.3,
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 60%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
-      style={{
-        background: `radial-gradient(circle at center, #333, #212121)`,
-      }}
+      className="min-h-screen w-full min-w-[80vw] text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
     >
       <div className="max-w-7xl w-full space-y-16">
         {/* 상단 헤드라인 */}
         <div className="text-center space-y-4">
           <h1
             ref={titleRef}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading"
           >
             모바일 앱의 범람에도 불구하고{' '}
             <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">

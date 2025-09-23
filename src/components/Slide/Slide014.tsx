@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 // Slide 014: 가치 3. 보편적 접근성
 function Slide014() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full min-w-[80vw] bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-6xl w-full space-y-12">
         {/* 상단 제목 */}
         <header className="text-left">
@@ -14,17 +14,11 @@ function Slide014() {
 
         {/* 메인 콘텐츠 영역 */}
         <Card className="bg-card border-border p-8">
-          <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-border">
-            <div className="text-center space-y-4">
-              <div className="text-6xl">📞📱✨</div>
-              <p className="text-muted-foreground text-lg">
-                보편적 접근성 데모
-              </p>
-              <p className="text-sm text-muted-foreground">
-                (전화/문자 기반 A2A 시연)
-              </p>
-            </div>
-          </div>
+          <img
+            src="/A2A_Storyline_pages/page_014.png"
+            alt="보편적 접근성 데모"
+            className="h-full w-full object-cover rounded-lg"
+          />
         </Card>
 
         {/* 하단 설명 */}

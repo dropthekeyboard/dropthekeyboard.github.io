@@ -6,25 +6,37 @@ import { getEntityAvatarProps, getMessageAvatarProps } from '@/components/shared
 import { useTheme } from '@/hooks/useTheme';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { getMarkdownComponents } from '@/lib/markdownComponents';
 import type { VoiceBubbleProps } from '@/types/message';
 
-function VoiceWaveform({ isPlaying }: { isPlaying?: boolean }) {
+function VoiceWaveform({ isPlaying, variant = 'default' }: { isPlaying?: boolean; variant?: 'default' | 'program' }) {
   const { resolvedTheme } = useTheme();
 
   // Theme-based waveform colors for better visibility
   const waveformColors = {
-    light: 'bg-gradient-to-t from-blue-600/80 to-blue-500',
-    dark: 'bg-gradient-to-t from-blue-400/90 to-blue-300',
+    light: {
+      default: 'bg-gradient-to-t from-blue-600/80 to-blue-500',
+      program: 'bg-gradient-to-t from-green-600/80 to-green-500',
+    },
+    dark: {
+      default: 'bg-gradient-to-t from-blue-400/90 to-blue-300',
+      program: 'bg-gradient-to-t from-green-400/90 to-green-300',
+    },
   };
 
   return (
-    <div className="flex items-end space-x-1 h-8 px-3 py-2 bg-white/30 backdrop-blur-3xl rounded-full border border-white/40 shadow-lg">
+    <div className={cn(
+      "flex items-end space-x-1 h-8 px-3 py-2 rounded-full border shadow-lg backdrop-blur-3xl",
+      variant === 'program' 
+        ? "bg-green-50/30 border-green-200/40" 
+        : "bg-white/30 border-white/40"
+    )}>
       {[...Array(5)].map((_, i) => (
         <motion.div
           key={i}
           className={cn(
             'w-1.5 rounded-full shadow-sm',
-            waveformColors[resolvedTheme]
+            waveformColors[resolvedTheme][variant]
           )}
           animate={
             isPlaying
@@ -62,6 +74,7 @@ export function VoiceBubble({
   messageFrom,
   ownerName,
   messageFromEntity,
+  variant = 'default',
 }: VoiceBubbleProps) {
   const isPlaying = true; // Voice messages are typically playable by default
   const { resolvedTheme } = useTheme();
@@ -74,20 +87,36 @@ export function VoiceBubble({
   // Theme-based styling for better contrast
   const bubbleStyles = {
     light: {
-      background: 'bg-white/20 border border-white/40',
-      overlay: 'from-white/15 via-white/12 to-white/8',
-      text: 'text-gray-900',
-      mutedText: 'text-gray-700',
+      default: {
+        background: 'bg-white/20 border border-white/40',
+        overlay: 'from-white/15 via-white/12 to-white/8',
+        text: 'text-gray-900',
+        mutedText: 'text-gray-700',
+      },
+      program: {
+        background: 'bg-green-50/30 border border-green-200/50',
+        overlay: 'from-green-50/20 via-green-50/15 to-green-50/10',
+        text: 'text-gray-900',
+        mutedText: 'text-green-800',
+      },
     },
     dark: {
-      background: 'bg-gray-900/25 border border-gray-600/40',
-      overlay: 'from-gray-900/20 via-gray-900/15 to-gray-900/10',
-      text: 'text-gray-50',
-      mutedText: 'text-gray-200',
+      default: {
+        background: 'bg-gray-900/25 border border-gray-600/40',
+        overlay: 'from-gray-900/20 via-gray-900/15 to-gray-900/10',
+        text: 'text-gray-50',
+        mutedText: 'text-gray-200',
+      },
+      program: {
+        background: 'bg-green-900/30 border border-green-600/50',
+        overlay: 'from-green-900/25 via-green-900/20 to-green-900/15',
+        text: 'text-gray-50',
+        mutedText: 'text-green-200',
+      },
     },
   };
 
-  const currentStyle = bubbleStyles[resolvedTheme];
+  const currentStyle = bubbleStyles[resolvedTheme][variant];
 
   return (
     <motion.div
@@ -131,14 +160,14 @@ export function VoiceBubble({
         >
           {/* Ultra-strong glass effect overlay with extreme blur kernel */}
           <div
-            className={cn('absolute inset-0 rounded-2xl', currentStyle.overlay)}
+            className={cn('absolute inset-0 rounded-2xl z-0', currentStyle.overlay)}
           />
 
           {/* Voice visualization header */}
           <div className="flex items-center justify-between mb-4 relative z-10">
             <div className="flex items-center space-x-3">
               <Phone className="w-4 h-4 text-primary/70 flex-shrink-0" />
-              <VoiceWaveform isPlaying={isPlaying} />
+              <VoiceWaveform isPlaying={isPlaying} variant={variant} />
             </div>
             {timestamp && (
               <span
@@ -163,79 +192,7 @@ export function VoiceBubble({
             >
               <ReactMarkdown
                 remarkPlugins={markdownOptions.enableGfm ? [remarkGfm] : []}
-                components={{
-                  a: ({ href, children, ...props }) => (
-                    <a
-                      href={href}
-                      target={markdownOptions.linkTarget}
-                      rel="noopener noreferrer"
-                      className="text-inherit hover:opacity-80 underline decoration-1 underline-offset-2 transition-opacity duration-200"
-                      {...props}
-                    >
-                      {children}
-                    </a>
-                  ),
-                  hr: ({ ...props }) => (
-                    <hr className="border-current/20 my-2" {...props} />
-                  ),
-                  h1: ({ children, ...props }) => (
-                    <h1
-                      className="text-lg font-semibold mb-1 mt-2 first:mt-0"
-                      {...props}
-                    >
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children, ...props }) => (
-                    <h2
-                      className="text-base font-semibold mb-1 mt-2 first:mt-0"
-                      {...props}
-                    >
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children, ...props }) => (
-                    <h3
-                      className="text-base font-medium mb-1 mt-1 first:mt-0"
-                      {...props}
-                    >
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children, ...props }) => (
-                    <p className="mb-1 last:mb-0" {...props}>
-                      {children}
-                    </p>
-                  ),
-                  ul: ({ children, ...props }) => (
-                    <ul className="mb-1 last:mb-0 pl-4 space-y-0.5" {...props}>
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children, ...props }) => (
-                    <ol className="mb-1 last:mb-0 pl-4 space-y-0.5" {...props}>
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children, ...props }) => (
-                    <li className="text-base" {...props}>
-                      {children}
-                    </li>
-                  ),
-                  strong: ({ children, ...props }) => (
-                    <strong className="font-semibold" {...props}>
-                      {children}
-                    </strong>
-                  ),
-                  blockquote: ({ children, ...props }) => (
-                    <blockquote
-                      className="border-l-2 border-current/30 pl-2 italic text-current/80 my-1"
-                      {...props}
-                    >
-                      {children}
-                    </blockquote>
-                  ),
-                }}
+                components={getMarkdownComponents()}
                 disallowedElements={
                   markdownOptions.allowHtml
                     ? []

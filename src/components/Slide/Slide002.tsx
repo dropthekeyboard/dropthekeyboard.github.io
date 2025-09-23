@@ -1,7 +1,7 @@
 // Slide 002: 회장님 영상 ? 사진 ?
 function Slide002() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground font-sans relative">
+    <div className="h-screen w-full min-w-[80vw] bg-background text-foreground font-sans relative">
       {/* 메인 이미지 - 전체 화면 */}
       <div className="relative w-full h-screen">
         <img

@@ -13,6 +13,7 @@ interface VoiceBubbleOverlayProps {
   callDuration?: number;
   isMuted?: boolean;
   entity?: Entity | null;
+  variant?: 'default' | 'program';
 }
 
 export function VoiceBubbleOverlay({
@@ -24,6 +25,7 @@ export function VoiceBubbleOverlay({
   maxMessages = 5,
   callDuration = 0,
   entity,
+  variant = 'default',
 }: VoiceBubbleOverlayProps) {
   return (
     <motion.div
@@ -51,6 +53,7 @@ export function VoiceBubbleOverlay({
           callDuration={callDuration}
           className="bg-background/95"
           entity={entity}
+          variant={variant}
         />
       </div>
 

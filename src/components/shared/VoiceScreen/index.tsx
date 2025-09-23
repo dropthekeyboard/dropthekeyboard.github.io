@@ -17,6 +17,7 @@ interface VoiceScreenProps {
   maxMessages?: number;
   callDuration?: number;
   entity?: Entity | null;
+  variant?: 'default' | 'program';
 }
 
 function getRelevantSession(
@@ -37,6 +38,7 @@ export function VoiceScreen({
   className,
   callDuration = 0,
   entity,
+  variant = 'default',
 }: VoiceScreenProps) {
   const { resolvedTheme } = useTheme();
   const { state } = useScenario();
@@ -224,6 +226,7 @@ export function VoiceScreen({
                           messageFrom={voiceMessage.from}
                           ownerName={ownerName}
                           messageFromEntity={findEntityByName(state, voiceMessage.from)}
+                          variant={variant}
                         />
                       </div>
                     ))}

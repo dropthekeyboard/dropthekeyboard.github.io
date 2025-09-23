@@ -14,7 +14,7 @@ import { isRelevantAction } from '@/lib/utils';
 /**
  * Message types supported in communication
  */
-type MessageType = 'voice' | 'text' | 'dtmf';
+type MessageType = 'voice' | 'text' | 'dtmf' | 'image';
 
 /**
  * Sender types for messages
@@ -63,7 +63,7 @@ export interface CallSession {
 export interface Message extends Deliverable {
   /** Message content */
   content: string;
-  /** Type of message (text or voice) */
+  /** Type of message (text, voice, image, dtmf) */
   type: MessageType;
   /** Type of sender (agent, customer, or server) */
   senderType: SenderType;
@@ -71,6 +71,8 @@ export interface Message extends Deliverable {
   reason?: string;
   /** Associated call session (for voice messages during calls) */
   callSession?: CallSession;
+  /** Image URL for image messages */
+  imageUrl?: string;
 }
 
 /**

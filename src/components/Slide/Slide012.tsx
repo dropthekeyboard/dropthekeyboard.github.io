@@ -1,78 +1,78 @@
-import { motion } from 'framer-motion';
-import { PhoneFrame } from '@/components/shared/PhoneFrame';
-import { MinimalIncomingCall } from '@/components/shared/CallScreen/MinimalIncomingCall';
-import { TrustBanner } from '@/components/shared/TrustBanner';
-import sktLogo from '@/assets/skt_logo.jpg';
 
-// Slide 012: 통신 고유 채널인 전화 / 문자를 활용한 해법 - 가치 1. 신뢰성 확보
-function Slide012() {
+import { SlideHeader } from '@/components/shared/SlideHeader';
+
+// 개별 라벨 컴포넌트
+const ChartLabel = ({
+  position,
+  line,
+  text,
+}: {
+  position: string;
+  line: string;
+  text: string;
+}) => (
+  <div className={`absolute pointer-events-none ${position}`}>
+    {/* Dot */}
+    <div className="w-2.5 h-2.5 bg-white rounded-full border border-black/20 absolute -translate-x-1/2 -translate-y-1/2" />
+    {/* Line and Label */}
+    <div className="absolute -translate-y-1/2 flex items-center pl-2.5">
+      <div className={`h-[1.5px] bg-white/70 ${line}`} />
+      <div className="ml-2 px-3.5 py-2 border border-purple-400/70 bg-neutral-900/85 rounded-lg text-sm font-medium whitespace-nowrap backdrop-blur-sm shadow-lg">
+        {text}
+      </div>
+    </div>
+  </div>
+);
+
+// 메인 슬라이드 컴포넌트
+export default function Slide012() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
-      <div className="max-w-6xl w-full space-y-12">
-        {/* 상단 제목 */}
-        <motion.header
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-left space-y-4"
-        >
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-            통신 고유 채널인 전화 / 문자를 활용한
-          </h1>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-            해법
-          </h2>
-          <h3 className="text-2xl sm:text-3xl font-bold text-primary">
-            가치 1. 신뢰성 확보
-          </h3>
-        </motion.header>
+    <div className="w-full min-w-[80vw] min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-5 box-border overflow-hidden">
+      <SlideHeader
+        title="가치 3. 보편적 접근성"
+        className="text-left mb-12 self-start"
+        titleClassName="text-2xl sm:text-3xl font-semibold"
+      />
 
-        {/* 메인 콘텐츠 */}
-        <div className="bg-muted/40 backdrop-blur-sm p-6 lg:p-8 rounded-3xl">
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
-
-            {/* 스마트폰 섹션 - 1.3배 크기 */}
-            <motion.div
-              initial={{ opacity: 0, x: -50, scale: 1.0 }}
-              animate={{ opacity: 1, x: 0, scale: 1.3 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative aspect-[9/16] w-64"
-            >
-              <PhoneFrame>
-                {/* PhoneFrame에 최적화된 미니멀 전화 화면 */}
-                <MinimalIncomingCall callerName="홍길동 AI Agent" />
-              </PhoneFrame>
-            </motion.div>
-
-            {/* 신뢰성 배너 */}
-            <div className="flex-1 max-w-2xl">
-              <TrustBanner
-                message="SK 텔레콤에서 인증한 AI Agent 전화입니다"
-                logo={sktLogo}
-              />
+      {/* 도넛 차트 */}
+      <div className="relative w-[400px] h-[400px] flex justify-center items-center sm:scale-100 scale-[0.65] xs:scale-[0.8]">
+        {/* 링 구조 */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full flex justify-center items-center w-[400px] h-[400px] bg-gradient-to-br from-[#00AEEF] to-[#4E82FF] [animation:subtleGlow_5s_ease-in-out_infinite]">
+          <div className="rounded-full flex justify-center items-center w-[340px] h-[340px] bg-background">
+            <div className="rounded-full flex justify-center items-center w-[280px] h-[280px] bg-gradient-to-br from-[#4E82FF] to-[#A765FF]">
+              <div className="rounded-full flex justify-center items-center w-[220px] h-[220px] bg-background">
+                <div className="rounded-full flex justify-center items-center w-[160px] h-[160px] bg-[#A765FF]">
+                  <div className="w-20 h-20 rounded-full bg-background" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 하단 설명 */}
-        <motion.footer
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-left space-y-4"
-        >
-          <p className="text-xl text-muted-foreground">
-            당사 전화번호 자산과 가입자 인증 체계를 기반으로,
-          </p>
-          <p className="text-xl font-bold text-foreground">
-            <span className="text-primary">'SKT 인증 Agent 발신'</span> 같은
-            라벨을 부착해 업주가 안심할 수 있는{' '}
-            <span className="text-primary">신뢰 기반</span> 제공 가능
-          </p>
-        </motion.footer>
+        {/* 라벨 */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <ChartLabel
+            position="top-[90px] left-[355px]"
+            line="w-16"
+            text="휴대폰 보유자"
+          />
+          <ChartLabel
+            position="top-[200px] left-[325px]"
+            line="w-12"
+            text="스마트폰 사용자"
+          />
+          <ChartLabel
+            position="top-[260px] left-[255px]"
+            line="w-9"
+            text="특정 앱 사용자"
+          />
+        </div>
       </div>
+
+      <p className="text-lg sm:text-xl text-center mt-10 sm:mt-16 leading-relaxed max-w-xl text-muted-foreground">
+        전화/문자는 <strong className="font-bold text-foreground">휴대폰만 있으면,</strong> 추가 앱 설치나 복잡한 세팅 없이{' '}
+        <strong className="font-bold text-foreground">즉시 사용 가능</strong>
+      </p>
     </div>
   );
 }
-
-export default Slide012;

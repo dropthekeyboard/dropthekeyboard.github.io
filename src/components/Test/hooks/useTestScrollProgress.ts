@@ -14,6 +14,8 @@ export function useTestScrollProgress(
   useEffect(() => {
     if (typeof window === 'undefined' || !sectionRefs.current.length) return;
 
+    const scroller = document.getElementById('root');
+
     const observer = new IntersectionObserver(
       (entries) => {
         // Find the entry with the highest intersection ratio
@@ -38,6 +40,7 @@ export function useTestScrollProgress(
       },
       {
         threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0],
+        root: scroller || null,
         rootMargin: '-10% 0px -10% 0px' // Adjust trigger area
       }
     );
@@ -50,19 +53,24 @@ export function useTestScrollProgress(
     return () => observer.disconnect();
   }, [sectionRefs, sectionsLength]);
 
-  // Calculate overall scroll progress
+  // Calculate overall scroll progress against actual scroller
   useEffect(() => {
+    const scroller = document.getElementById('root');
+    const target: HTMLElement | Window = scroller || window;
+
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = documentHeight > 0 ? scrollTop / documentHeight : 0;
+      const scrollTop = scroller ? scroller.scrollTop : window.scrollY;
+      const scrollHeight = scroller
+        ? scroller.scrollHeight - scroller.clientHeight
+        : document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
       setScrollProgress(Math.min(Math.max(progress, 0), 1));
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    target.addEventListener('scroll', handleScroll as EventListener, { passive: true } as AddEventListenerOptions);
     handleScroll(); // Initial calculation
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => target.removeEventListener('scroll', handleScroll as EventListener);
   }, []);
 
   // Update progress nodes with current state

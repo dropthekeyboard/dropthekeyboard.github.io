@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Users, Clock, Building2 } from 'lucide-react';
+import { SlideHeader } from '@/components/shared/SlideHeader';
 
-gsap.registerPlugin(ScrollTrigger);
 
 // Slide 003: 모두의 AI는 전화/문자에서 시작
 function Slide003() {
@@ -111,28 +110,17 @@ function Slide003() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
-      style={{
-        background: `radial-gradient(circle at center, #333, #212121)`,
-      }}
+      className="min-h-screen w-full min-w-[80vw] text-foreground flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
     >
       <div className="max-w-6xl w-full space-y-16 text-center">
         {/* 메인 헤드라인 */}
-        <div className="space-y-6">
-          <h1
-            ref={titleRef}
-            className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight"
-          >
-            모두의 AI는 전화/문자에서 시작
-          </h1>
-          
-          <h2
-            ref={subtitleRef}
-            className="text-lg sm:text-xl lg:text-2xl text-white/80 font-light"
-          >
-            AI시대, 전화/문자는 왜 여전히 필요할까?
-          </h2>
-        </div>
+        <SlideHeader
+          title="모두의 AI는 전화/문자에서 시작"
+          subtitle="AI시대, 전화/문자는 왜 여전히 필요할까?"
+          className="space-y-6"
+          titleClassName="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
+          subtitleClassName="text-lg sm:text-xl lg:text-2xl font-light"
+        />
 
         {/* 특징 카드들 */}
         <div
@@ -144,11 +132,11 @@ function Slide003() {
             return (
               <div
                 key={feature.id}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 lg:p-10 flex flex-col items-center space-y-6 transition-all duration-300 hover:transform hover:scale-105 hover:bg-white/10"
+                className="border border-white/10 rounded-2xl p-8 lg:p-10 flex flex-col items-center space-y-6 transition-all duration-300 hover:transform hover:scale-105"
               >
                 {/* 아이콘 */}
                 <div className="w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center">
-                  <IconComponent className="w-full h-full text-gray-300 stroke-1" />
+                  <IconComponent className="w-full h-full text-muted-foreground stroke-1" />
                 </div>
                 
                 {/* 제목 (그라데이션) */}
@@ -157,7 +145,7 @@ function Slide003() {
                 </h3>
                 
                 {/* 설명 */}
-                <p className="text-white/90 text-lg lg:text-xl font-medium">
+                <p className="text-foreground text-lg lg:text-xl font-medium">
                   {feature.description}
                 </p>
               </div>
