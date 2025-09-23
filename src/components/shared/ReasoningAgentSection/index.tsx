@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Brain,
-  Lightbulb,
   ArrowRight,
   Download,
   Cpu,
@@ -15,7 +14,6 @@ import {
   ClipboardList,
   Target,
   Scale,
-  CheckCircle,
   Settings,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
@@ -218,20 +216,6 @@ function ReasoningStepComponent({
         {/* Reasoning Content */}
         {step.reasoning && (
           <div className="space-y-3">
-            {step.reasoning.situation && (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <Lightbulb className="w-4 h-4 text-yellow-500" />
-                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    Situation Analysis
-                  </span>
-                </div>
-                <p className="text-sm text-gray-800 dark:text-gray-200 pl-6 leading-relaxed">
-                  {step.reasoning.situation}
-                </p>
-              </div>
-            )}
-
             {step.reasoning.requiredInfo &&
               step.reasoning.requiredInfo.length > 0 && (
                 <div className="space-y-1">
@@ -291,16 +275,21 @@ function ReasoningStepComponent({
               )}
 
             {step.reasoning.decision && (
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <Brain className="w-4 h-4 text-purple-500 dark:text-purple-400 flex-shrink-0" />
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    Final Decision
+                    AI 생각중
                   </span>
                 </div>
-                <p className="text-sm text-gray-800 dark:text-gray-200 pl-6 leading-relaxed font-medium">
-                  {step.reasoning.decision}
-                </p>
+                <div className="pl-6">
+                  <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700/30">
+                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-purple-700 dark:text-purple-300 font-medium">
+                      {step.reasoning.decision}
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -464,7 +453,7 @@ export function ReasoningAgentSection({
             </span>
           </div>
           {variant !== 'compact' && (
-            <Lightbulb className="w-5 h-5 text-yellow-500" />
+            <Brain className="w-5 h-5 text-purple-500" />
           )}
         </motion.div>
       </div>
