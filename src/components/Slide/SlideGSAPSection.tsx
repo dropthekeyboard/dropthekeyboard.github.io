@@ -1,9 +1,10 @@
-import React, { useMemo, useRef, useContext } from "react";
+import React, { useMemo, useRef, useContext, useState, useId } from "react";
 import type { PropsWithChildren } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PinningContext } from "@/contexts/pinning";
+import { GSAPScrollContext, type GSAPScrollState } from "@/contexts/gsapScroll";
 
 // Ensure plugin registration once in module scope
 // Idempotent registration (safe to call multiple times)
@@ -98,6 +99,26 @@ export default function SlideGSAPSection({
   "data-slide-index": slideIndex,
 }: SlideGSAPSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const uniqueId = useId();
+  const animTargetId = `gsap-anim-${uniqueId}`;
+
+  // GSAP Scroll State for Context Provider
+  const [gsapState, setGsapState] = useState<GSAPScrollState>({
+    progress: 0,
+    direction: 0,
+    velocity: 0,
+    isActive: false,
+    start: 0,
+    end: 0,
+    isPinned: false,
+    isEntering: false,
+    isLeaving: false,
+    percentage: 0,
+    isScrollingDown: false,
+    isScrollingUp: false,
+    isRapidScroll: false,
+    lastUpdate: Date.now(),
+  });
 
   // Performance optimization: detect mobile devices
   const isMobile = useMemo(() => {
@@ -208,6 +229,16 @@ export default function SlideGSAPSection({
             const isActive = self.isActive;
             const direction = self.direction; // 1: forward, -1: backward
 
+            // Update GSAP State for Context
+            setGsapState((prev: GSAPScrollState) => ({
+              ...prev,
+              isActive,
+              isPinned: pin ? isActive : false,
+              isEntering: isActive && direction !== -1,
+              isLeaving: !isActive && direction !== 1,
+            }));
+
+            // Keep compatibility with existing PinningContext
             updateSectionState(sectionIndex, {
               isPinned: pin ? isActive : false,
               isEntering: isActive && direction !== -1,
@@ -235,6 +266,14 @@ export default function SlideGSAPSection({
             if (hasTargets(self.animation) && self.progress !== undefined) {
               self.animation.progress(self.progress);
             }
+
+            // Update GSAP State for Context with scroll progress data
+            setGsapState((prev: GSAPScrollState) => ({
+              ...prev,
+              progress: self.progress || 0,
+              direction: self.direction || 0,
+              velocity: (self as { velocity?: number }).velocity || 0, // velocity may not be available on all ScrollTrigger versions
+            }));
           } catch (error) {
             console.warn('SlideGSAPSection onUpdate error:', error);
           }
@@ -252,7 +291,7 @@ export default function SlideGSAPSection({
 
     // Use scoped selector to find single animation target with validation
     const container = containerRef.current;
-    const target = container?.querySelector("[data-anim]");
+    const target = container?.querySelector(`#${animTargetId}`);
 
     if (target && document.contains(target)) {
       // Enhanced animation configuration for smoother transitions
@@ -285,7 +324,7 @@ export default function SlideGSAPSection({
     // No manual cleanup needed - useGSAP handles it automatically via gsap.context()
   }, {
     scope: containerRef,
-    dependencies: [variant, mobileOptimizations, delay, ease, stagger, start, end, once, pin, pinSpacing, pinDistance, sectionIndex, updateSectionState, isMobile, touchConflictPrevention]
+    dependencies: [variant, mobileOptimizations, delay, ease, stagger, start, end, once, pin, pinSpacing, pinDistance, sectionIndex, updateSectionState, isMobile, touchConflictPrevention, animTargetId]
   });
 
   const pinStyle = useMemo(() => ({
@@ -299,23 +338,25 @@ export default function SlideGSAPSection({
   }) as React.CSSProperties, [pin, isMobile]);
 
   return (
-    <section
-      ref={containerRef}
-      className={className}
-      style={pinStyle}
-      data-slide-index={slideIndex}
-    >
-      <div
-        data-anim
-        className="relative w-full h-full"
-        style={isMobile ? {
-          willChange: 'transform, opacity',
-          backfaceVisibility: 'hidden',
-          perspective: 1000
-        } : {}}
+    <GSAPScrollContext.Provider value={gsapState}>
+      <section
+        ref={containerRef}
+        className={className}
+        style={pinStyle}
+        data-slide-index={slideIndex}
       >
-        {children}
-      </div>
-    </section>
+        <div
+          id={animTargetId}
+          className="relative w-full h-full"
+          style={isMobile ? {
+            willChange: 'transform, opacity',
+            backfaceVisibility: 'hidden',
+            perspective: 1000
+          } : {}}
+        >
+          {children}
+        </div>
+      </section>
+    </GSAPScrollContext.Provider>
   );
 }

@@ -1,8 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { useSectionPinning } from '@/contexts/pinning';
+import { useGSAPScroll } from '@/hooks/useGSAPScroll';
 import { CylinderBar } from '@/components/shared/CylinderBar';
 import { SlideHeader } from '@/components/shared/SlideHeader';
-import type { SlideProps } from '@/types/slide';
 
 // 데이터 구조 정의
 const page5Data = {
@@ -53,9 +52,21 @@ const page5Data = {
 };
 
 // Slide 005: A2A 확산이 어려운 구조적 요인
-function Slide005({ sectionIndex = 0 }: SlideProps) {
-  const { state } = useSectionPinning(sectionIndex);
-  const isPinned = state.isPinned;
+function Slide005() {
+  const {
+    isPinned,
+    progress,
+    isAtEnd
+  } = useGSAPScroll();
+
+  // 스크롤 진행도에 따른 직접적인 바 애니메이션 (0-1)
+  // 섹션이 핀된 상태에서 스크롤 progress에 따라 바가 점진적으로 증가
+  const animationProgress = isPinned ? progress : 0;
+
+  // 디버깅용 로그 (임시)
+  if (isPinned) {
+    console.log(`Slide005 - Progress: ${progress.toFixed(3)}, Animation: ${animationProgress.toFixed(3)}, AtEnd: ${isAtEnd}`);
+  }
 
   const { header, barChartData, cylinderChartData, footnotes } = page5Data;
 
@@ -113,8 +124,12 @@ function Slide005({ sectionIndex = 0 }: SlideProps) {
                       <div className="flex items-center gap-3 lg:gap-4">
                         <div className="flex-1 h-8 lg:h-10 xl:h-12 bg-muted/30 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1200 ease-out"
-                            style={{ width: `${isPinned ? displayWidth : 0}%` }}
+                            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-opacity duration-300 ease-out"
+                            style={{
+                              width: `${displayWidth * animationProgress}%`,
+                              opacity: isPinned ? Math.min(animationProgress * 2, 1) : 0,
+                              transformOrigin: 'left center'
+                            }}
                           />
                         </div>
                         
@@ -158,16 +173,24 @@ function Slide005({ sectionIndex = 0 }: SlideProps) {
               
               <div className="flex justify-center gap-6 lg:gap-8 xl:gap-12">
                 {cylinderChartData.map((data) => (
-                  <CylinderBar
+                  <div
                     key={data.id}
-                    value={data.percentage}
-                    label={data.mainLabel}
-                    subLabel={data.yearLabel}
-                    unit="%"
-                    isActive={isPinned}
-                    height={160}
                     className="flex-1"
-                  />
+                    style={{
+                      transform: `scale(${0.98 + animationProgress * 0.02})`,
+                      opacity: isPinned ? Math.min(animationProgress * 1.5, 1) : 0,
+                      transition: 'opacity 0.2s ease-out, transform 0.4s ease-out'
+                    }}
+                  >
+                    <CylinderBar
+                      value={data.percentage * animationProgress}
+                      label={data.mainLabel}
+                      subLabel={data.yearLabel}
+                      unit="%"
+                      isActive={isPinned}
+                      height={160}
+                    />
+                  </div>
                 ))}
               </div>
               

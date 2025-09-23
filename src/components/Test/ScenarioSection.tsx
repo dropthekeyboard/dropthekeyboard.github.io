@@ -44,7 +44,6 @@ export const ScenarioSection = React.forwardRef<HTMLDivElement, ScenarioSectionP
                 enabled={true}
                 threshold={30}
                 pinnedState={state}
-                autoScrollThreshold={50}
               />
               <DemoView />
             </ScenarioContextProvider>

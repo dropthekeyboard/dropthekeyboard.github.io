@@ -1,6 +1,5 @@
 // no default React import needed with React 17+ JSX transform
 import { ScenarioSection } from "@/components/Test/ScenarioSection";
-import { PinningProvider } from "@/contexts/pinning";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLayoutEffect, useRef, useEffect } from "react";
 import {
@@ -8,7 +7,8 @@ import {
   Slide001,
   Slide002,
   Slide003,
-  Slide005, Slide007,
+  // Slide005,
+  Slide007,
   Slide008, Slide009, Slide011, Slide012, Slide013, Slide017,
   SlideGSAPSection
 } from ".";
@@ -84,10 +84,13 @@ export default function GSAPSlidesPage() {
   }, []);
 
   return (
-    <PinningProvider>
       <div
         ref={containerRef}
-        className="overflow-x-hidden"
+        className="overflow-x-hidden gsap-slides-container"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
       >
 
         {/* All Slides with different animations */}
@@ -105,7 +108,7 @@ export default function GSAPSlidesPage() {
           <Slide002 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={2} pin pinDistance={1600} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="rotateIn" data-slide-index={2}>
+        <SlideGSAPSection sectionIndex={2} pin pinDistance={1600} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={2}>
           <Slide003 />
         </SlideGSAPSection>
 
@@ -113,47 +116,48 @@ export default function GSAPSlidesPage() {
           <ImageSlide imageUrl="/assets/slide/slide4_image.png" />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={4} pin pinDistance={1600} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="scaleIn" data-slide-index={4}>
-          <Slide005 sectionIndex={4} />
+        <SlideGSAPSection sectionIndex={4} pin pinDistance={1700} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={4}>
+          {/* <Slide005 /> */}
+          <ImageSlide imageUrl="/assets/slide/slide5_image.png" />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={5} pin pinDistance={1400} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="slideRight" data-slide-index={5}>
+        <SlideGSAPSection sectionIndex={5} pin pinDistance={1400} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={5}>
           <ImageSlide imageUrl="/assets/slide/slide6_image.png" />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={6} pin pinDistance={1400} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="bounceIn" data-slide-index={6}>
+        <SlideGSAPSection sectionIndex={6} pin pinDistance={1400} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={6}>
           <Slide007 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={7} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={7}>
+        <SlideGSAPSection sectionIndex={7} pin pinDistance={2000} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={7}>
           <Slide008 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={8} className="min-h-screen flex items-center justify-center" variant="slideLeft" data-slide-index={8}>
+        <SlideGSAPSection sectionIndex={8} pin pinDistance={2000} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={8}>
           <Slide009 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={9} className="min-h-screen flex items-center justify-center" variant="scaleIn" ease="back.out(1.7)" data-slide-index={9}>
+        <SlideGSAPSection sectionIndex={9} pin pinDistance={1700} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" ease="back.out(1.7)" data-slide-index={9}>
           <ImageSlide imageUrl="/assets/slide/slide10_image.png" />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={10} className="min-h-screen flex items-center justify-center" variant="rotateIn" data-slide-index={10}>
+        <SlideGSAPSection sectionIndex={10} pin pinDistance={1700} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={10}>
           <Slide011 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={11} className="min-h-screen flex items-center justify-center" variant="slideRight" data-slide-index={11}>
+        <SlideGSAPSection sectionIndex={11} pin pinDistance={1700} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={11}>
           <Slide012 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={12} className="min-h-screen flex items-center justify-center" variant="bounceIn" data-slide-index={12}>
+        <SlideGSAPSection sectionIndex={12} pin pinDistance={1700} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={12}>
           <Slide013 />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={13} pin pinDistance={1000} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="scaleIn" data-slide-index={13}>
+        <SlideGSAPSection sectionIndex={13} pin pinDistance={1000} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={13}>
           <ImageSlide imageUrl="/assets/slide/slide14_image.png" />
         </SlideGSAPSection>
 
-        <SlideGSAPSection sectionIndex={14} className="min-h-screen flex items-center justify-center" variant="scaleIn" data-slide-index={14}>
+        <SlideGSAPSection sectionIndex={14} pin pinDistance={2000} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={14}>
           <ScenarioSection
             sectionIndex={14}
             scenarioId="use_case_1_restaurant_reservation"
@@ -161,7 +165,7 @@ export default function GSAPSlidesPage() {
             agentStyle="reasoning"
           />
         </SlideGSAPSection>
-        <SlideGSAPSection sectionIndex={15} className="min-h-screen flex items-center justify-center" variant="scaleIn" data-slide-index={15}>
+        <SlideGSAPSection sectionIndex={15} pin pinDistance={2000} scrub={1.2} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={15}>
           <ScenarioSection
             sectionIndex={15}
             scenarioId="use_case_2_senior_life_mate"
@@ -169,13 +173,12 @@ export default function GSAPSlidesPage() {
             agentStyle="reasoning"
           />
         </SlideGSAPSection>
-        <SlideGSAPSection sectionIndex={16} pin pinDistance={1000} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="scaleIn" data-slide-index={16}>
+        <SlideGSAPSection sectionIndex={16} pin pinDistance={1000} scrub={0.8} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={16}>
           <ImageSlide imageUrl="/assets/slide/slide16_image.png" />
         </SlideGSAPSection>
-        <SlideGSAPSection sectionIndex={17} className="min-h-screen flex items-center justify-center" variant="rotateIn" data-slide-index={17}>
+        <SlideGSAPSection sectionIndex={17} className="min-h-screen flex items-center justify-center" variant="fadeUp" data-slide-index={17}>
           <Slide017 />
         </SlideGSAPSection>
       </div>
-    </PinningProvider>
   );
 }
