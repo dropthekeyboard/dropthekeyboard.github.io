@@ -88,28 +88,28 @@ export function VoiceBubble({
   const bubbleStyles = {
     light: {
       default: {
-        background: 'bg-white/20 border border-white/40',
-        overlay: 'from-white/15 via-white/12 to-white/8',
+        background: 'bg-gray-200/95 border border-gray-300/80',
+        overlay: 'from-transparent via-transparent to-transparent',
         text: 'text-gray-900',
         mutedText: 'text-gray-700',
       },
       program: {
-        background: 'bg-green-50/30 border border-green-200/50',
-        overlay: 'from-green-50/20 via-green-50/15 to-green-50/10',
+        background: 'bg-green-200/95 border border-green-400/80',
+        overlay: 'from-transparent via-transparent to-transparent',
         text: 'text-gray-900',
         mutedText: 'text-green-800',
       },
     },
     dark: {
       default: {
-        background: 'bg-gray-900/25 border border-gray-600/40',
-        overlay: 'from-gray-900/20 via-gray-900/15 to-gray-900/10',
+        background: 'bg-gray-800/95 border border-gray-600/80',
+        overlay: 'from-gray-800/10 via-gray-800/5 to-transparent',
         text: 'text-gray-50',
         mutedText: 'text-gray-200',
       },
       program: {
-        background: 'bg-green-900/30 border border-green-600/50',
-        overlay: 'from-green-900/25 via-green-900/20 to-green-900/15',
+        background: 'bg-green-800/95 border border-green-600/80',
+        overlay: 'from-green-800/10 via-green-800/5 to-transparent',
         text: 'text-gray-50',
         mutedText: 'text-green-200',
       },
@@ -154,8 +154,7 @@ export function VoiceBubble({
             'px-4 py-3 rounded-2xl shadow-2xl',
             currentStyle.background,
             'max-w-[280px] min-w-[160px]',
-            'relative overflow-hidden',
-            'backdrop-blur-sm'
+            'relative overflow-hidden'
           )}
         >
           {/* Ultra-strong glass effect overlay with extreme blur kernel */}
@@ -191,6 +190,7 @@ export function VoiceBubble({
               )}
             >
               <ReactMarkdown
+                className={currentStyle.text}
                 remarkPlugins={markdownOptions.enableGfm ? [remarkGfm] : []}
                 components={getMarkdownComponents()}
                 disallowedElements={
@@ -209,20 +209,11 @@ export function VoiceBubble({
                 currentStyle.text,
                 isOwnMessage ? 'text-right' : 'text-left'
               )}
+              style={{ color: 'inherit' }}
             >
               {message}
             </div>
           )}
-
-          {/* Speaker indicator */}
-          <div
-            className={cn(
-              'mt-4 text-sm font-medium relative z-10',
-              currentStyle.mutedText
-            )}
-          >
-            {isOwnMessage ? 'You' : 'Contact'}
-          </div>
         </div>
       </div>
     </motion.div>
