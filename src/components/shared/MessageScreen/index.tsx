@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Send, MessageCircle } from 'lucide-react';
 import { MessageBubble } from '@/components/shared/MessageBubble';
 import { findEntityByName } from '@/components/shared/Avatar/avatarHelpers';
+// import { useTheme } from '@/hooks/useTheme';
 import type { Message, Entity } from '@/contexts/scenario';
 import { useScenario } from '@/hooks/useScenario';
 import { useEffect, useRef } from 'react';
@@ -24,6 +25,7 @@ export function MessageScreen({
   className,
   entity,
 }: MessageScreenProps) {
+  // const { isDark } = useTheme();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { state } = useScenario();

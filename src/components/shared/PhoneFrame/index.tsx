@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { StatusBar } from '@/components/shared/StatusBar';
+import { useTheme } from '@/hooks/useTheme';
 import { useEffect, useRef } from 'react';
 
 interface PhoneFrameProps {
@@ -9,6 +10,7 @@ interface PhoneFrameProps {
 }
 
 export function PhoneFrame({ children, className }: PhoneFrameProps) {
+  const { isDark } = useTheme();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto scroll to bottom when children change
@@ -42,7 +44,10 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-black rounded-full z-20"></div>
 
           {/* Screen */}
-          <div className="w-full h-full bg-white dark:bg-gray-950 rounded-[2rem] overflow-hidden flex flex-col relative">
+          <div className={cn(
+            'w-full h-full rounded-[2rem] overflow-hidden flex flex-col relative',
+            isDark ? 'bg-gray-950' : 'bg-white'
+          )}>
             {/* Status Bar */}
             <div className="relative z-10">
               <StatusBar />
@@ -61,7 +66,10 @@ export function PhoneFrame({ children, className }: PhoneFrameProps) {
 
             {/* Home indicator (for iPhone X+ style) */}
             <div className="flex justify-center pb-2">
-              <div className="w-32 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+              <div className={cn(
+                'w-32 h-1 rounded-full',
+                isDark ? 'bg-gray-600' : 'bg-gray-300'
+              )}></div>
             </div>
           </div>
 

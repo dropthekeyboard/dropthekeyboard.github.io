@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+// import { useTheme } from '@/hooks/useTheme';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const sectionLabelVariants = cva(
@@ -50,6 +51,7 @@ export function SectionLabel({
   className,
   delay = 0.2,
 }: SectionLabelProps) {
+  // const { isDark } = useTheme();
   const getAnimationProps = () => {
     switch (animation) {
       case 'slide':

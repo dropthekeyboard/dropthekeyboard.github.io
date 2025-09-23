@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, PhoneOff } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
+import { cn } from '@/lib/utils';
 import logo from '@/assets/skt_logo.jpg';
 import type { PhoneState } from '@/contexts/scenario';
 
@@ -12,6 +14,8 @@ export function IncomingCallOverlay({
   state,
   callerName = 'Service Provider',
 }: IncomingCallOverlayProps) {
+  const { isDark } = useTheme();
+
   if (state === 'message') {
     return null;
   }
@@ -56,7 +60,12 @@ export function IncomingCallOverlay({
               initial={{ scale: 0.8, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-              className="bg-white dark:bg-gray-900 rounded-3xl p-8 mx-4 max-w-sm w-full shadow-2xl border border-gray-200 dark:border-gray-700"
+              className={cn(
+                'rounded-3xl p-8 mx-4 max-w-sm w-full shadow-2xl border',
+                isDark
+                  ? 'bg-gray-900 border-gray-700'
+                  : 'bg-white border-gray-200'
+              )}
             >
               {/* 프로필 영역 */}
               <motion.div
@@ -67,7 +76,10 @@ export function IncomingCallOverlay({
                 <motion.div
                   animate={{ rotate: [0, 5, -5, 0] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                  className="w-30 h-30 bg-white/10 dark:bg-gray-800/50 rounded-full flex items-center justify-center mb-4 shadow-xl overflow-hidden backdrop-blur-sm"
+                  className={cn(
+                    'w-30 h-30 rounded-full flex items-center justify-center mb-4 shadow-xl overflow-hidden backdrop-blur-sm',
+                    isDark ? 'bg-gray-800/50' : 'bg-white/10'
+                  )}
                 >
                   <motion.img
                     src={logo}
@@ -81,12 +93,18 @@ export function IncomingCallOverlay({
                 <motion.h2
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
-                  className="text-xl font-semibold text-gray-900 dark:text-white mb-1"
+                  className={cn(
+                    'text-xl font-semibold mb-1',
+                    isDark ? 'text-white' : 'text-gray-900'
+                  )}
                 >
                   Incoming Call
                 </motion.h2>
 
-                <motion.p className="text-gray-600 dark:text-gray-400 text-base">
+                <motion.p className={cn(
+                  'text-base',
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                )}>
                   {callerName}
                 </motion.p>
               </motion.div>
@@ -168,7 +186,10 @@ export function IncomingCallOverlay({
                 transition={{ duration: 1.5, repeat: Infinity }}
                 className="text-center mt-4"
               >
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className={cn(
+                  'text-sm',
+                  isDark ? 'text-gray-400' : 'text-gray-500'
+                )}>
                   Slide to answer
                 </p>
               </motion.div>

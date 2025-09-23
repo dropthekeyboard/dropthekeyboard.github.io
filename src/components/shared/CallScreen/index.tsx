@@ -1,4 +1,5 @@
 import { VoiceBubbleOverlay } from '@/components/shared/VoiceBubbleOverlay';
+// import { useTheme } from '@/hooks/useTheme';
 import type { Message, Entity } from '@/contexts/scenario';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +28,7 @@ export function CallScreen({
   className,
   entity,
 }: CallScreenProps) {
+  // const { isDark } = useTheme();
   // Temporary screen mode - should be passed as prop or derived from state
 
   return (

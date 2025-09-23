@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/hooks/useTheme';
 import {
   Phone,
   MessageCircle,
@@ -25,6 +26,7 @@ export function HomeScreen({
   entity,
   location = 'customer',
 }: HomeScreenProps) {
+  const { isDark } = useTheme();
   const displayName = entity?.displayName || entity?.name || 'Contact';
 
   // Convert entity type to component sender type
@@ -65,7 +67,10 @@ export function HomeScreen({
   return (
     <div
       className={cn(
-        'relative flex flex-col h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-lg overflow-hidden',
+        'relative flex flex-col h-full w-full rounded-lg overflow-hidden',
+        isDark
+          ? 'bg-gradient-to-br from-slate-800 to-slate-900'
+          : 'bg-gradient-to-br from-slate-100 to-slate-200',
         className
       )}
     >
@@ -92,7 +97,10 @@ export function HomeScreen({
               <User className="w-14 h-14 text-white" />
             )}
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-1">
+          <h2 className={cn(
+            'text-2xl font-semibold mb-1',
+            isDark ? 'text-white' : 'text-gray-900'
+          )}>
             {displayName}
           </h2>
         </div>
@@ -104,12 +112,21 @@ export function HomeScreen({
             return (
               <div
                 key={index}
-                className="flex flex-col items-center space-y-2 p-3 rounded-xl hover:bg-white/10 dark:hover:bg-black/10 transition-colors cursor-pointer group"
+                className={cn(
+                  'flex flex-col items-center space-y-2 p-3 rounded-xl transition-colors cursor-pointer group',
+                  isDark ? 'hover:bg-black/10' : 'hover:bg-white/10'
+                )}
               >
-                <div className="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl shadow-md flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className={cn(
+                  'w-12 h-12 rounded-xl shadow-md flex items-center justify-center group-hover:scale-105 transition-transform',
+                  isDark ? 'bg-gray-800' : 'bg-white'
+                )}>
                   <IconComponent className={cn('w-6 h-6', app.color)} />
                 </div>
-                <span className="text-xs text-gray-700 dark:text-gray-300 font-medium text-center leading-tight">
+                <span className={cn(
+                  'text-xs font-medium text-center leading-tight',
+                  isDark ? 'text-gray-300' : 'text-gray-700'
+                )}>
                   {app.label}
                 </span>
               </div>
@@ -119,15 +136,27 @@ export function HomeScreen({
 
         {/* Dock */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-          <div className="bg-black/20 dark:bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-3 shadow-lg">
+          <div className={cn(
+            'backdrop-blur-lg rounded-2xl px-6 py-3 shadow-lg',
+            isDark ? 'bg-white/10' : 'bg-black/20'
+          )}>
             <div className="flex items-center space-x-6">
-              <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg shadow-md flex items-center justify-center">
+              <div className={cn(
+                'w-10 h-10 rounded-lg shadow-md flex items-center justify-center',
+                isDark ? 'bg-gray-800' : 'bg-white'
+              )}>
                 <Phone className="w-5 h-5 text-green-500" />
               </div>
-              <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg shadow-md flex items-center justify-center">
+              <div className={cn(
+                'w-10 h-10 rounded-lg shadow-md flex items-center justify-center',
+                isDark ? 'bg-gray-800' : 'bg-white'
+              )}>
                 <MessageCircle className="w-5 h-5 text-blue-500" />
               </div>
-              <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg shadow-md flex items-center justify-center">
+              <div className={cn(
+                'w-10 h-10 rounded-lg shadow-md flex items-center justify-center',
+                isDark ? 'bg-gray-800' : 'bg-white'
+              )}>
                 <Settings className="w-5 h-5 text-gray-500" />
               </div>
             </div>
