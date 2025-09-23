@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Users, Clock, Building2 } from 'lucide-react';
 import { SlideHeader } from '@/components/shared/SlideHeader';
 
-gsap.registerPlugin(ScrollTrigger);
 
 // Slide 003: 모두의 AI는 전화/문자에서 시작
 function Slide003() {
