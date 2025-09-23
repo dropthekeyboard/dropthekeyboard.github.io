@@ -5,26 +5,18 @@ import type { Message, Entity } from '@/contexts/scenario';
 
 interface VoiceBubbleOverlayProps {
   voiceMessages: Message[];
-  ownerName: string;
-  contactName?: string;
-  from?: string;
+  ownerEntity: Entity;
   className?: string;
   maxMessages?: number;
   callDuration?: number;
-  isMuted?: boolean;
-  entity?: Entity | null;
   variant?: 'default' | 'program';
 }
 
 export function VoiceBubbleOverlay({
   voiceMessages,
-  ownerName,
-  contactName = 'Contact',
-  from: _from, // eslint-disable-line @typescript-eslint/no-unused-vars
+  ownerEntity,
   className,
   maxMessages = 5,
-  callDuration = 0,
-  entity,
   variant = 'default',
 }: VoiceBubbleOverlayProps) {
   return (
@@ -47,12 +39,9 @@ export function VoiceBubbleOverlay({
       <div className="relative z-10 flex-1 overflow-hidden shadow-2xl">
         <VoiceScreen
           voiceMessages={voiceMessages}
-          ownerName={ownerName}
-          contactName={contactName}
+          ownerEntity={ownerEntity}
           maxMessages={maxMessages}
-          callDuration={callDuration}
           className="bg-background/95"
-          entity={entity}
           variant={variant}
         />
       </div>

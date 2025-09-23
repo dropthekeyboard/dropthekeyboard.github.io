@@ -11,12 +11,9 @@ import { useScenario } from '@/hooks/useScenario';
 
 interface VoiceScreenProps {
   voiceMessages: Message[];
-  ownerName: string;
-  contactName?: string;
+  ownerEntity: Entity;
   className?: string;
   maxMessages?: number;
-  callDuration?: number;
-  entity?: Entity | null;
   variant?: 'default' | 'program';
 }
 
@@ -33,11 +30,8 @@ function getRelevantSession(
 
 export function VoiceScreen({
   voiceMessages,
-  ownerName,
-  contactName = 'Contact',
+  ownerEntity,
   className,
-  callDuration = 0,
-  entity,
   variant = 'default',
 }: VoiceScreenProps) {
   const { resolvedTheme } = useTheme();
@@ -48,10 +42,24 @@ export function VoiceScreen({
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const session = useMemo(
-    () => getRelevantSession(state, ownerName),
-    [state, ownerName]
+    () => getRelevantSession(state, ownerEntity.name),
+    [state, ownerEntity.name]
   );
-  console.log('voice screen session : ', { session, voiceMessages });
+  // Determine contact name from caller/callee entities
+  const otherEntity = useMemo(() => {
+    if(state && state.steps) {
+      const { steps } = state;
+      const lastStep = steps[steps.length - 1];
+      if(lastStep) {
+        if(lastStep.action.from === ownerEntity.name) {
+          return findEntityByName(state, lastStep.action.to);
+        } else if(lastStep.action.to === ownerEntity.name) {
+          return findEntityByName(state, lastStep.action.from);          
+        } 
+      }
+      return null;
+    }
+  }, [state, ownerEntity.name]);
 
   // Helper function to convert scenario senderType to component senderType
   const getComponentSenderType = (
@@ -132,6 +140,10 @@ export function VoiceScreen({
 
   const currentTheme = themeStyles[resolvedTheme];
 
+  if(otherEntity === null) {
+    return null;
+  }
+
   return (
     <div
       className={cn(
@@ -143,10 +155,10 @@ export function VoiceScreen({
       {/* Top Section - Avatar, Contact Info, Call Duration */}
       <div className="flex-shrink-0 pt-8 pb-4">
         <div className="flex flex-col items-center space-y-4">
-          {/* Contact avatar - using Avatar component with CallSession info */}
+          {/* Caller avatar - using Avatar component with caller entity info */}
           <div className="mx-auto">
             <Avatar
-              {...getEntityAvatarProps(entity, getComponentSenderType(session?.callerType))}
+              {...getEntityAvatarProps(otherEntity, getComponentSenderType(session?.callerType))}
               size="lg"
               className={cn(
                 'scale-150 shadow-2xl',
@@ -156,7 +168,7 @@ export function VoiceScreen({
             />
           </div>
 
-          {/* Contact name and call status */}
+          {/* Caller name and call status */}
           <div className="text-center">
             <h1
               className={cn(
@@ -164,7 +176,7 @@ export function VoiceScreen({
                 currentTheme.textPrimary
               )}
             >
-              {contactName}
+              {otherEntity?.displayName || otherEntity?.name}
             </h1>
             <p className={cn('text-sm', currentTheme.textSecondary)}>
               Voice Call
@@ -187,7 +199,7 @@ export function VoiceScreen({
                 currentTheme.statusText
               )}
             >
-              {formatDuration(callDuration)}
+              {formatDuration(0)}
             </span>
           </div>
         </div>
@@ -213,18 +225,13 @@ export function VoiceScreen({
                       >
                         <VoiceBubble
                           message={voiceMessage.content}
-                          isOwnMessage={voiceMessage.from === ownerName}
+                          isOwnMessage={voiceMessage.from === ownerEntity.name}
                           senderType={getComponentSenderType(
                             voiceMessage.senderType
                           )}
                           timestamp={voiceMessage.timestamp}
-                          enableMarkdown={
-                            voiceMessage.senderType === 'agent' ||
-                            voiceMessage.senderType === 'server'
-                          }
-                          entity={entity}
-                          messageFrom={voiceMessage.from}
-                          ownerName={ownerName}
+                          enableMarkdown={true}
+                          entity={ownerEntity}
                           messageFromEntity={findEntityByName(state, voiceMessage.from)}
                           variant={variant}
                         />

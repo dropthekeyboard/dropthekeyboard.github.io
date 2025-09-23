@@ -22,6 +22,12 @@ function findEntityByName(scenario: Scenario, name: string): Entity | undefined 
   return undefined;
 }
 
+// Helper function to get the other entity in a step
+function getOtherEntity(step: AgenticStep, owner: Entity, scenario: Scenario): Entity | undefined {
+  const otherEntityName = owner.name === step.action.from ? step.action.to : step.action.from;
+  return findEntityByName(scenario, otherEntityName);
+}
+
 // Owner-centric phone state calculation function
 function getOwnerPhoneState(owner: Entity, scenario: Scenario): {
   phoneState: 'idle' | 'ring-incoming' | 'ring-outgoing' | 'calling' | 'messaging';
@@ -39,29 +45,35 @@ function getOwnerPhoneState(owner: Entity, scenario: Scenario): {
   if (!lastStep) return { phoneState: 'idle' };
 
   switch (lastStep.type) {
-    case 'make-call':
+    case 'make-call': {
+      const otherEntity = getOtherEntity(lastStep, owner, scenario);
       return {
         phoneState: lastStep.action.from === owner.name ? 'ring-outgoing' : 'ring-incoming',
-        fromEntity: findEntityByName(scenario, lastStep.action.from),
-        toEntity: findEntityByName(scenario, lastStep.action.to),
+        fromEntity: owner.name === lastStep.action.from ? owner : otherEntity,
+        toEntity: owner.name === lastStep.action.from ? otherEntity : owner,
       };
-    case 'accept-call':
+    }
+    case 'accept-call': {
+      const otherEntity = getOtherEntity(lastStep, owner, scenario);
       return {
         phoneState: 'calling',
-        fromEntity: findEntityByName(scenario, lastStep.action.from),
-        toEntity: findEntityByName(scenario, lastStep.action.to),
+        fromEntity: owner.name === lastStep.action.from ? owner : otherEntity,
+        toEntity: owner.name === lastStep.action.from ? otherEntity : owner,
       };
+    }
     case 'finish-call':
       return { phoneState: 'idle' };
-    case 'send-message':
+    case 'send-message': {
+      const otherEntity = getOtherEntity(lastStep, owner, scenario);
       return {
         phoneState:
           lastStep.action.type === 'voice' || lastStep.action.type === 'dtmf'
             ? 'calling'
             : 'messaging',
-        fromEntity: findEntityByName(scenario, lastStep.action.from),
-        toEntity: findEntityByName(scenario, lastStep.action.to),
+        fromEntity: owner.name === lastStep.action.from ? owner : otherEntity,
+        toEntity: owner.name === lastStep.action.from ? otherEntity : owner,
       };
+    }
     default:
       return { phoneState: 'idle' };
   }
@@ -161,13 +173,13 @@ export function PhoneSection({
                 }}
                 className="absolute inset-0"
               >
-                <VoiceScreen
-                  voiceMessages={voiceMessages}
-                  ownerName={entity?.name || 'Unknown'}
-                  contactName={contactName}
-                  entity={entity}
-                  variant={voiceBubbleVariant}
-                />
+                {entity && (
+                  <VoiceScreen
+                    voiceMessages={voiceMessages}
+                    ownerEntity={entity}
+                    variant={voiceBubbleVariant}
+                  />
+                )}
               </motion.div>
             )}
             {(currentScreen === 'home' || currentScreen === 'home-with-overlay') && (
