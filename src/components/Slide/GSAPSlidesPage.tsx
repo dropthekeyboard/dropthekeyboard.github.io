@@ -17,7 +17,7 @@ export default function GSAPSlidesPage() {
         </div>
       </SlideGSAPSection>
 
-      <SlideGSAPSection pin pinDistance={1400} scrub={1} className="min-h-screen" variant="slideLeft">
+      <SlideGSAPSection pin pinDistance={1600} scrub={1} className="min-h-screen" variant="slideLeft">
         <div data-anim className="relative w-full h-full">
           <Slide002 />
         </div>
