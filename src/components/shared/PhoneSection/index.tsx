@@ -101,7 +101,7 @@ export function PhoneSection({
               >
                 <CallScreen
                   contactName={entity?.displayName || entity?.name || contactName}
-                  ownerName={entity?.displayName || entity?.name || 'Unknown'}
+                  ownerName={entity?.name || 'Unknown'}
                   contactNumber={contactNumber}
                   callDuration={0}
                   voiceMessages={voiceMessages}
