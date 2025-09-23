@@ -1,6 +1,6 @@
 import { User } from 'lucide-react';
 import logo from '@/assets/skt_logo.jpg';
-import avatarSmall from '@/assets/avatar_small.png';
+import customerAvatar from '/assets/avatars/customer.png';
 import type { SenderType, Entity, Scenario } from '@/contexts/scenario';
 
 // Helper function to get avatar props based on sender type
@@ -24,7 +24,7 @@ export function getAvatarProps(
     case 'user':
     default:
       return {
-        src: avatarSmall,
+        src: customerAvatar,
         alt: 'User',
         fallbackIcon: User,
       };

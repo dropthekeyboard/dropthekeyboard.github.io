@@ -67,11 +67,26 @@ export function MessageScreen({
     }
   };
 
-  // Find the sender of received messages for header avatar
+  // Find the appropriate entity for header avatar
+  // Priority: 1) If owner sent a message, show the recipient (msg.to)
+  //          2) Otherwise, show the sender of received messages (msg.from)
+  const sentMessage = messages.find(msg => msg.from === ownerName);
   const receivedMessage = messages.find(msg => msg.from !== ownerName);
-  const senderEntity = receivedMessage ? findEntityByName(state, receivedMessage.from) : null;
-  const senderType = receivedMessage ? getComponentSenderType(receivedMessage.senderType) : undefined;
-  const headerAvatarProps = getEntityAvatarProps(senderEntity, senderType);
+
+  let headerEntity = null;
+  let headerSenderType = undefined;
+
+  if (sentMessage) {
+    // Owner sent a message - show the recipient
+    headerEntity = findEntityByName(state, sentMessage.to);
+    headerSenderType = getComponentSenderType(sentMessage.senderType);
+  } else if (receivedMessage) {
+    // No sent messages - show the sender of received messages
+    headerEntity = findEntityByName(state, receivedMessage.from);
+    headerSenderType = getComponentSenderType(receivedMessage.senderType);
+  }
+
+  const headerAvatarProps = getEntityAvatarProps(headerEntity, headerSenderType);
 
   return (
     <div className={cn('w-full h-full bg-background flex flex-col', className)}>
@@ -84,10 +99,10 @@ export function MessageScreen({
 
         {/* Contact info */}
         <div className="flex flex-col items-center cursor-pointer">
-          {senderEntity?.avatarUrl ? (
+          {headerEntity?.avatarUrl ? (
             <img 
-              src={senderEntity.avatarUrl} 
-              alt={senderEntity.displayName || senderEntity.name || contactName} 
+              src={headerEntity.avatarUrl} 
+              alt={headerEntity.displayName || headerEntity.name || contactName} 
               className="w-10 h-10 rounded-full" 
             />
           ) : headerAvatarProps.src ? (
@@ -110,7 +125,7 @@ export function MessageScreen({
               "font-semibold text-base",
               isDark ? "text-white" : "text-gray-900"
             )}>
-              {senderEntity?.displayName || senderEntity?.name || contactName}
+              {headerEntity?.displayName || headerEntity?.name || contactName}
             </p>
             <ChevronLeft className="h-4 w-4 text-gray-400 ml-0.5 rotate-180" strokeWidth={2.5} />
           </div>

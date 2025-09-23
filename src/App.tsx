@@ -32,7 +32,6 @@ function App() {
               <DemoView />
             ) : (
               <GSAPSlidesPage />
-              // <GSAPPinningDemo />
             )}
           </main>
         </AgentDisplayVariantProvider>
