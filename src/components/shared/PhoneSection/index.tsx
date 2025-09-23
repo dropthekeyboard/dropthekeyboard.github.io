@@ -8,7 +8,7 @@ import { OutgoingCallOverlay } from '@/components/shared/CallScreen/OutgoingCall
 import { ThemeOverride } from '@/contexts/theme';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Message, HumanState, Entity, AIAgentState, AgenticStep, Scenario, PhoneState } from '@/contexts/scenario';
+import type { Message, HumanState, Entity, AIAgentState, AgenticStep, Scenario } from '@/contexts/scenario';
 import { useScenario } from '@/hooks/useScenario';
 import { useMemo } from 'react';
 
@@ -127,26 +127,12 @@ export function PhoneSection({
 
   // Calculate Call Overlay props automatically
   const incomingCallProps = useMemo(() => ({
-    state: 'ring' as PhoneState, // ring-incoming일 때만 렌더링되므로 항상 'ring'
-    callerName: ownerState.fromEntity?.displayName || ownerState.fromEntity?.name || 'Unknown',
-    callerEntity: ownerState.fromEntity?.type === 'human' ? ownerState.fromEntity as HumanState : null,
-    ownerName: entity?.name || 'Unknown',
-  }), [ownerState, entity]);
+    callerEntity: ownerState.fromEntity || { name: 'Unknown', type: 'human' as const },
+  }), [ownerState]);
 
-  const outgoingCallProps = useMemo(() => {
-    const calleeEntity = ownerState.toEntity;
-    const calleeName = calleeEntity?.displayName || calleeEntity?.name || 'Unknown';
-
-    return {
-      calleeEntity: calleeEntity?.type === 'human' ? calleeEntity as HumanState : {
-        ...entity!,
-        name: calleeName,
-        displayName: calleeName,
-      } as HumanState,
-      calleeName,
-      state: ownerState.phoneState === 'ring-outgoing' ? 'ring' : 'idle' as PhoneState,
-    };
-  }, [ownerState, entity]);
+  const outgoingCallProps = useMemo(() => ({
+    calleeEntity: ownerState.toEntity || { name: 'Unknown', type: 'human' as const },
+  }), [ownerState]);
 
   const animationX = animationDirection === 'left' ? -50 : 50;
 

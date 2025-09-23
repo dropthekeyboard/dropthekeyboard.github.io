@@ -2,12 +2,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import logo from '@/assets/skt_logo.jpg';
-import type { HumanState, PhoneState } from '@/contexts/scenario';
+import type { Entity } from '@/contexts/scenario';
 
 interface OutgoingCallOverlayProps {
-  calleeEntity: HumanState;
-  calleeName?: string;
-  state?: PhoneState;
+  calleeEntity: Entity;
 }
 
 // 액션 버튼 컴포넌트
@@ -47,19 +45,9 @@ export function OutgoingCallOverlay({
   calleeEntity,
 }: OutgoingCallOverlayProps) {
   const { isDark } = useTheme();
-  const { state } = calleeEntity;
-  
-  if (state === 'message') {
-    return null;
-  }
 
-  // ring 상태에서만 발신/수신 구분 체크
-  if (state !== 'ring') {
-    return null;
-  }
-
-  // callee entity의 displayName 또는 name을 우선 사용
-  const displayName = calleeEntity?.displayName || calleeEntity?.name;
+  // calleeEntity에서 display name 추출
+  const displayName = calleeEntity?.displayName || calleeEntity?.name || 'Contact';
 
   return (
     <AnimatePresence>
@@ -87,12 +75,12 @@ export function OutgoingCallOverlay({
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <motion.p 
+            <motion.p
               className="text-lg text-gray-400 mb-2"
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              {state}
+              Calling...
             </motion.p>
             
             {/* 아바타 이미지 */}
