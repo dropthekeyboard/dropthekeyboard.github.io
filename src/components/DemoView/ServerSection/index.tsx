@@ -32,9 +32,6 @@ export function ServerSection() {
           label={`${server.displayName || server.name}'s Phone`}
           labelColor="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
           animationDirection="right"
-          contactNumber="+1 (800) 555-0199"
-          from={server.name}
-          showAdditionalStatus={true}
           location="server"
         />
       </div>

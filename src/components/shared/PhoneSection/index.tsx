@@ -8,15 +8,70 @@ import { OutgoingCallOverlay } from '@/components/shared/CallScreen/OutgoingCall
 import { ThemeOverride } from '@/contexts/theme';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Message, HumanState, CallSession } from '@/contexts/scenario';
+import type { Message, HumanState, Entity, AIAgentState, AgenticStep, Scenario, PhoneState } from '@/contexts/scenario';
 import { useScenario } from '@/hooks/useScenario';
+import { useMemo } from 'react';
+
+// Entity search utility function
+function findEntityByName(scenario: Scenario, name: string): Entity | undefined {
+  if (scenario.customer?.name === name) return scenario.customer;
+  const agent = scenario.agents?.find((a: AIAgentState) => a.name === name);
+  if (agent) return agent;
+  const server = scenario.servers?.find((s: Entity) => s.name === name);
+  if (server) return server;
+  return undefined;
+}
+
+// Owner-centric phone state calculation function
+function getOwnerPhoneState(owner: Entity, scenario: Scenario): {
+  phoneState: 'idle' | 'ring-incoming' | 'ring-outgoing' | 'calling' | 'messaging';
+  fromEntity?: Entity;
+  toEntity?: Entity;
+} {
+  // Owner가 관여한 step만 필터링
+  const lastStep = scenario.steps
+    .filter(
+      (step: AgenticStep) =>
+        step.action.from === owner.name || step.action.to === owner.name
+    )
+    .at(-1);
+
+  if (!lastStep) return { phoneState: 'idle' };
+
+  switch (lastStep.type) {
+    case 'make-call':
+      return {
+        phoneState: lastStep.action.from === owner.name ? 'ring-outgoing' : 'ring-incoming',
+        fromEntity: findEntityByName(scenario, lastStep.action.from),
+        toEntity: findEntityByName(scenario, lastStep.action.to),
+      };
+    case 'accept-call':
+      return {
+        phoneState: 'calling',
+        fromEntity: findEntityByName(scenario, lastStep.action.from),
+        toEntity: findEntityByName(scenario, lastStep.action.to),
+      };
+    case 'finish-call':
+      return { phoneState: 'idle' };
+    case 'send-message':
+      return {
+        phoneState:
+          lastStep.action.type === 'voice' || lastStep.action.type === 'dtmf'
+            ? 'calling'
+            : 'messaging',
+        fromEntity: findEntityByName(scenario, lastStep.action.from),
+        toEntity: findEntityByName(scenario, lastStep.action.to),
+      };
+    default:
+      return { phoneState: 'idle' };
+  }
+}
 
 interface PhoneSectionProps {
   entity: HumanState | null;
   label: string;
   labelColor: string;
   animationDirection: 'left' | 'right';
-  contactName?: string;
   location?: 'customer' | 'server';
   statusBarVariant?: 'default' | 'program';
   voiceBubbleVariant?: 'default' | 'program';
@@ -27,12 +82,36 @@ export function PhoneSection({
   label,
   labelColor,
   animationDirection,
-  contactName = 'Contact',
   location = 'customer',
   statusBarVariant = 'default',
   voiceBubbleVariant = 'default',
 }: PhoneSectionProps) {
   const { state } = useScenario();
+
+  // Calculate owner's phone state using the new function
+  const ownerState = useMemo(() => {
+    if (!entity) return { phoneState: 'idle' as const };
+    return getOwnerPhoneState(entity, state);
+  }, [entity, state]);
+
+  // Calculate contact name from the ownerState
+  const contactName = useMemo(() => {
+    const otherEntity = ownerState.fromEntity?.name === entity?.name
+      ? ownerState.toEntity
+      : ownerState.fromEntity;
+    return otherEntity?.displayName || otherEntity?.name || 'Contact';
+  }, [ownerState, entity]);
+
+  // Determine current screen based on phone state
+  const currentScreen = useMemo(() => {
+    switch (ownerState.phoneState) {
+      case 'calling': return 'voice';
+      case 'ring-incoming':
+      case 'ring-outgoing': return 'home-with-overlay';
+      case 'messaging': return 'message';
+      default: return 'home';
+    }
+  }, [ownerState.phoneState]);
 
   // Collect all messages from entity's messageBox
   const allMessages: Message[] = Object.values(entity?.messageBox || {}).flat();
@@ -46,28 +125,17 @@ export function PhoneSection({
     (msg) => msg.type === 'voice' || msg.type === 'dtmf'
   );
 
-  // Get caller name from active call session
-  const getCallerName = () => {
-    if (!entity) return contactName;
+  // Calculate Call Overlay props automatically
+  const incomingCallProps = useMemo(() => ({
+    state: 'ring' as PhoneState, // ring-incoming일 때만 렌더링되므로 항상 'ring'
+    callerName: ownerState.fromEntity?.displayName || ownerState.fromEntity?.name || 'Unknown',
+    callerEntity: ownerState.fromEntity?.type === 'human' ? ownerState.fromEntity as HumanState : null,
+    ownerName: entity?.name || 'Unknown',
+  }), [ownerState, entity]);
 
-    const activeCallSession = state.callSessions?.find(
-      (session: CallSession) =>
-        session.participants.some((p: string) => p === entity.name) &&
-        session.endTime === null
-    );
-
-    return activeCallSession?.callerName || contactName;
-  };
-
-  // Get caller entity from active call session
-  const getCallerEntity = () => {
-    // 현재 scenario 구조에서 다른 entity를 찾는 방법이 명확하지 않으므로
-    // 일단 null을 반환하고 추후 개선
-    return null;
-  };
-
-  const callerName = getCallerName();
-  const callerEntity = getCallerEntity();
+  const outgoingCallProps = useMemo(() => ({
+    calleeEntity: ownerState.toEntity?.type === 'human' ? ownerState.toEntity as HumanState : entity!,
+  }), [ownerState, entity]);
 
   const animationX = animationDirection === 'left' ? -50 : 50;
 
@@ -83,7 +151,7 @@ export function PhoneSection({
       >
         <PhoneFrame statusBarVariant={statusBarVariant}>
           <AnimatePresence mode="wait">
-            {entity?.state === 'call' ? (
+            {currentScreen === 'voice' && (
               <motion.div
                 key="voice-screen"
                 initial={{ opacity: 0, x: 300, scale: 0.95 }}
@@ -99,12 +167,13 @@ export function PhoneSection({
                 <VoiceScreen
                   voiceMessages={voiceMessages}
                   ownerName={entity?.name || 'Unknown'}
-                  contactName={entity?.displayName || entity?.name || contactName}
+                  contactName={contactName}
                   entity={entity}
                   variant={voiceBubbleVariant}
                 />
               </motion.div>
-            ) : entity?.state === 'idle' ? (
+            )}
+            {(currentScreen === 'home' || currentScreen === 'home-with-overlay') && (
               <motion.div
                 key="home-screen"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -118,21 +187,8 @@ export function PhoneSection({
               >
                 <HomeScreen entity={entity} location={location} />
               </motion.div>
-            ) : entity?.state === 'ring' ? (
-              <motion.div
-                key="home-screen-with-overlay"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{
-                  duration: 0.4,
-                  ease: [0.25, 0.46, 0.45, 0.94], // iOS-style easing
-                }}
-                className="absolute inset-0"
-              >
-                <HomeScreen entity={entity} location={location} />
-              </motion.div>
-            ) : (
+            )}
+            {currentScreen === 'message' && (
               <motion.div
                 key="message-screen"
                 initial={{ opacity: 0, x: -300, scale: 0.95 }}
@@ -149,7 +205,7 @@ export function PhoneSection({
                   messages={textMessages}
                   isTyping={false}
                   ownerName={entity?.name || 'Unknown'}
-                  contactName={entity?.name || contactName}
+                  contactName={contactName}
                   entity={entity}
                 />
               </motion.div>
@@ -169,18 +225,12 @@ export function PhoneSection({
         {/* Call state overlays */}
         {entity && (
           <>
-            <IncomingCallOverlay 
-              state={entity.state} 
-              callerName={callerName}
-              callerEntity={callerEntity}
-              ownerName={entity.name || 'Unknown'}
-            />
-            <OutgoingCallOverlay 
-              state={entity.state} 
-              calleeName={callerName}
-              calleeEntity={callerEntity}
-              ownerName={entity.name || 'Unknown'}
-            />
+            {ownerState.phoneState === 'ring-incoming' && (
+              <IncomingCallOverlay {...incomingCallProps} />
+            )}
+            {ownerState.phoneState === 'ring-outgoing' && (
+              <OutgoingCallOverlay {...outgoingCallProps} />
+            )}
           </>
         )}
       </motion.div>

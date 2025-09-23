@@ -25,9 +25,10 @@ This is a React + TypeScript + Vite project for creating an animated Single Page
 - **Icons**: Lucide React
 - **Animation**: GSAP 3.13.0 with @gsap/react 2.1.2 + Framer Motion 12.23.18
 - **State Management**: Zustand 5.0.8
-- **Internationalization**: i18next 25.5.2 with react-i18next 15.7.3
+- **Internationalization**: i18next 25.5.2 with react-i18next 15.7.3 + i18next-browser-languagedetector
 - **Charts**: Recharts 3.2.1
-- **Markdown**: react-markdown 9.0.1 with remark-gfm
+- **Markdown**: react-markdown 9.0.1 with remark-gfm + @tailwindcss/typography
+- **Utilities**: clsx, tailwind-merge, @paralleldrive/cuid2 for ID generation
 - **Path Resolution**: `@/` alias points to `src/`
 
 ### Key Project Purpose

@@ -2,15 +2,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import logo from '@/assets/skt_logo.jpg';
-import type { PhoneState, HumanState } from '@/contexts/scenario';
-import { useScenario } from '@/hooks/useScenario';
+import type { HumanState } from '@/contexts/scenario';
 
 interface OutgoingCallOverlayProps {
-  state: PhoneState;
-  calleeName?: string;
-  calleeEntity?: HumanState | null;
-  callStatus?: string;
-  ownerName: string; // 현재 폰의 소유자
+  calleeEntity: HumanState;
 }
 
 // 액션 버튼 컴포넌트
@@ -47,14 +42,10 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 );
 
 export function OutgoingCallOverlay({
-  state,
-  calleeName = 'Service Provider',
   calleeEntity,
-  callStatus = "calling mobile...",
-  ownerName
 }: OutgoingCallOverlayProps) {
   const { isDark } = useTheme();
-  const { state: scenarioState } = useScenario();
+  const { state } = calleeEntity;
   
   if (state === 'message') {
     return null;
@@ -65,25 +56,8 @@ export function OutgoingCallOverlay({
     return null;
   }
 
-  // 현재 활성 call session에서 from과 owner 비교
-  const activeCallSession = scenarioState.callSessions?.find(
-    (session) =>
-      session.participants.some((p: string) => p === ownerName) &&
-      session.endTime === null
-  );
-
-  // from이 owner와 같으면 발신, 다르면 수신
-  const isOutgoing = activeCallSession && 
-    activeCallSession.participants.includes(ownerName) &&
-    activeCallSession.callerName === ownerName;
-
-  // 발신 통화가 아니면 렌더링하지 않음
-  if (!isOutgoing) {
-    return null;
-  }
-  
   // callee entity의 displayName 또는 name을 우선 사용
-  const displayName = calleeEntity?.displayName || calleeEntity?.name || calleeName;
+  const displayName = calleeEntity?.displayName || calleeEntity?.name;
 
   return (
     <AnimatePresence>
@@ -116,7 +90,7 @@ export function OutgoingCallOverlay({
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              {callStatus}
+              {state}
             </motion.p>
             
             {/* 아바타 이미지 */}
