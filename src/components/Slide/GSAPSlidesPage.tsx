@@ -2,7 +2,7 @@
 import {
   ImageSlide,
   SlideGSAPSection,
-  Slide001, Slide002, Slide003, Slide004, Slide005, Slide006, Slide007,
+  Slide001, Slide002, Slide003, Slide004, Slide005, Slide007,
   Slide008, Slide009, Slide011, Slide012, Slide013, Slide017
 } from ".";
 import { ScenarioSection } from "@/components/Test/ScenarioSection";
@@ -18,7 +18,7 @@ export default function GSAPSlidesPage() {
       </SlideGSAPSection>
 
       <SlideGSAPSection pin pinDistance={1400} scrub={1} className="min-h-screen" variant="slideLeft">
-        <div data-anim>
+        <div data-anim className="relative w-full h-full">
           <Slide002 />
         </div>
       </SlideGSAPSection>
@@ -41,13 +41,13 @@ export default function GSAPSlidesPage() {
         </div>
       </SlideGSAPSection>
 
-      <SlideGSAPSection className="min-h-screen flex items-center justify-center" variant="slideRight">
+      <SlideGSAPSection pin pinDistance={1400} scrub={1} className="min-h-screen flex items-center justify-center" variant="slideRight">
         <div data-anim>
-          <Slide006 />
+          <ImageSlide imageUrl="/assets/slide/slide6_image.png" />
         </div>
       </SlideGSAPSection>
 
-      <SlideGSAPSection className="min-h-screenflex items-center justify-center" variant="bounceIn">
+      <SlideGSAPSection pin pinDistance={1400} scrub={1} className="min-h-screenflex items-center justify-center" variant="bounceIn">
         <div data-anim>
           <Slide007 />
         </div>
@@ -101,6 +101,16 @@ export default function GSAPSlidesPage() {
             sectionIndex={14}
             scenarioId="use_case_1_restaurant_reservation"
             title="식당 예약 시나리오"
+            agentStyle="reasoning"
+          />
+        </div>
+      </SlideGSAPSection>
+      <SlideGSAPSection className="min-h-screen flex items-center justify-center" variant="scaleIn">
+        <div data-anim>
+          <ScenarioSection
+            sectionIndex={15}
+            scenarioId="use_case_2_senior_life_mate"
+            title="시니어 라이프 메이트 (Use Case 2)"
             agentStyle="reasoning"
           />
         </div>

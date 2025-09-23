@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Ensure plugin registration once in module scope
 // Idempotent registration (safe to call multiple times)
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type Easing =
   | "power1.in" | "power1.out" | "power1.inOut"
@@ -83,14 +83,13 @@ export default function SlideGSAPSection({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    if (variant === "none") return;
 
     const tweenVarsFrom = initialMap[variant];
     const tweenVarsTo = { ...targetMap[variant], duration, delay, ease } as gsap.TweenVars;
 
     const st: ScrollTrigger.Vars = {
-      trigger: el,
+      trigger: containerRef.current,
       // Pinning 시에는 섹션의 top이 뷰포트 top에 닿을 때 시작하도록 조정
       // (너무 이른 시작을 방지하고 섹션 진입 시점에 고정되도록)
       start: pin ? "top top" : start,
@@ -102,20 +101,20 @@ export default function SlideGSAPSection({
 
     const tl = gsap.timeline({ scrollTrigger: st });
 
-    if (variant !== "none") {
-      const targets = el.querySelectorAll("[data-anim]");
-      if (targets.length > 0) {
-        tl.fromTo(targets, tweenVarsFrom, { ...tweenVarsTo, stagger });
-      } else {
-        tl.fromTo(el, tweenVarsFrom, tweenVarsTo);
-      }
+    // Use scoped selector text to find animation targets
+    const targets = gsap.utils.toArray("[data-anim]");
+    if (targets.length > 0) {
+      tl.fromTo(targets, tweenVarsFrom, { ...tweenVarsTo, stagger });
+    } else {
+      // Fallback to animating the container itself
+      tl.fromTo(containerRef.current, tweenVarsFrom, tweenVarsTo);
     }
 
-    return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
-    };
-  }, { scope: containerRef });
+    // No manual cleanup needed - useGSAP handles it automatically via gsap.context()
+  }, {
+    scope: containerRef,
+    dependencies: [variant, duration, delay, ease, stagger, start, end, scrub, once, pin, pinSpacing, pinDistance]
+  });
 
   const pinStyle = useMemo(() => ({
     minHeight: pin ? "100vh" : undefined,
