@@ -1,18 +1,14 @@
 import React, { useRef, useMemo, useEffect, useCallback, useLayoutEffect, type ComponentType } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { DemoView } from '../DemoView';
-import { ScenarioContextProvider } from '@/contexts/scenario';
-import { ScenarioLoader } from '../ControlHeader/ScenarioLoader';
-import { ScrollControls } from '../ControlHeader/ScrollControls';
 import {
   PinningProvider,
   usePinning,
-  useSectionPinning,
 } from '@/contexts/pinning';
 import { AnimatedSlide } from '@/components/shared/AnimatedSlide';
 import { ScrollProgressTracker } from './ScrollProgressTracker';
 import { useTestScrollProgress } from './hooks/useTestScrollProgress';
+import { ScenarioSection } from './ScenarioSection';
 import scenariosData from '@/data/scenarios.json';
 import type { ScrollTrigger as ScrollTriggerType } from 'gsap/ScrollTrigger';
 import type { SlideProps } from '@/types/slide';
@@ -515,7 +511,7 @@ function GSAPPinningDemoContent({
         if (section.type === 'scenario') {
           const { id, title } = section;
           return (
-            <ScenarioSectionContent
+            <ScenarioSection
               key={`scenario-demo-${id}-${index}`}
               sectionIndex={index}
               scenarioId={id!}
@@ -545,57 +541,6 @@ function GSAPPinningDemoContent({
     </div>
   );
 }
-
-// 개별 시나리오 섹션 컴포넌트
-interface ScenarioSectionContentProps {
-  sectionIndex: number;
-  scenarioId: string;
-  title: string;
-  agentStyle?: 'minimal' | 'formal' | 'hacker' | 'reasoning';
-}
-
-const ScenarioSectionContent = React.forwardRef<
-  HTMLDivElement,
-  ScenarioSectionContentProps
->(({ sectionIndex, scenarioId }, ref) => {
-  const { state } = useSectionPinning(sectionIndex);
-
-  return (
-    <section
-      ref={ref}
-      className="h-screen overflow-hidden flex items-center justify-center bg-background w-full"
-    >
-      <div className="w-full max-w-7xl px-4">
-        <div className="w-full">
-          <ScenarioContextProvider>
-            <div className="mb-4">
-              <ScenarioLoader
-                initialScenarioId={scenarioId}
-                onScenarioLoaded={(id) => {
-                  console.log(`Scenario ${id} loaded`);
-                  // 시나리오 로드로 DOM 높이가 바뀌었을 수 있으므로 재계산
-                  requestAnimationFrame(() => ScrollTrigger.refresh());
-                }}
-                onScenarioError={(error) =>
-                  console.error(`Scenario load error: ${error}`)
-                }
-              />
-            </div>
-            <ScrollControls
-              enabled={true}
-              threshold={30}
-              pinnedState={state}
-              autoScrollThreshold={50}
-            />
-            <DemoView />
-          </ScenarioContextProvider>
-        </div>
-      </div>
-    </section>
-  );
-});
-
-ScenarioSectionContent.displayName = 'ScenarioSectionContent';
 
 export function GSAPPinningDemo({
   agentStyle = 'reasoning',

@@ -3,9 +3,9 @@ import {
   ImageSlide,
   SlideGSAPSection,
   Slide001, Slide002, Slide003, Slide004, Slide005, Slide006, Slide007,
-  Slide008, Slide009, Slide011, Slide012, Slide013,
-  Slide015, Slide017
+  Slide008, Slide009, Slide011, Slide012, Slide013, Slide017
 } from ".";
+import { ScenarioSection } from "@/components/Test/ScenarioSection";
 
 export default function GSAPSlidesPage() {
   return (
@@ -97,7 +97,12 @@ export default function GSAPSlidesPage() {
 
       <SlideGSAPSection className="min-h-screen flex items-center justify-center" variant="scaleIn">
         <div data-anim>
-          <Slide015 />
+          <ScenarioSection
+            sectionIndex={14}
+            scenarioId="use_case_1_restaurant_reservation"
+            title="식당 예약 시나리오"
+            agentStyle="reasoning"
+          />
         </div>
       </SlideGSAPSection>
       <SlideGSAPSection pin pinDistance={1000} scrub={1} className="min-h-screen flex items-center justify-center" variant="scaleIn">
