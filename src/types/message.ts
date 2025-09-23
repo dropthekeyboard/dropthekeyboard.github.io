@@ -38,6 +38,7 @@ export interface VoiceBubbleProps {
   messageFrom?: string; // Message sender identifier for avatar selection
   ownerName?: string; // Phone owner name for avatar comparison
   messageFromEntity?: Entity | null; // Message sender's entity for avatar
+  variant?: 'default' | 'program';
 }
 
 export type SenderType = 'user' | 'ai' | 'agent' | 'server-human';

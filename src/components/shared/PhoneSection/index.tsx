@@ -21,6 +21,7 @@ interface PhoneSectionProps {
   showAdditionalStatus?: boolean;
   location?: 'customer' | 'server';
   statusBarVariant?: 'default' | 'program';
+  voiceBubbleVariant?: 'default' | 'program';
 }
 
 export function PhoneSection({
@@ -34,6 +35,7 @@ export function PhoneSection({
   showAdditionalStatus: _showAdditionalStatus = false, // eslint-disable-line @typescript-eslint/no-unused-vars
   location = 'customer',
   statusBarVariant = 'default',
+  voiceBubbleVariant = 'default',
 }: PhoneSectionProps) {
   const { state } = useScenario();
 
@@ -107,6 +109,7 @@ export function PhoneSection({
                   voiceMessages={voiceMessages}
                   from={from}
                   entity={entity}
+                  variant={voiceBubbleVariant}
                 />
               </motion.div>
             ) : entity?.state === 'idle' ? (
