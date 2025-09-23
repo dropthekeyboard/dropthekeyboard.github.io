@@ -2,10 +2,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import logo from '@/assets/skt_logo.jpg';
-import type { HumanState } from '@/contexts/scenario';
+import type { HumanState, PhoneState } from '@/contexts/scenario';
 
 interface OutgoingCallOverlayProps {
   calleeEntity: HumanState;
+  calleeName?: string;
+  state?: PhoneState;
 }
 
 // 액션 버튼 컴포넌트

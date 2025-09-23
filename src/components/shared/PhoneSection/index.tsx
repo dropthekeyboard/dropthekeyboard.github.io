@@ -133,9 +133,20 @@ export function PhoneSection({
     ownerName: entity?.name || 'Unknown',
   }), [ownerState, entity]);
 
-  const outgoingCallProps = useMemo(() => ({
-    calleeEntity: ownerState.toEntity?.type === 'human' ? ownerState.toEntity as HumanState : entity!,
-  }), [ownerState, entity]);
+  const outgoingCallProps = useMemo(() => {
+    const calleeEntity = ownerState.toEntity;
+    const calleeName = calleeEntity?.displayName || calleeEntity?.name || 'Unknown';
+
+    return {
+      calleeEntity: calleeEntity?.type === 'human' ? calleeEntity as HumanState : {
+        ...entity!,
+        name: calleeName,
+        displayName: calleeName,
+      } as HumanState,
+      calleeName,
+      state: ownerState.phoneState === 'ring-outgoing' ? 'ring' : 'idle' as PhoneState,
+    };
+  }, [ownerState, entity]);
 
   const animationX = animationDirection === 'left' ? -50 : 50;
 
