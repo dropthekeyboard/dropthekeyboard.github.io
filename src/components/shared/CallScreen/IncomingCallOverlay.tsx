@@ -1,11 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, MessageCircle } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
+import { cn } from '@/lib/utils';
 import logo from '@/assets/skt_logo.jpg';
-import type { PhoneState } from '@/contexts/scenario';
+import type { PhoneState, HumanState } from '@/contexts/scenario';
 
 interface IncomingCallOverlayProps {
   state: PhoneState;
   callerName?: string;
+  callerEntity?: HumanState | null;
 }
 
 // 액션 버튼 컴포넌트
@@ -44,12 +47,18 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 export function IncomingCallOverlay({
   state,
   callerName = 'Service Provider',
+  callerEntity,
 }: IncomingCallOverlayProps) {
+  const { isDark } = useTheme();
+  
   if (state === 'message') {
     return null;
   }
 
   const isRinging = state === 'ring';
+  
+  // caller entity의 displayName 또는 name을 우선 사용
+  const displayName = callerEntity?.displayName || callerEntity?.name || callerName;
 
   return (
     <AnimatePresence>
@@ -58,7 +67,10 @@ export function IncomingCallOverlay({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 z-50"
+          className={cn(
+            "absolute inset-0 z-[100] rounded-3xl overflow-hidden",
+            isDark ? "bg-black" : "bg-white"
+          )}
         >
           {/* 진동 효과를 위한 컨테이너 */}
           <motion.div
@@ -75,7 +87,7 @@ export function IncomingCallOverlay({
               repeat: isRinging ? Infinity : 0,
               repeatType: 'loop',
             }}
-            className="relative h-full flex items-center justify-center"
+            className="relative h-full w-full flex flex-col"
           >
             {/* iPhone 스타일 전화 수신 화면 */}
             <motion.div
@@ -83,19 +95,27 @@ export function IncomingCallOverlay({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-              className="bg-black text-white w-full max-w-sm mx-auto h-[85vh] rounded-3xl shadow-lg flex flex-col justify-between items-center p-8 font-sans"
+              className={cn(
+                "w-full h-full flex flex-col justify-center items-center p-8 font-sans",
+                isDark ? "text-white" : "text-gray-900"
+              )}
             >
               {/* 발신자 정보 */}
               <motion.div 
-                className="text-center mt-16"
+                className="text-center flex-1 flex flex-col justify-center"
                 initial={{ y: -30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
                 <motion.img 
                   src={logo} 
-                  alt={callerName} 
-                  className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-white/50 object-contain bg-white/10 backdrop-blur-sm" 
+                  alt={displayName} 
+                  className={cn(
+                    "w-24 h-24 rounded-full mx-auto mb-4 border-2 object-contain backdrop-blur-sm",
+                    isDark 
+                      ? "border-white/50 bg-white/10" 
+                      : "border-gray-300/50 bg-gray-100/50"
+                  )}
                   animate={{ 
                     scale: [1, 1.05, 1],
                     rotate: [0, 2, -2, 0] 
@@ -111,10 +131,13 @@ export function IncomingCallOverlay({
                   animate={{ opacity: [0.9, 1, 0.9] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  {callerName}
+                  {displayName}
                 </motion.h1>
                 <motion.p 
-                  className="text-lg text-gray-400 mt-2"
+                  className={cn(
+                    "text-lg mt-2",
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  )}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
@@ -125,7 +148,7 @@ export function IncomingCallOverlay({
 
               {/* 하단 액션 버튼 영역 */}
               <motion.div 
-                className="w-full flex flex-col items-center space-y-16"
+                className="w-full flex flex-col items-center space-y-12"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}

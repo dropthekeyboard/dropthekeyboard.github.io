@@ -60,7 +60,15 @@ export function PhoneSection({
     return activeCallSession?.callerName || contactName;
   };
 
+  // Get caller entity from active call session
+  const getCallerEntity = () => {
+    // 현재 scenario 구조에서 다른 entity를 찾는 방법이 명확하지 않으므로
+    // 일단 null을 반환하고 추후 개선
+    return null;
+  };
+
   const callerName = getCallerName();
+  const callerEntity = getCallerEntity();
 
   const animationX = animationDirection === 'left' ? -50 : 50;
 
@@ -149,7 +157,11 @@ export function PhoneSection({
 
         {/* Call state indicator */}
         {entity && (
-          <IncomingCallOverlay state={entity.state} callerName={callerName} />
+          <IncomingCallOverlay 
+            state={entity.state} 
+            callerName={callerName}
+            callerEntity={callerEntity}
+          />
         )}
       </motion.div>
     </ThemeOverride>
