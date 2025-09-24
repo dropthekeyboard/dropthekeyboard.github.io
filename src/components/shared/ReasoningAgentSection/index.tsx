@@ -90,6 +90,30 @@ function getMessageTypeLabel(type?: string) {
   }
 }
 
+// 방향 배지 함수들
+function getDirectionBadge(direction: 'incoming' | 'outgoing', isDark: boolean) {
+  const baseClasses = 'text-xs font-medium px-2 py-0.5 rounded-full border';
+  
+  if (direction === 'incoming') {
+    return cn(
+      baseClasses,
+      isDark
+        ? 'bg-green-900/30 border-green-700/50 text-green-300'
+        : 'bg-green-50 border-green-200 text-green-700'
+    );
+  }
+  return cn(
+    baseClasses,
+    isDark
+      ? 'bg-orange-900/30 border-orange-700/50 text-orange-300'
+      : 'bg-orange-50 border-orange-200 text-orange-700'
+  );
+}
+
+function getDirectionLabel(direction: 'incoming' | 'outgoing') {
+  return direction === 'incoming' ? '수신' : '발신';
+}
+
 // 버블 색상 함수 - 입력/출력 구분
 function getBubbleColor(type: 'input' | 'output', isDark: boolean) {
   if (type === 'input') {
@@ -173,9 +197,14 @@ function ReasoningStepComponent({
             </div>
             <div className="flex-1 ml-3 min-w-0">
               {step.originalStep?.type === 'send-message' ? (
-                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                  {getMessageTypeLabel(step.originalStep.action.type)}
-                </span>
+                <div className="flex flex-col space-y-1">
+                  <span className={getDirectionBadge('incoming', isDark)}>
+                    {getDirectionLabel('incoming')}
+                  </span>
+                  <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                    {getMessageTypeLabel(step.originalStep.action.type)}
+                  </span>
+                </div>
               ) : (
                 <span
                   className={cn(
@@ -233,9 +262,14 @@ function ReasoningStepComponent({
           <>
             <div className="flex-1 mr-3 text-right min-w-0">
               {step.originalStep?.type === 'send-message' ? (
-                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                  {getMessageTypeLabel(step.originalStep.action.type)}
-                </span>
+                <div className="flex flex-col space-y-1 items-end">
+                  <span className={getDirectionBadge('outgoing', isDark)}>
+                    {getDirectionLabel('outgoing')}
+                  </span>
+                  <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                    {getMessageTypeLabel(step.originalStep.action.type)}
+                  </span>
+                </div>
               ) : (
                 <span
                   className={cn(
@@ -461,9 +495,14 @@ function ReasoningStepComponent({
           </div>
           <div className="flex-1 ml-3 min-w-0">
             {step.originalStep?.type === 'send-message' ? (
-              <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                {getMessageTypeLabel(step.originalStep.action.type)}
-              </span>
+              <div className="flex flex-col space-y-1">
+                <span className={getDirectionBadge('incoming', isDark)}>
+                  {getDirectionLabel('incoming')}
+                </span>
+                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                  {getMessageTypeLabel(step.originalStep.action.type)}
+                </span>
+              </div>
             ) : (
               <span className={cn('text-sm font-medium truncate', getStepColor())}>
                 {step.actionType || 'Input'}
@@ -477,9 +516,14 @@ function ReasoningStepComponent({
         <>
           <div className="flex-1 mr-3 text-right min-w-0">
             {step.originalStep?.type === 'send-message' ? (
-              <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                {getMessageTypeLabel(step.originalStep.action.type)}
-              </span>
+              <div className="flex flex-col space-y-1 items-end">
+                <span className={getDirectionBadge('outgoing', isDark)}>
+                  {getDirectionLabel('outgoing')}
+                </span>
+                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                  {getMessageTypeLabel(step.originalStep.action.type)}
+                </span>
+              </div>
             ) : (
               <span className={cn('text-sm font-medium truncate', getStepColor())}>
                 {step.actionType || 'Output'}

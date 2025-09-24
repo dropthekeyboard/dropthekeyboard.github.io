@@ -55,7 +55,7 @@ export function getMarkdownComponents(): Components {
       </ul>
     ),
     ol: ({ children, ...props }) => (
-      <ol className="mb-1 last:mb-0 pl-4 space-y-0.5" {...props}>
+      <ol className="mb-1 last:mb-0 pl-4 list-decimal space-y-0.5" {...props}>
         {children}
       </ol>
     ),

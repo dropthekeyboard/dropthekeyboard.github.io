@@ -130,7 +130,7 @@ export function PhoneSection({
 
   // Separate messages by type
   const textMessages: Message[] = allMessages.filter(
-    (msg) => msg.type === 'text'
+    (msg) => msg.type === 'text' || msg.type === 'image'
   );
 
   const voiceMessages: Message[] = allMessages.filter(

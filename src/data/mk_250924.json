@@ -242,9 +242,24 @@
         "action": {
           "from": "lifemate_agent",
           "to": "elderly_person",
-          "content": "오늘 7시 4명 병천 유황오리로 예약 완료했습니다.",
+          "timestamp": 1695570001,
+          "content": "오늘 7시 4명 병천 유황오리로 예약 완료했습니다.\n\n[병천유황오리 본점]\n서울특별시 종로구 삼봉로 68\n02-722-1530\nhttps://maps.app.goo.gl/88fy3AmodbgEWSuN7",
           "type": "text",
-          "reason": "**확정 알림(문자) 발송**"
+          "senderType": "agent",
+          "reason": "**확정 알림(문자) 발송 + 장소 정보 제공**"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "timestamp": 1695570002,
+          "content": "병천 유황오리 위치 지도",
+          "type": "image",
+          "senderType": "agent",
+          "reason": "**예약 장소 지도 이미지 제공**",
+          "imageUrl": "/assets/bc_map.jpg"
         }
       },
       {

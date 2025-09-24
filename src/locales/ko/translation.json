@@ -46,6 +46,8 @@
     "finalDecision": "최종 결정",
     "received": "수신됨",
     "sent": "전송됨",
+    "incoming": "수신",
+    "outgoing": "발신",
     "aiReasoning": "AI_추론",
     "ai": "AI",
     "processAnalyze": "reasoning_process --analyze",

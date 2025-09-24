@@ -122,13 +122,16 @@ export function MessageBubble({
               >
                 {message.type === 'image' && message.imageUrl ? (
                   <div className="space-y-2">
-                    <img
-                      src={message.imageUrl}
-                      alt={message.content || '이미지'}
-                      className="max-w-xs max-h-60 rounded-lg object-cover"
-                    />
+                    <div className="w-full max-w-sm mx-auto">
+                      <img
+                        src={message.imageUrl}
+                        alt={message.content || '이미지'}
+                        className="w-full h-auto rounded-lg object-cover"
+                        loading="lazy"
+                      />
+                    </div>
                     {message.content && (
-                      <div className="text-sm text-muted-foreground">{message.content}</div>
+                      <div className="text-sm text-muted-foreground text-center">{message.content}</div>
                     )}
                   </div>
                 ) : (
@@ -157,13 +160,16 @@ export function MessageBubble({
               >
                 {message.type === 'image' && message.imageUrl ? (
                   <div className="space-y-2">
-                    <img
-                      src={message.imageUrl}
-                      alt={message.content || '이미지'}
-                      className="max-w-xs max-h-60 rounded-lg object-cover"
-                    />
+                    <div className="w-full max-w-sm mx-auto">
+                      <img
+                        src={message.imageUrl}
+                        alt={message.content || '이미지'}
+                        className="w-full h-auto rounded-lg object-cover"
+                        loading="lazy"
+                      />
+                    </div>
                     {message.content && (
-                      <div className="text-sm text-muted-foreground">{message.content}</div>
+                      <div className="text-sm text-muted-foreground text-center">{message.content}</div>
                     )}
                   </div>
                 ) : (

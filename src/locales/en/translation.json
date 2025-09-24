@@ -46,6 +46,8 @@
     "finalDecision": "Final Decision",
     "received": "Received",
     "sent": "Sent",
+    "incoming": "Incoming",
+    "outgoing": "Outgoing",
     "aiReasoning": "AI_REASONING",
     "ai": "AI",
     "processAnalyze": "reasoning_process --analyze",
