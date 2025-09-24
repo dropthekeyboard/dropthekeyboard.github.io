@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { CheckCheck } from 'lucide-react';
 import { Avatar } from '@/components/shared/Avatar';
-import { getEntityAvatarProps, getMessageAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import { getEntityAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTheme } from '@/hooks/useTheme';
@@ -40,9 +40,6 @@ export function MessageBubble({
     linkTarget: '_blank',
     enableGfm: true,
   },
-  entity,
-  messageFrom,
-  ownerName,
   messageFromEntity,
 }: MessageBubbleProps) {
   const { isLight } = useTheme();
@@ -72,10 +69,7 @@ export function MessageBubble({
       >
         {/* Avatar */}
         <Avatar
-          {...(messageFrom && ownerName
-            ? getMessageAvatarProps(messageFrom, ownerName, messageFromEntity, senderType)
-            : getEntityAvatarProps(entity, senderType) // fallback to existing logic
-          )}
+          {...getEntityAvatarProps(messageFromEntity, senderType)}
           size="md"
           className="flex-shrink-0"
         />
@@ -117,7 +111,7 @@ export function MessageBubble({
                 transition={{ delay: 0.1, duration: 0.2 }}
                 className={cn(
                   'text-sm leading-relaxed message-markdown',
-                  isOwnMessage ? 'text-right' : 'text-left'
+                  'text-left'
                 )}
               >
                 {message.type === 'image' && message.imageUrl ? (
@@ -155,7 +149,7 @@ export function MessageBubble({
                 transition={{ delay: 0.1, duration: 0.2 }}
                 className={cn(
                   'text-sm leading-relaxed',
-                  isOwnMessage ? 'text-right' : 'text-left'
+                  'text-left'
                 )}
               >
                 {message.type === 'image' && message.imageUrl ? (
