@@ -173,6 +173,17 @@ export function MessageBubble({
             )}
           </div>
           <BubbleTail isSender={isOwnMessage} isLight={isLight} />
+          
+          {/* Display Name below bubble */}
+          <div
+            className={cn(
+              'text-xs font-medium mt-1 px-1',
+              isOwnMessage ? 'text-right' : 'text-left',
+              isLight ? 'text-gray-800' : 'text-gray-100'
+            )}
+          >
+            {messageFromEntity?.displayName}
+          </div>
         </div>
 
           {/* Timestamp and read status */}
