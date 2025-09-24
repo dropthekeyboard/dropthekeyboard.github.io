@@ -21,10 +21,11 @@ function getRelevantSession(
   scenario: Scenario,
   ownerName: string
 ): CallSession | null {
+  // 가장 최근의 활성화된 세션을 반환 (endTime이 null인 세션 중 마지막)
   return (
-    scenario.callSessions?.find((s) =>
-      s.participants.some((p) => p === ownerName)
-    ) || null
+    scenario.callSessions
+      ?.filter((s) => s.participants.includes(ownerName) && s.endTime === null)
+      .at(-1) || null
   );
 }
 

@@ -164,7 +164,12 @@ export function VoiceBubble({
           {/* Voice visualization header */}
           <div className="flex items-center justify-between mb-4 relative z-10">
             <div className="flex items-center space-x-3">
-              <Phone className="w-4 h-4 text-primary/70 flex-shrink-0" />
+              <Phone
+                className={cn(
+                  'w-4 h-4 flex-shrink-0',
+                  resolvedTheme === 'light' ? 'text-gray-900' : 'text-gray-200'
+                )}
+              />
               <VoiceWaveform isPlaying={isPlaying} variant={variant} />
             </div>
             {timestamp && (
