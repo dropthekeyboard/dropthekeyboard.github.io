@@ -21,6 +21,9 @@ import {
   transformAndFilterByAgent,
 } from '@/utils/reasoningTransform';
 import type { ReasoningStep } from '@/types/reasoning';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { getMarkdownComponents } from '@/lib/markdownComponents';
 
 interface ReasoningAgentSectionProps {
   entity: ServerState | null;
@@ -231,7 +234,14 @@ function ReasoningStepComponent({
                         <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                           •
                         </span>
-                        <span>{info}</span>
+                        <div>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={getMarkdownComponents()}
+                          >
+                            {info}
+                          </ReactMarkdown>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -246,9 +256,14 @@ function ReasoningStepComponent({
                     Strategy
                   </span>
                 </div>
-                <p className="text-sm text-gray-800 dark:text-gray-200 pl-6 leading-relaxed">
-                  {step.reasoning.strategy}
-                </p>
+                <div className="text-sm text-gray-800 dark:text-gray-200 pl-6 leading-relaxed">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={getMarkdownComponents()}
+                  >
+                    {step.reasoning.strategy}
+                  </ReactMarkdown>
+                </div>
               </div>
             )}
 
@@ -267,7 +282,14 @@ function ReasoningStepComponent({
                         <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                           •
                         </span>
-                        <span>{criterion}</span>
+                        <div>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={getMarkdownComponents()}
+                          >
+                            {criterion}
+                          </ReactMarkdown>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -285,9 +307,14 @@ function ReasoningStepComponent({
                 <div className="pl-6">
                   <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700/30">
                     <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm text-purple-700 dark:text-purple-300 font-medium">
-                      {step.reasoning.decision}
-                    </span>
+                    <div className="text-sm text-purple-700 dark:text-purple-300 font-medium">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={getMarkdownComponents()}
+                      >
+                        {step.reasoning.decision}
+                      </ReactMarkdown>
+                    </div>
                   </div>
                 </div>
               </div>

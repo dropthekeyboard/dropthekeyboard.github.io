@@ -84,10 +84,12 @@ export function VoiceScreen({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Show only the messages that belong to the current active call session
-  const displayMessages = voiceMessages.filter(
-    (m) => m.callSession?.id === session?.id && m.callSession?.endTime === null // Only messages from active calls
-  );
+  // Show only the messages that belong to the current active call session, sorted by timestamp
+  const displayMessages = voiceMessages
+    .filter(
+      (m) => m.callSession?.id === session?.id && m.callSession?.endTime === null // Only messages from active calls
+    )
+    .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0)); // Sort by timestamp
 
   // Auto scroll to bottom when new messages arrive - with scroll isolation
   useEffect(() => {
@@ -226,10 +228,16 @@ export function VoiceScreen({
                         return null;
                       }
                       
+                      // 좌우 배치: 내가 보낸 메시지면 우측, 아니면 좌측
+                      const isOwnMessage = fromEntity.name === ownerEntity.name;
+                      
                       return (
                         <div
                           key={voiceMessage.id || voiceMessage.content}
-                          className="pointer-events-auto w-full"
+                          className={cn(
+                            'mb-4 w-full flex',
+                            isOwnMessage ? 'justify-end' : 'justify-start'
+                          )}
                         >
                           <VoiceBubble
                             message={voiceMessage.content}
