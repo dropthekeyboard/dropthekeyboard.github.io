@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const sectionLabelVariants = cva(
-  'px-3 py-1.5 rounded-full text-lg font-semibold',
+  'px-3 py-1.5 rounded-full text-lg font-semibold whitespace-nowrap',
   {
     variants: {
       size: {
-        sm: 'px-2 py-1 text-lg font-medium',
-        md: 'px-3 py-1.5 text-lg font-semibold',
-        lg: 'px-4 py-2 text-xl font-bold',
+        sm: 'px-2 py-1 text-lg font-medium whitespace-nowrap',
+        md: 'px-3 py-1.5 text-lg font-semibold whitespace-nowrap',
+        lg: 'px-4 py-2 text-xl font-bold whitespace-nowrap',
       },
       position: {
         top: 'absolute -top-6 left-1/2 transform -translate-x-1/2',
