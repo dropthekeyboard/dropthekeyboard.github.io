@@ -1,6 +1,7 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 interface UseSimpleAudioReturn {
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   isPlaying: boolean;
   play: () => void;
   pause: () => void;
@@ -9,22 +10,31 @@ interface UseSimpleAudioReturn {
 
 export const useSimpleAudio = (src?: string): UseSimpleAudioReturn => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => setIsPlaying(false);
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
 
   const play = useCallback(() => {
-    if (!src) return;
-
-    if (audioRef.current) {
-      audioRef.current.pause();
+    if (audioRef.current && src) {
+      audioRef.current.play().catch(console.error);
     }
-
-    const audio = new Audio(src);
-    audio.onplay = () => setIsPlaying(true);
-    audio.onpause = () => setIsPlaying(false);
-    audio.onended = () => setIsPlaying(false);
-    
-    audioRef.current = audio;
-    audio.play().catch(console.error);
   }, [src]);
 
   const pause = useCallback(() => {
@@ -42,6 +52,7 @@ export const useSimpleAudio = (src?: string): UseSimpleAudioReturn => {
   }, [isPlaying, play, pause]);
 
   return {
+    audioRef,
     isPlaying,
     play,
     pause,

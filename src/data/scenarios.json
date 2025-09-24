@@ -1,4 +1,350 @@
 {
+  "use_case_2_senior_life_mate": {
+    "id": "use_case_2_senior_life_mate",
+    "title": "시니어 라이프 메이트 (Use Case 2)",
+    "description": "어르신을 위해 건강 맞춤 식당을 추천 및 예약하고, 교통편까지 예약해주는 시나리오",
+    "agents": [
+      {
+        "type": "ai",
+        "name": "lifemate_agent",
+        "displayName": "라이프메이트 에이전트",
+        "avatarUrl": "/assets/avatars/lifemate_agent.png",
+        "steps": []
+      }
+    ],
+    "customer": {
+      "type": "human",
+      "name": "elderly_person",
+      "displayName": "김미경 어르신",
+      "avatarUrl": "/assets/avatars/elderly_person.png",
+      "state": "message",
+      "messageBox": {}
+    },
+    "servers": [
+      {
+        "type": "human",
+        "name": "restaurant_1_staff",
+        "displayName": "신촌 닭한마리 직원",
+        "avatarUrl": "/assets/avatars/restaurant_1_staff.png",
+        "state": "message",
+        "messageBox": {}
+      },
+      {
+        "type": "human",
+        "name": "restaurant_2_staff",
+        "displayName": "병천 유황오리 직원",
+        "avatarUrl": "/assets/avatars/restaurant_2_staff.png",
+        "state": "message",
+        "messageBox": {}
+      },
+      {
+        "type": "human",
+        "name": "uber_taxi",
+        "displayName": "택시 우버 앱",
+        "avatarUrl": "",
+        "state": "message",
+        "messageBox": {}
+      }
+    ],
+    "steps": [
+      {
+        "type": "make-call",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "오늘 저녁 7시쯤, 친구들과 식당에서 모임을 하고 싶은데 적당한 장소 좀 찾아줘.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/9eddadb9.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "네, 어르신. 최근 혈당 수치와 식단 기록을 반영해 당뇨 관리에 좋은 식당을 추천드릴게요. 최근에 다녀오셨던 **‘신촌 닭한마리’** 혹은 **‘병천 유황오리’** 어떠세요?",
+          "type": "voice",
+          "reason": "*메모리 조회: 건강 프로필(당뇨) + 과거 식당 방문 기록  \n*추천 후보 생성: 조건 반영해 [신촌 닭한마리] + [병천 유황오리] 제안",
+          "audioUrl": "/assets/deployed/1e92b5c4.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "**닭한마리** 좋아. 예약 되는지 확인해줘.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/a714a922.mp3",
+          "reason": "*Slot 업데이트: 식당 후보 = “신촌 닭한마리”"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "reason": "*식당 정보 검색: “신촌 닭한마리” 전화 번호 확인"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff",
+          "reason": "*Task 수행: 매장 번호로 전화 "
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff",
+          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/be8fa7e3.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_1_staff",
+          "to": "lifemate_agent",
+          "content": "오늘은 예약이 다 차서 불가능해요.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/ee3c7521.mp3",
+          "reason": "*음성 인식&구조화: 예약 불가로 상태 업데이트"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_1_staff",
+          "reason": "*Fallback 실행: 다른 후보 식당 “병천 유황오리”로 재시도  \n*식당 정보 검색: “병천 유황오리” 전화 번호 확인"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "reason": "*Task 수행: 매장 번호로 전화 "
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/be8fa7e3.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_2_staff",
+          "to": "lifemate_agent",
+          "content": "오늘 7시 가능해요. 룸으로 예약해드릴까요?",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/6f03fef6.mp3"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "reason": "*응답 파싱: 예약 가능, 룸 제공 가능  \n*결과 저장: “병천 유황오리” = 7시, 4명, 룸 예약 가능"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "어르신, '신촌 닭한마리'는 오늘 예약이 다 찼다고 합니다.\n대신 **'병천 유황오리'**는 **7시 룸 예약**이 가능합니다.\n\n**'병천 유황오리'**로 예약을 진행할까요? 아래 번호로 답장해 주세요.\n\n1. 네, 예약해주세요\n2. 다른 곳으로 찾아봐주세요\n3. 오늘은 그만 할래요",
+          "type": "text",
+          "reason": "*결과 Text 요약 & 옵션화  \n*액션 코드 매핑: 문자 숫자 입력 "
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "1",
+          "type": "text",
+          "reason": "*응답 파싱: ‘예약 확정’ Intent 확정"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "reason": "*Task 수행: 예약 확정 요청, 매장 번호로 전화"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff",
+          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 병천 유황오리 룸으로 최종 예약 확정 부탁 드립니다.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/534d6bd0.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_2_staff",
+          "to": "lifemate_agent",
+          "content": "네, 예약 확정 되었습니다.",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/e31a170d.mp3",
+          "reason": "*예약 DB 업데이트"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "restaurant_2_staff"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "오늘 **7시 4명 병천 유황오리로 예약 완료**했습니다.",
+          "type": "text",
+          "reason": "*확정 알림(문자) 발송"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "*[병천유황오리 본점]\n**서울특별시 종로구 삼봉로 68\n02-722-1530\nhttps://maps.app.goo.gl/88fy3AmodbgEWSuN7 ",
+          "type": "image",
+          "imageUrl": "/assets/deployed/01edd731.jpg",
+          "reason": "*장소 정보(문자) 발송"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "식당까지 이동을 도와드릴게요. 평소 이용하시던 **우버 택시**를 **6시 30분**에 불러드릴까요?",
+          "type": "text",
+          "reason": "*메모리 조회: 과거 식당 방문 기록, 이동 기록 추출"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "elderly_person",
+          "to": "lifemate_agent",
+          "content": "응, 부탁해.",
+          "type": "text",
+          "reason": "*응답 파싱: ‘예약 확정’ Intent 확정"
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "uber_taxi",
+          "service": "uber",
+          "request": "**오늘 저녁 6시 30분 Uber 택시 예약**  \nFrom '집' To '병천 유황오리 본점'",
+          "reason": "*교통 API 호출: 우버 택시 실행, 출발지/목적지 설정, 도착시간 예측"
+        }
+      },
+      {
+        "type": "api-response",
+        "action": {
+          "from": "uber_api",
+          "to": "lifemate_agent",
+          "service": "uber",
+          "response": "예약 & 배차 완료",
+          "reason": "*예약 DB 업데이트\n"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "네, 어르신. 택시 예약을 완료했습니다.\n\n- **도착 알림**: 택시 도착 10분 전\n- **결제 방법**: SKT 요금으로 자동 결제\n\n편하게 준비하고 계시면 됩니다.",
+          "type": "text",
+          "reason": "*스케줄러 설정: 도착 10분 전 알림 예약  \n*결제 처리: SKT 통신사 빌링으로 자동 결제 설정"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "어르신, 저녁 메뉴인 **오리고기**는 **단백질이 풍부**하고 **포만감을 오래 유지**시켜 당뇨 환자의 식단 조절에 도움이 됩니다. 채소를 곁들여 드시면 더욱 좋으니, 맛있고 건강하게 식사하세요!",
+          "type": "image",
+          "imageUrl": "/assets/deployed/90fb9a17.png",
+          "reason": "*메모리 조회: 건강 프로필(당뇨)  \n*건강 정보 검색 & Text 요약: 당뇨 + 오리고리  \n*알림(문자) 발송: 음식-건강 데이터베이스 참조"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "lifemate_agent",
+          "to": "elderly_person",
+          "content": "식사 마치고 **2시간 뒤에 혈당 체크**하실 시간이라고 다시 한번 알려드릴게요.",
+          "type": "text",
+          "reason": "*스케줄러 설정: 2시간 뒤 혈당 체크 알림 예약"
+        }
+      }
+    ]
+  },
   "use_case_1_restaurant_reservation": {
     "id": "use_case_1_restaurant_reservation",
     "title": "식당 예약 (Use Case 1)",
@@ -47,7 +393,7 @@
           "to": "customer",
           "content": "네, 주로 이용하시는 서울 2호선 라인의 와인이 유명한 이탈리안 식당 정보를 확인해볼게요.",
           "type": "text",
-          "reason": "고객의 예약 요청에 따라, 프로필과 과거 선호도를 기반으로 자주 이용하시는 서울 2호선 라인의 레스토랑부터 검색을 시작하고 진행 상황을 알려드려야겠다."
+          "reason": "**메모리 조회: 고객 프로필(연령대, 성별, 지역) + 과거 식당 방문 기록\n**추천 후보 생성: 조건 반영해 [명동키친] + [오스테리아 꼬또] 제안"
         }
       },
       {
@@ -55,7 +401,7 @@
         "action": {
           "from": "customer_agent",
           "to": "restaurant_owner",
-          "reason": "적절한 식당을 찾았으니, 이제 8명 예약 가능 여부와 아마로네 와인 재고를 문의하기 위해 전화를 걸어야겠다."
+          "reason": "**식당 정보 검색: 1순위 선호도 식당 [명동키친] 전화 번호 확인\n**Task 수행: 매장 번호로 전화"
         }
       },
       {
@@ -70,9 +416,10 @@
         "action": {
           "from": "customer_agent",
           "to": "restaurant_owner",
-          "content": "## **[고객 예약 요청]**\n안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 **오늘 19시, 8명 단체 예약** 예정입니다. 예약 가능여부 및 아마로네 와인 재고 응답해주시면 전달드리겠습니다.",
+          "content": "안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 **오늘 19시, 8명 단체 예약** 예정입니다. 예약 가능여부 및 아마로네 와인 재고 보유 여부를 응답해주시면 고객님께 전달드리겠습니다.",
           "type": "voice",
-          "reason": "전화가 연결되었으니, SKT 인증 에이전트임을 밝히고 고객의 요청(저녁 7시 8명 예약, 아마로네 와인 재고 확인)을 명확하게 전달해야겠다."
+          "reason": "**Task 수행: 고객 요청사항 기반 정보 문의",
+          "audioUrl": "/assets/deployed/f0bb839b.mp3"
         }
       },
       {
@@ -80,8 +427,72 @@
         "action": {
           "from": "restaurant_owner",
           "to": "customer_agent",
-          "content": "와인 재고는 충분히 있는데, 7시는 어렵고 8시/9시 타임 비어있어요.",
-          "type": "voice"
+          "content": "7시 가능하고, 와인재고도 충분해요. 7시로 예약해드릴까요?",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/8c6d806e.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "확인 감사합니다. 이정윤 고객님께 전달 후 최종 예약 확정을 위해 연락드리겠습니다. \n",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/5eab7b67.mp3"
+        }
+      },
+      {
+        "type": "finish-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner"
+        }
+      },
+      {
+        "type": "make-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "reason": "**식당 정보 검색: 2순위 선호도 식당 [오스테리아 꼬또] 전화 번호 확인\n**Task 수행: 매장 번호로 전화"
+        }
+      },
+      {
+        "type": "accept-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "customer"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 **오늘 19시, 8명 단체 예약** 예정입니다. 예약 가능여부 및 아마로네 와인 재고 보유 여부를 응답해주시면 고객님께 전달드리겠습니다.",
+          "type": "voice",
+          "reason": "**Task 수행: 고객 요청사항 기반 정보 문의",
+          "audioUrl": "/assets/deployed/f0bb839b.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "restaurant_owner",
+          "to": "customer_agent",
+          "content": "와인 재고는 충분히 있는데, 7시는 어렵고 8시/9시 타임 비어있어요. ",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/79f567f4.mp3"
+        }
+      },
+      {
+        "type": "send-message",
+        "action": {
+          "from": "customer_agent",
+          "to": "restaurant_owner",
+          "content": "확인 감사합니다. 이정윤 고객님께 전달 후 최종 예약 확정을 위해 연락드리겠습니다. ",
+          "type": "voice",
+          "audioUrl": "/assets/deployed/5eab7b67.mp3"
         }
       },
       {
@@ -98,7 +509,7 @@
           "to": "customer",
           "content": "정윤님, 요청하신 조건에 맞는 식당 두 곳의 실시간 확인을 마쳤습니다.\n어디로 예약해 드릴까요?\n\n---\n## **[예약 가능 식당 리스트]**\n### 1️⃣ 명동키친  \n**예약 가능 시간**: 19시 가능  \n**아마로네 재고**: 보유 ⭕  \n**식당 링크**: [바로가기](https://naver.me/xmxMt9Ix)  \n\n**추가 정보**  \n- 평점: ★★★★☆ (4.3/5)  \n- 콜키지: 30,000원 (병당)  \n- 주요 메뉴: 파스타, 안심스테이크, 리소토  \n- 주차: 건물 내 주차장(2시간 무료)  \n- 와인 특징: 이탈리아 레드 와인 위주, 아마로네 상시 구비  \n\n---\n\n### 2️⃣ 오스테리아 꼬또  \n**예약 가능 시간**: 저녁 8시 또는 9시 가능 (7시 불가)  \n**아마로네 재고**: 보유 ⭕  \n**식당 링크**: [바로가기](https://naver.me/FEUvX7cf)  \n\n**추가 정보**  \n- 평점: ★★★★☆ (4.5/5)  \n- 콜키지: 25,000원 (병당)  \n- 주요 메뉴: 트러플 파스타, 티본 스테이크, 라구 볼로네제  \n- 주차: 발렛 파킹 가능 (5,000원)  \n- 와인 특징: 이탈리아 토스카나 와인 중심, 프리미엄 와인 라인업  ",
           "type": "text",
-          "reason": "확인된 식당 정보를 Markdown을 사용해 구조화하여 고객이 명확하게 비교하고 선택할 수 있도록 제시해야겠다."
+          "reason": "** Task 수행: 실시간 확인 결과 (예약 가능 시간, 와인 재고, 식당 링크 등) 취합\n** 정보 정리 : Markdown 포맷으로 구조화하여 고객이 비교/선택할 수 있도록 제공"
         }
       },
       {
@@ -106,7 +517,7 @@
         "action": {
           "from": "customer",
           "to": "customer_agent",
-          "content": "명동키친으로. 아마로네 와인도 3병 미리 확보 해줘.",
+          "content": "명동키친으로. 아마로네 와인도 3병도 미리 확보 해달라고 말씀드려줘.",
           "type": "text"
         }
       },
@@ -115,9 +526,9 @@
         "action": {
           "from": "customer_agent",
           "to": "restaurant_owner",
-          "content": "## **[고객 예약 확정 요청]** \n안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 오늘 19시, 8명 단체 예약 확정하려고 합니다. 고객님이 미리 아마로네 와인 3병 세팅 요청하셨습니다. 예약 가능할까요? \n\n---\n**[빠른 답변 선택]**\n1. 예약 확정\n2. 예약 불가\n3. 직접 통화 연결",
+          "content": "## **[고객 예약 확정 요청]\n안녕하세요, SKT 인증 Agent 서비스입니다. \n이정윤 고객님을 대신해 오늘 19시, 8명 단체 예약 확정하려고 합니다. 고객님이 미리 아마로네 와인 3병 세팅 요청하셨습니다. 예약 가능할까요? \n\n---\n**[빠른 답변 선택]**\n1. 예약 확정\n2. 예약 불가\n3. 직접 통화 연결",
           "type": "text",
-          "reason": "고객이 식당을 선택했고 와인 3병 확보를 요청했으니, 효율적인 예약을 위해 식당에 문자로 확정 요청을 보내고 간편한 응답 옵션을 제공해야겠다."
+          "reason": "** Task 수행: 선택 식당에 예약 확정 요청 발송\n** 빠른 응답 옵션(1/2/3) 제공"
         }
       },
       {
@@ -126,7 +537,8 @@
           "from": "restaurant_owner",
           "to": "customer_agent",
           "content": "1",
-          "type": "text"
+          "type": "text",
+          "reason": "**응답 파싱: ‘예약 확정’ Intent 확정\n**예약 DB 업데이트"
         }
       },
       {
@@ -134,9 +546,9 @@
         "action": {
           "from": "customer_agent",
           "to": "customer",
-          "content": "정윤님, **명동키친 / 9/23 19시 / 8명** 예약이 확정되었습니다.\n예약 시간 1시간 전에 알림 문자를 보내드릴게요.",
+          "content": "## **[예약 확정 안내]**\n정윤님, 예약이 확정되었습니다.  \n예약 시간 **1시간 전**에 알림 문자를 보내드릴게요.\n\n---\n\n- **장소:** 명동키친  \n- **일시:** 9월 23일 (월) 19:00  \n- **인원:** 8명",
           "type": "text",
-          "reason": "식당 예약이 확정되었으니, 고객에게 명확하게 알리고 예정된 리마인더에 대해 안내해야겠다."
+          "reason": "**확정 알림(문자) 발송\n**리마인더 설정 안내 "
         }
       },
       {
@@ -144,9 +556,9 @@
         "action": {
           "from": "customer_agent",
           "to": "customer",
-          "content": "🗓️ 일정을 구글 캘린더에 등록해 드릴까요?",
+          "content": "## **[캘린더 일정 등록]**\n 일정을 🗓️구글 캘린더에 등록해 드릴까요?",
           "type": "text",
-          "reason": "예약 확인 후, 고객의 편의를 위해 캘린더 등록이라는 추가적인 제안을 별도의 메시지로 보내 집중도를 높여야겠다."
+          "reason": "** 부가 제안: 예약 확정 후 캘린더 등록 옵션 제공"
         }
       },
       {
@@ -155,17 +567,8 @@
           "from": "customer",
           "to": "customer_agent",
           "content": "응. '와인 모임'으로 된 공유 캘린더에 등록해주고, 모임 멤버들한테도 1시간 전에 문자 알림 줘.",
-          "type": "text"
-        }
-      },
-      {
-        "type": "api-call",
-        "action": {
-          "from": "customer_agent",
-          "to": "amazon_api",
-          "service": "amazon",
-          "request": "wine recommendations",
-          "reason": "고객의 요청(캘린더 등록, 멤버 알림)이 완료되었음을 명확히 보고해야겠다.\n고객 요청 처리를 완료한 후, 와인 추천 API를 통해 받은 정보를 Markdown으로 보기 좋게 가공하여 추가적인 가치를 제안해야겠다."
+          "type": "text",
+          "reason": "** 캘린더 API 호출 : 공유 캘린더 등록 \n** 추가 요청 처리 : 캘린더 내 멤버 대상 문자 알림 설정"
         }
       },
       {
@@ -174,7 +577,16 @@
           "from": "amazon_api",
           "to": "customer_agent",
           "service": "amazon",
-          "response": "요청하신 '와인 모임' 공유 캘린더에 일정을 등록했습니다.\n참석 멤버분들께도 예약 1시간 전에 알림을 보내드릴게요.\n\n---\n\n와인 모임을 위해 메뉴와 잘 어울릴만한 와인들도 추가 준비해보시는 건 어떤가요? \n\n---\n\n## **[🍷 오늘의 추천 와인 ]\n**### <span style=\"color:#8B0000\">피노 그리지오</span>  \n![피노 그리지오](https://upload.wikimedia.org/wikipedia/commons/4/48/Pinot_Grigio.jpg)  \n*해산물 파스타와 잘 어울려요, 산뜻한 맛*  \n👉 [아마존에서 보기](https://amazon.com/wine/pinot-grigio)  \n\n---\n\n### <span style=\"color:#8B0000\">모스카토 다스티</span>  \n![모스카토 다스티](https://upload.wikimedia.org/wikipedia/commons/3/36/Moscato_d%27Asti.jpg)  \n*고르곤졸라 피자에 추천해요, 단맛이 있는 와인*  \n👉 [아마존에서 보기](https://amazon.com/wine/moscato)  \n\n---\n\n### <span style=\"color:#8B0000\">바롤로</span>  \n![바롤로](https://upload.wikimedia.org/wikipedia/commons/2/24/Barolo_bottle.jpg)  \n*양고기 로스트와 잘 어울려요. 높은 산도와 묵직함이 특징*  \n👉 [아마존에서 보기](https://amazon.com/wine/barolo)  "
+          "response": "## **[캘린더 등록 완료]**\n요청하신 '와인 모임' 공유 캘린더에 일정을 등록했습니다.\n참석 멤버분들께도 예약 1시간 전에 알림을 보내드릴게요."
+        }
+      },
+      {
+        "type": "api-call",
+        "action": {
+          "from": "customer_agent",
+          "to": "amazon_api",
+          "service": "amazon",
+          "request": "wine recommendations"
         }
       },
       {
@@ -182,343 +594,21 @@
         "action": {
           "from": "customer_agent",
           "to": "customer",
-          "content": "## **[리마인더]** \n정윤님, **명동키친 방문 1시간 전**이에요! 방문 장소까지 최소 시간이 소요되는 대중교통 경로를 제공해드릴까요?",
-          "type": "text",
-          "reason": "예약 시간까지 한 시간 남았으니, 예정대로 고객에게 리마인더를 보내고 식당까지의 길 안내를 제안해야겠다."
-        }
-      }
-    ]
-  },
-  "use_case_2_senior_life_mate": {
-    "id": "use_case_2_senior_life_mate",
-    "title": "시니어 라이프 메이트 (Use Case 2)",
-    "description": "어르신을 위해 건강 맞춤 식당을 추천 및 예약하고, 교통편까지 예약해주는 시나리오",
-    "agents": [
-      {
-        "type": "ai",
-        "name": "lifemate_agent",
-        "displayName": "라이프메이트 에이전트",
-        "avatarUrl": "/assets/avatars/lifemate_agent.png",
-        "steps": []
-      }
-    ],
-    "customer": {
-      "type": "human",
-      "name": "elderly_person",
-      "displayName": "김미경 어르신",
-      "avatarUrl": "/assets/avatars/elderly_person.png",
-      "state": "message",
-      "messageBox": {}
-    },
-    "servers": [
-      {
-        "type": "human",
-        "name": "restaurant_1_staff",
-        "displayName": "신촌 닭한마리 직원",
-        "avatarUrl": "/assets/avatars/restaurant_1_staff.png",
-        "state": "message",
-        "messageBox": {}
-      },
-      {
-        "type": "human",
-        "name": "restaurant_2_staff",
-        "displayName": "병천 유황오리 직원",
-        "avatarUrl": "/assets/avatars/restaurant_2_staff.png",
-        "state": "message",
-        "messageBox": {}
-      },
-      {
-        "type": "human",
-        "name": "uber_taxi",
-        "displayName": "택시 우버 앱",
-        "avatarUrl": "/assets/avatars/uber.png",
-        "state": "message",
-        "messageBox": {}
-      }
-    ],
-    "steps": [
-      {
-        "type": "make-call",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent"
-        }
-      },
-      {
-        "type": "accept-call",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent",
-          "content": "오늘 저녁 7시쯤, 친구들과 식당에서 모임을 하고 싶은데 적당한 장소 좀 찾아줘.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "content": "네, 어르신. 최근 혈당 수치와 식단 기록을 반영해 당뇨 관리에 좋은 식당을 추천드릴게요. 최근에 다녀오셨던 ‘신촌 닭한마리’ 혹은 ‘병천 유황오리’ 어떠세요?",
-          "type": "voice",
-          "reason": "**메모리 조회: 건강 프로필(당뇨) + 과거 식당 방문 기록**\n**추천 후보 생성: 조건 반영해 [신촌 닭한마리] + [병천 유황오리] 제안**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent",
-          "content": "닭한마리 좋아. 예약 되는지 확인해줘.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "finish-call",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent"
-        }
-      },
-      {
-        "type": "make-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_1_staff",
-          "reason": "**식당 정보 검색: “신촌 닭한마리” 전화 번호 확인**\n**Task 수행: 매장 번호로 전화**"
-        }
-      },
-      {
-        "type": "accept-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_1_staff"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_1_staff",
-          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "restaurant_1_staff",
-          "to": "lifemate_agent",
-          "content": "오늘은 예약이 다 차서 불가능해요.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "finish-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_1_staff"
-        }
-      },
-      {
-        "type": "make-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff",
-          "reason": "**Fallback 실행: 다른 후보 식당 “병천 유황오리”로 재시도**\n**식당 정보 검색: “병천 유황오리” 전화 번호 확인**\n**Task 수행: 매장 번호로 전화**"
-        }
-      },
-      {
-        "type": "accept-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff",
-          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 예약 가능한지 확인 부탁 드립니다.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "restaurant_2_staff",
-          "to": "lifemate_agent",
-          "content": "오늘 7시 가능해요. 룸으로 예약해드릴까요?",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "finish-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff",
-          "reason": "**응답 파싱: 예약 가능, 룸 제공 가능**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "content": "어르신, '신촌 닭한마리'는 오늘 예약이 다 찼다고 합니다.\n대신 '병천 유황오리'는 7시 룸 예약이 가능합니다.\n\n'병천 유황오리'로 예약을 진행할까요?\n아래 번호로 답장해 주세요.\n\n1. 네, 예약해주세요\n2. 다른 곳으로 찾아봐주세요\n3. 오늘은 그만할래요",
-          "type": "text",
-          "reason": "**결과 Text 요약 & 옵션화**\n**액션 코드 매핑: 문자 숫자 입력**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent",
-          "content": "1",
-          "type": "text",
-          "reason": "**응답 파싱: ‘예약 확정’ Intent 확정**"
-        }
-      },
-      {
-        "type": "make-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
-        }
-      },
-      {
-        "type": "accept-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff",
-          "content": "안녕하세요. SKT 인증 라이프메이트 서비스입니다. 김미경 어르신을 대신해 오늘 저녁 7시 4명 병천 유황오리 룸으로 최종 예약 확정 부탁 드립니다.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "restaurant_2_staff",
-          "to": "lifemate_agent",
-          "content": "네, 예약 확정 되었습니다.",
-          "type": "voice"
-        }
-      },
-      {
-        "type": "finish-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "restaurant_2_staff",
-          "reason": "**예약 DB 업데이트**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "timestamp": 1695570001,
-          "content": "오늘 7시 4명 병천 유황오리로 예약 완료했습니다.\n\n[병천유황오리 본점]\n서울특별시 종로구 삼봉로 68\n02-722-1530\nhttps://maps.app.goo.gl/88fy3AmodbgEWSuN7",
-          "type": "text",
-          "senderType": "agent",
-          "reason": "**확정 알림(문자) 발송 + 장소 정보 제공**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "timestamp": 1695570002,
-          "content": "병천 유황오리 위치 지도",
+          "content": "정윤님, 와인 모임을 위해 메뉴와 잘 어울릴만한 와인들도 추가 준비해보시는 건 어떤가요? \n\n---\n\n## **[🍷 오늘의 추천 와인 ]\n**### <span style=\"color:#8B0000\">피노 그리지오</span>  \n![피노 그리지오](https://upload.wikimedia.org/wikipedia/commons/4/48/Pinot_Grigio.jpg)  \n*해산물 파스타와 잘 어울려요, 산뜻한 맛*  \n👉 [아마존에서 보기](https://amazon.com/wine/pinot-grigio)  \n\n---\n\n### <span style=\"color:#8B0000\">모스카토 다스티</span>  \n![모스카토 다스티](https://upload.wikimedia.org/wikipedia/commons/3/36/Moscato_d%27Asti.jpg)  \n*고르곤졸라 피자에 추천해요, 단맛이 있는 와인*  \n👉 [아마존에서 보기](https://amazon.com/wine/moscato)  \n\n---\n\n### <span style=\"color:#8B0000\">바롤로</span>  \n![바롤로](https://upload.wikimedia.org/wikipedia/commons/2/24/Barolo_bottle.jpg)  \n*양고기 로스트와 잘 어울려요. 높은 산도와 묵직함이 특징*  \n👉 [아마존에서 보기](https://amazon.com/wine/barolo)  ",
           "type": "image",
-          "senderType": "agent",
-          "reason": "**예약 장소 지도 이미지 제공**",
-          "imageUrl": "/assets/bc_map.jpg"
+          "imageUrl": "/assets/deployed/ba35a140.jpg",
+          "reason": "** Amazon API 호출 : [명동키친] 추천 메뉴와 와인 정보 맵핑\n** 와인 큐레이션 : 구매 링크와 함꼐 추천 "
         }
       },
       {
         "type": "send-message",
         "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "content": "식당까지 이동을 도와드릴게요. 평소 이용하시던 우버 택시를 6시 30분에 불러드릴까요?",
-          "type": "text",
-          "reason": "**메모리 조회: 과거 식당 방문 기록, 이동 기록 추출**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "elderly_person",
-          "to": "lifemate_agent",
-          "content": "응, 부탁해.",
-          "type": "text"
-        }
-      },
-      {
-        "type": "api-call",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "uber_taxi",
-          "service": "uber",
-          "request": "book taxi for 6:30 PM",
-          "reason": "**교통 API 호출: 우버 택시 실행, 출발지/목적지 설정, 도착시간 예측**"
-        }
-      },
-      {
-        "type": "api-response",
-        "action": {
-          "from": "uber_api",
-          "to": "lifemate_agent",
-          "service": "uber",
-          "response": "booking confirmed",
-          "reason": "**예약 DB 업데이트**\n"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "content": "네, 어르신. 택시 예약을 완료했습니다.\n\n- **도착 알림**: 택시 도착 10분 전\n- **결제 방법**: SKT 요금으로 자동 결제\n\n편하게 준비하고 계시면 됩니다.",
-          "type": "text",
-          "reason": "**스케줄러 설정: 도착 10분 전 알림 예약**\n**결제 처리: SKT 통신사 빌링으로 자동 결제 설정**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "content": "어르신, 저녁 메뉴인 오리고기는 단백질이 풍부하고 포만감을 오래 유지시켜 당뇨 환자의 식단 조절에 도움이 됩니다. 채소를 곁들여 드시면 더욱 좋으니, 맛있고 건강하게 식사하세요!",
-          "type": "text",
-          "reason": "**건강 정보 검색 & Text 요약: 당뇨 + 오리고리**\n**알림(문자) 발송: 음식-건강 데이터베이스 참조**"
-        }
-      },
-      {
-        "type": "send-message",
-        "action": {
-          "from": "lifemate_agent",
-          "to": "elderly_person",
-          "content": "식사 마치고 2시간 뒤에 혈당 체크하실 시간이라고 다시 한번 알려드릴게요.",
-          "type": "text",
-          "reason": "**스케줄러 설정: 2시간 뒤 혈당 체크 알림 예약**"
+          "from": "customer_agent",
+          "to": "customer",
+          "content": "## **[리마인더] **\n정윤님, **명동키친 방문 1시간 전**이에요! 방문 장소까지 최소 시간이 소요되는 대중교통 경로도 제공해드릴게요.",
+          "type": "image",
+          "reason": "**리마인더 처리 : 설정된 알림 발송\n** 지도 API 호출 : 출발지/목적지 설정, 도착시간 예측, 최적경로 제안",
+          "imageUrl": "/assets/deployed/316f9ece.png"
         }
       }
     ]

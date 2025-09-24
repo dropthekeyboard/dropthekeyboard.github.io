@@ -10,7 +10,9 @@
     "format": "eslint . --fix",
     "prettier": "prettier --write .",
     "preview": "vite preview",
-    "unimported": "unimported"
+    "unimported": "unimported",
+    "deploy-assets": "python3 scripts/deploy-assets.py",
+    "deploy-assets:clean": "python3 scripts/deploy-assets.py --clean"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

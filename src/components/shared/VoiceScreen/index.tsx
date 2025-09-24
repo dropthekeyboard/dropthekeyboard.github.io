@@ -247,6 +247,7 @@ export function VoiceScreen({
                             timestamp={voiceMessage.timestamp}
                             enableMarkdown={true}
                             variant={variant}
+                            audioUrl={voiceMessage.audioUrl}
                           />
                         </div>
                       );
