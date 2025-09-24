@@ -35,6 +35,7 @@ export interface VoiceBubbleProps {
   enableMarkdown?: boolean;
   markdownOptions?: MarkdownOptions;
   variant?: 'default' | 'program';
+  audioUrl?: string;
 }
 
 export type SenderType = 'user' | 'ai' | 'agent' | 'server-human';

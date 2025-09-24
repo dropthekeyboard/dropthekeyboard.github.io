@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { Phone } from 'lucide-react';
+import { Phone, Play, Pause } from 'lucide-react';
 import { Avatar } from '@/components/shared/Avatar';
 import { getEntityAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 import { useTheme } from '@/hooks/useTheme';
+import { useSimpleAudio } from '@/hooks/useSimpleAudio';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getMarkdownComponents } from '@/lib/markdownComponents';
@@ -71,9 +72,10 @@ export function VoiceBubble({
     enableGfm: true,
   },
   variant = 'default',
+  audioUrl,
 }: VoiceBubbleProps) {
-  const isPlaying = true; // Voice messages are typically playable by default
   const { resolvedTheme } = useTheme();
+  const { isPlaying, toggle } = useSimpleAudio(audioUrl);
 
   // 발신자 여부 판별
   const isOwnMessage = fromEntity.name === ownerEntity.name;
@@ -164,12 +166,25 @@ export function VoiceBubble({
           {/* Voice visualization header */}
           <div className="flex items-center justify-between mb-4 relative z-10">
             <div className="flex items-center space-x-3">
-              <Phone
+              <button
+                onClick={toggle}
+                disabled={!audioUrl}
                 className={cn(
-                  'w-4 h-4 flex-shrink-0',
+                  'w-8 h-8 flex items-center justify-center rounded-full transition-colors',
+                  audioUrl 
+                    ? 'hover:bg-white/20 cursor-pointer' 
+                    : 'opacity-50 cursor-not-allowed',
                   resolvedTheme === 'light' ? 'text-gray-900' : 'text-gray-200'
                 )}
-              />
+              >
+                {isPlaying ? (
+                  <Pause className="w-4 h-4" />
+                ) : audioUrl ? (
+                  <Play className="w-4 h-4 ml-0.5" />
+                ) : (
+                  <Phone className="w-4 h-4" />
+                )}
+              </button>
               <VoiceWaveform isPlaying={isPlaying} variant={variant} />
             </div>
             {timestamp && (

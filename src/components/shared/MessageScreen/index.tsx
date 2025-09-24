@@ -169,9 +169,7 @@ export function MessageScreen({
                       senderType={getComponentSenderType(msg.senderType)}
                       timestamp={msg.timestamp}
                       isRead={msg.to === 'user'}
-                      enableMarkdown={
-                        msg.senderType === 'agent' || msg.senderType === 'server'
-                      }
+                      enableMarkdown={true}
                       entity={entity}
                       messageFrom={msg.from}
                       ownerName={ownerName}

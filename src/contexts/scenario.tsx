@@ -73,6 +73,8 @@ export interface Message extends Deliverable {
   callSession?: CallSession;
   /** Image URL for image messages */
   imageUrl?: string;
+  /** Audio URL for voice messages */
+  audioUrl?: string;
 }
 
 /**
