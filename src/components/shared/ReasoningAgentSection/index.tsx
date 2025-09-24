@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Brain,
-  ArrowRight,
   Download,
   Cpu,
   Upload,
@@ -91,6 +90,26 @@ function getMessageTypeLabel(type?: string) {
   }
 }
 
+// 버블 색상 함수 - 입력/출력 구분
+function getBubbleColor(type: 'input' | 'output', isDark: boolean) {
+  if (type === 'input') {
+    return isDark
+      ? 'bg-blue-900/40 border-blue-700/40'
+      : 'bg-blue-50/80 border-blue-200';
+  }
+  return isDark
+    ? 'bg-purple-900/40 border-purple-700/40'
+    : 'bg-purple-50/80 border-purple-200';
+}
+
+// 아이콘 색상 함수 - 입력/출력 구분
+function getIconColor(type: 'input' | 'output', isDark: boolean) {
+  if (type === 'input') {
+    return isDark ? 'text-blue-300' : 'text-blue-700';
+  }
+  return isDark ? 'text-purple-300' : 'text-purple-700';
+}
+
 interface ReasoningAgentSectionProps {
   entity: ServerState | null;
   label: string;
@@ -131,10 +150,8 @@ function ReasoningStepComponent({
         }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
         className={cn(
-          'flex items-center p-2 sm:p-3 rounded-lg border backdrop-blur-sm w-full',
-          isDark
-            ? 'bg-gray-800/40 border-gray-600/30'
-            : 'bg-gray-50/60 border-gray-300/50',
+          'flex items-center p-3 rounded-xl border shadow-sm backdrop-blur-sm w-full',
+          getBubbleColor(step.type as 'input' | 'output', isDark),
           step.type === 'input'
             ? 'justify-start mr-auto max-w-[85%] sm:max-w-[75%]' // Input from others - align left
             : step.type === 'output'
@@ -149,31 +166,26 @@ function ReasoningStepComponent({
       >
         {step.type === 'input' && (
           <>
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className={cn('flex items-center space-x-2 flex-shrink-0', getIconColor('input', isDark))}>
               {step.originalStep?.type === 'send-message' 
                 ? getMessageTypeIcon(step.originalStep.action.type)
                 : getMessageTypeIcon()}
             </div>
             <div className="flex-1 ml-3 min-w-0">
-              <div className="flex items-center space-x-2 mb-1">
-                {step.originalStep?.type === 'send-message' ? (
-                  <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                    {getMessageTypeLabel(step.originalStep.action.type)}
-                  </span>
-                ) : (
-                  <span
-                    className={cn(
-                      'text-sm font-medium truncate',
-                      isDark ? 'text-gray-300' : 'text-gray-700'
-                    )}
-                  >
-                    {step.actionType || 'Input'}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                Received
-              </p>
+              {step.originalStep?.type === 'send-message' ? (
+                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                  {getMessageTypeLabel(step.originalStep.action.type)}
+                </span>
+              ) : (
+                <span
+                  className={cn(
+                    'text-sm font-medium truncate',
+                    isDark ? 'text-gray-300' : 'text-gray-700'
+                  )}
+                >
+                  {step.actionType || 'Input'}
+                </span>
+              )}
             </div>
           </>
         )}
@@ -220,27 +232,22 @@ function ReasoningStepComponent({
         {step.type === 'output' && (
           <>
             <div className="flex-1 mr-3 text-right min-w-0">
-              <div className="flex items-center justify-end space-x-2 mb-1">
-                {step.originalStep?.type === 'send-message' ? (
-                  <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                    {getMessageTypeLabel(step.originalStep.action.type)}
-                  </span>
-                ) : (
-                  <span
-                    className={cn(
-                      'text-sm font-medium truncate',
-                      isDark ? 'text-gray-300' : 'text-gray-700'
-                    )}
-                  >
-                    {step.actionType || 'Output'}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                Sent
-              </p>
+              {step.originalStep?.type === 'send-message' ? (
+                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                  {getMessageTypeLabel(step.originalStep.action.type)}
+                </span>
+              ) : (
+                <span
+                  className={cn(
+                    'text-sm font-medium truncate',
+                    isDark ? 'text-gray-300' : 'text-gray-700'
+                  )}
+                >
+                  {step.actionType || 'Output'}
+                </span>
+              )}
             </div>
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className={cn('flex items-center space-x-2 flex-shrink-0', getIconColor('output', isDark))}>
               {step.originalStep?.type === 'send-message' 
                 ? getMessageTypeIcon(step.originalStep.action.type)
                 : getMessageTypeIcon()}
@@ -438,9 +445,8 @@ function ReasoningStepComponent({
       exit={{ opacity: 0, x: step.type === 'input' ? -20 : 20 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className={cn(
-        'flex items-center p-2 sm:p-3 rounded-lg border backdrop-blur-sm w-full',
-        getBackgroundColor(),
-        getBorderColor(),
+        'flex items-center p-3 rounded-xl border shadow-sm backdrop-blur-sm w-full',
+        getBubbleColor(step.type as 'input' | 'output', isDark),
         step.type === 'input'
           ? 'justify-start mr-auto max-w-[85%] sm:max-w-[75%]' // Input from others - align left
           : 'justify-end ml-auto max-w-[85%] sm:max-w-[75%]'   // Output from agent - align right
@@ -448,25 +454,21 @@ function ReasoningStepComponent({
     >
       {step.type === 'input' && (
         <>
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className={cn('flex items-center space-x-2 flex-shrink-0', getIconColor('input', isDark))}>
             {step.originalStep?.type === 'send-message' 
               ? getMessageTypeIcon(step.originalStep.action.type)
               : getMessageTypeIcon()}
           </div>
           <div className="flex-1 ml-3 min-w-0">
-            <div className="flex items-center space-x-2">
-              {step.originalStep?.type === 'send-message' ? (
-                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                  {getMessageTypeLabel(step.originalStep.action.type)}
-                </span>
-              ) : (
-                <span className={cn('text-sm font-medium truncate', getStepColor())}>
-                  {step.actionType || 'Input'}
-                </span>
-              )}
-              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Received</p>
+            {step.originalStep?.type === 'send-message' ? (
+              <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                {getMessageTypeLabel(step.originalStep.action.type)}
+              </span>
+            ) : (
+              <span className={cn('text-sm font-medium truncate', getStepColor())}>
+                {step.actionType || 'Input'}
+              </span>
+            )}
           </div>
         </>
       )}
@@ -474,21 +476,17 @@ function ReasoningStepComponent({
       {step.type === 'output' && (
         <>
           <div className="flex-1 mr-3 text-right min-w-0">
-            <div className="flex items-center justify-end space-x-2">
-              <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-              {step.originalStep?.type === 'send-message' ? (
-                <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
-                  {getMessageTypeLabel(step.originalStep.action.type)}
-                </span>
-              ) : (
-                <span className={cn('text-sm font-medium truncate', getStepColor())}>
-                  {step.actionType || 'Output'}
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Sent</p>
+            {step.originalStep?.type === 'send-message' ? (
+              <span className={getMessageTypeBadge(step.originalStep.action.type, isDark)}>
+                {getMessageTypeLabel(step.originalStep.action.type)}
+              </span>
+            ) : (
+              <span className={cn('text-sm font-medium truncate', getStepColor())}>
+                {step.actionType || 'Output'}
+              </span>
+            )}
           </div>
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className={cn('flex items-center space-x-2 flex-shrink-0', getIconColor('output', isDark))}>
             {step.originalStep?.type === 'send-message' 
               ? getMessageTypeIcon(step.originalStep.action.type)
               : getMessageTypeIcon()}
