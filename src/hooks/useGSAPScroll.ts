@@ -82,12 +82,12 @@ export function useOptionalGSAPScroll() {
   // Always call hooks before any early returns
   const scrollAmount = useMemo(
     () => context ? Math.round(context.progress * 100) : 0,
-    [context?.progress]
+    [context]
   );
 
   const scrollSpeed = useMemo(
     () => context ? Math.abs(context.velocity) : 0,
-    [context?.velocity]
+    [context]
   );
 
   const scrollDirection = useMemo(() => {
@@ -95,14 +95,14 @@ export function useOptionalGSAPScroll() {
     if (context.direction > 0) return 'down';
     if (context.direction < 0) return 'up';
     return 'stationary';
-  }, [context?.direction]);
+  }, [context]);
 
   const animationSpeed = useMemo(() => {
     if (!context) return 'slow';
     if (scrollSpeed > 2) return 'fast';
     if (scrollSpeed > 0.5) return 'normal';
     return 'slow';
-  }, [scrollSpeed]);
+  }, [scrollSpeed, context]);
 
   if (!context) {
     return null;

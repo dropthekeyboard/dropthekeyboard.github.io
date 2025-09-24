@@ -67,6 +67,34 @@ bun run build
 bun run preview
 ```
 
+### Deploying to GitHub Pages
+
+This project is configured for automatic deployment to GitHub Pages.
+
+#### Automatic Deployment
+
+1. Push to the `main` branch
+2. GitHub Actions will automatically build and deploy to GitHub Pages
+3. Your site will be available at `https://yourusername.github.io/a2a-demov/`
+
+#### Manual Deployment
+
+````bash
+# Build and deploy to gh-pages branch
+bun run deploy
+
+# Or deploy manually with gh-pages
+bun run build
+bunx gh-pages -d dist
+````
+
+#### GitHub Pages Setup
+
+1. Go to your repository settings
+2. Navigate to "Pages" section
+3. Set source to "GitHub Actions"
+4. The site will be deployed automatically on every push to main
+
 ## 📱 Demo Scenarios
 
 ### Phase 1: A2H (Agent-to-Human)

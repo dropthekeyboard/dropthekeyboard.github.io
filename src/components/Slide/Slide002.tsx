@@ -5,7 +5,7 @@ function Slide002() {
       {/* 메인 이미지 - 전체 화면 */}
       <div className="relative w-full h-screen">
         <img
-          src="/tm_vs_jit.jpg"
+          src="./tm_vs_jit.jpg"
           alt="TM vs JIT"
           className="w-full h-full min-w-full min-h-full object-cover"
         />

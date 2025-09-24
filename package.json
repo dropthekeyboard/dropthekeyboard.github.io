@@ -12,7 +12,9 @@
     "preview": "vite preview",
     "unimported": "unimported",
     "deploy-assets": "python3 scripts/deploy-assets.py",
-    "deploy-assets:clean": "python3 scripts/deploy-assets.py --clean"
+    "deploy-assets:clean": "python3 scripts/deploy-assets.py --clean",
+    "predeploy": "bun run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -53,6 +55,7 @@
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "gh-pages": "^6.1.1",
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
     "tw-animate-css": "^1.3.8",

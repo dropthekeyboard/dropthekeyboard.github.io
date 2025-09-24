@@ -13,7 +13,7 @@ function Slide001() {
         preload="metadata"
         style={{ display: 'block' }}
       >
-        <source src="/video_cut_020_100.mp4" type="video/mp4" />
+        <source src="./video_cut_020_100.mp4" type="video/mp4" />
         브라우저가 비디오를 지원하지 않습니다.
       </video>
 

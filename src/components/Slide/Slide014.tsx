@@ -15,7 +15,7 @@ function Slide014() {
         {/* 메인 콘텐츠 영역 */}
         <Card className="bg-card border-border p-8">
           <img
-            src="/A2A_Storyline_pages/page_014.png"
+            src="./A2A_Storyline_pages/page_014.png"
             alt="보편적 접근성 데모"
             className="h-full w-full object-cover rounded-lg"
           />
