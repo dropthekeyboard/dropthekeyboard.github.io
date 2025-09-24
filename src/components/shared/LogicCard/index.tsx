@@ -11,10 +11,35 @@ import {
   Server,
   Database,
   Zap,
+  Mic,
+  Hash,
+  Image as ImageIcon,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { AgenticStep } from '@/contexts/scenario';
+
+// Message type icon helper
+function getMessageTypeIcon(messageType?: string) {
+  switch (messageType) {
+    case 'voice':
+      return Mic;
+    case 'dtmf':
+      return Hash;
+    case 'image':
+      return ImageIcon;
+    default:
+      return MessageSquare;
+  }
+}
+
+// Extract message type from step
+function getMessageTypeFromStep(step: AgenticStep): string | undefined {
+  if (step.type === 'send-message') {
+    return step.action.type;
+  }
+  return undefined;
+}
 
 interface LogicCardData {
   id: string;
@@ -25,11 +50,12 @@ interface LogicCardData {
 // Step 타입별 아이콘과 색상 설정
 const getStepIconConfig = (
   stepType: AgenticStep['type'],
-  variant: 'minimal' | 'formal' | 'hacker'
+  variant: 'minimal' | 'formal' | 'hacker',
+  messageType?: string // 메시지 타입 추가
 ) => {
   const configs = {
     'send-message': {
-      icon: MessageSquare,
+      icon: getMessageTypeIcon(messageType), // 메시지 타입에 따른 아이콘
       minimal: { color: 'text-blue-600', bg: 'bg-blue-50' },
       formal: { color: 'text-blue-700', bg: 'bg-blue-100' },
       hacker: { color: 'text-blue-400', bg: 'bg-blue-500/20' },
@@ -190,7 +216,8 @@ export function LogicCard({
   };
 
   const getMinimalContent = () => {
-    const config = getStepIconConfig(card.step.type, 'minimal');
+    const messageType = getMessageTypeFromStep(card.step);
+    const config = getStepIconConfig(card.step.type, 'minimal', messageType);
     const IconComponent = config.icon;
 
     return (
@@ -210,7 +237,8 @@ export function LogicCard({
   };
 
   const getFormalContent = () => {
-    const config = getStepIconConfig(card.step.type, 'formal');
+    const messageType = getMessageTypeFromStep(card.step);
+    const config = getStepIconConfig(card.step.type, 'formal', messageType);
     const IconComponent = config.icon;
 
     return (
@@ -246,7 +274,8 @@ export function LogicCard({
   };
 
   const getHackerContent = () => {
-    const config = getStepIconConfig(card.step.type, 'hacker');
+    const messageType = getMessageTypeFromStep(card.step);
+    const config = getStepIconConfig(card.step.type, 'hacker', messageType);
     const IconComponent = config.icon;
 
     return (

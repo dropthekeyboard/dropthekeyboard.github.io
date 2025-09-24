@@ -5,10 +5,78 @@ import { LogicCard } from '@/components/shared/LogicCard';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Terminal, Cpu } from 'lucide-react';
+// Message type icons (for future use)
+// import { MessageSquare, Mic, Hash, Image as ImageIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { useOptionalTerminalVariant } from '@/hooks/useAgentDisplayVariants';
 import type { TerminalVariant } from '@/contexts/agentDisplayVariant';
 import { useTranslation } from 'react-i18next';
+// import { useTheme } from '@/hooks/useTheme';
+
+// Message type utility functions (for future use)
+// TODO: Integrate these functions when adding message type visual differentiation
+/*
+function getMessageTypeIcon(type?: string) {
+  switch (type) {
+    case 'voice':
+      return <Mic className="w-4 h-4 text-blue-500 dark:text-blue-400" />;
+    case 'dtmf':
+      return <Hash className="w-4 h-4 text-green-500 dark:text-green-400" />;
+    case 'image':
+      return <ImageIcon className="w-4 h-4 text-pink-500 dark:text-pink-400" />;
+    default:
+      return <MessageSquare className="w-4 h-4 text-gray-500 dark:text-gray-400" />;
+  }
+}
+
+function getMessageTypeBadge(type?: string, isDark?: boolean) {
+  const baseClasses = 'text-xs font-medium px-2 py-0.5 rounded-full border';
+  
+  switch (type) {
+    case 'voice':
+      return cn(
+        baseClasses,
+        isDark
+          ? 'bg-blue-900/30 border-blue-700/50 text-blue-300'
+          : 'bg-blue-50 border-blue-200 text-blue-700'
+      );
+    case 'dtmf':
+      return cn(
+        baseClasses,
+        isDark
+          ? 'bg-green-900/30 border-green-700/50 text-green-300'
+          : 'bg-green-50 border-green-200 text-green-700'
+      );
+    case 'image':
+      return cn(
+        baseClasses,
+        isDark
+          ? 'bg-pink-900/30 border-pink-700/50 text-pink-300'
+          : 'bg-pink-50 border-pink-200 text-pink-700'
+      );
+    default:
+      return cn(
+        baseClasses,
+        isDark
+          ? 'bg-gray-800/30 border-gray-600/50 text-gray-300'
+          : 'bg-gray-50 border-gray-300 text-gray-700'
+      );
+  }
+}
+
+function getMessageTypeLabel(type?: string) {
+  switch (type) {
+    case 'voice':
+      return '통화 음성 대화';
+    case 'dtmf':
+      return '키패드 입력 (DTMF)';
+    case 'image':
+      return '이미지 첨부';
+    default:
+      return 'SMS 문자 메시지';
+  }
+}
+*/
 
 interface LogicCard {
   id: string;
