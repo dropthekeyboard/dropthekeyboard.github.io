@@ -218,25 +218,30 @@ export function VoiceScreen({
                 <AnimatePresence mode="popLayout">
                   {displayMessages
                     .filter((m) => m.type === 'voice')
-                    .map((voiceMessage: Message) => (
-                      <div
-                        key={voiceMessage.id || voiceMessage.content}
-                        className="pointer-events-auto w-full"
-                      >
-                        <VoiceBubble
-                          message={voiceMessage.content}
-                          isOwnMessage={voiceMessage.from === ownerEntity.name}
-                          senderType={getComponentSenderType(
-                            voiceMessage.senderType
-                          )}
-                          timestamp={voiceMessage.timestamp}
-                          enableMarkdown={true}
-                          entity={ownerEntity}
-                          messageFromEntity={findEntityByName(state, voiceMessage.from)}
-                          variant={variant}
-                        />
-                      </div>
-                    ))}
+                    .map((voiceMessage: Message) => {
+                      const fromEntity = findEntityByName(state, voiceMessage.from);
+                      
+                      if (!fromEntity) {
+                        console.warn(`Entity not found for message: from=${voiceMessage.from}`);
+                        return null;
+                      }
+                      
+                      return (
+                        <div
+                          key={voiceMessage.id || voiceMessage.content}
+                          className="pointer-events-auto w-full"
+                        >
+                          <VoiceBubble
+                            message={voiceMessage.content}
+                            fromEntity={fromEntity}
+                            ownerEntity={ownerEntity}
+                            timestamp={voiceMessage.timestamp}
+                            enableMarkdown={true}
+                            variant={variant}
+                          />
+                        </div>
+                      );
+                    })}
                 </AnimatePresence>
                 {/* Invisible element to scroll to */}
                 <div ref={messagesEndRef} />

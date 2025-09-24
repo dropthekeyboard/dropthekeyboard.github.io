@@ -28,16 +28,12 @@ export interface MessageBubbleProps {
 
 export interface VoiceBubbleProps {
   message: string;
-  isOwnMessage: boolean;
-  senderType?: 'user' | 'ai' | 'agent' | 'server-human';
+  fromEntity: Entity;
+  ownerEntity: Entity;
   timestamp?: number;
   className?: string;
   enableMarkdown?: boolean;
   markdownOptions?: MarkdownOptions;
-  entity?: Entity | null; // Optional Entity for avatar support
-  messageFrom?: string; // Message sender identifier for avatar selection
-  ownerName?: string; // Phone owner name for avatar comparison
-  messageFromEntity?: Entity | null; // Message sender's entity for avatar
   variant?: 'default' | 'program';
 }
 

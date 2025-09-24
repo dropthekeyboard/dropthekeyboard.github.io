@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Phone } from 'lucide-react';
 import { Avatar } from '@/components/shared/Avatar';
-import { getEntityAvatarProps, getMessageAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
+import { getEntityAvatarProps } from '@/components/shared/Avatar/avatarHelpers';
 import { useTheme } from '@/hooks/useTheme';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -60,8 +60,8 @@ function VoiceWaveform({ isPlaying, variant = 'default' }: { isPlaying?: boolean
 
 export function VoiceBubble({
   message,
-  isOwnMessage,
-  senderType = 'user',
+  fromEntity,
+  ownerEntity,
   timestamp,
   className,
   enableMarkdown = false,
@@ -70,14 +70,16 @@ export function VoiceBubble({
     linkTarget: '_blank',
     enableGfm: true,
   },
-  entity,
-  messageFrom,
-  ownerName,
-  messageFromEntity,
   variant = 'default',
 }: VoiceBubbleProps) {
   const isPlaying = true; // Voice messages are typically playable by default
   const { resolvedTheme } = useTheme();
+
+  // 발신자 여부 판별
+  const isOwnMessage = fromEntity.name === ownerEntity.name;
+
+  // Avatar props 생성 (항상 fromEntity 기준)
+  const avatarProps = getEntityAvatarProps(fromEntity, isOwnMessage ? 'user' : 'ai');
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -141,10 +143,7 @@ export function VoiceBubble({
       >
         {/* Avatar */}
         <Avatar
-          {...(messageFrom && ownerName
-            ? getMessageAvatarProps(messageFrom, ownerName, messageFromEntity, senderType)
-            : getEntityAvatarProps(entity, senderType) // fallback to existing logic
-          )}
+          {...avatarProps}
           size="lg"
           className="flex-shrink-0 shadow-md"
         />
